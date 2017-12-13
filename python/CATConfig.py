@@ -334,8 +334,7 @@ catversions = ["v7-6-4",
 
 sample_catversion = ""
 output_catversion=os.getenv("CATVERSION")
-
-if "HN" in  sample or "CHT" in sample or "TTToH" in sample:
+if "HeavyNeutrino" in sample or "Majorana" in sample or "HN" in  sample or "CHT" in sample or "TTToH" in sample:
     datasetfile="datasets_snu_sig_CAT_mc_"
 else:
     datasetfile="datasets_snu_nonsig_CAT_mc_"

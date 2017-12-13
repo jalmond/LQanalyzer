@@ -18,7 +18,7 @@
 void setTDRStyle();
 
 
-void Opt_id_select(){
+void Opt_IDcut(){
  
   
   setTDRStyle();
@@ -40,7 +40,8 @@ void Opt_id_select(){
 
   
 
-  TString path= "/afs/cern.ch/work/j/jalmond/CAT/HNDiMuonOptimisation/periodBtoH/";
+  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiMuonOptimisation/periodBtoH/";
+
   TFile * fnp = new TFile(path+"HNDiMuonOptimisation_DoubleMuon_SKnonprompt_hndilep_cat_v8-0-7.root");
   TFile * fmc = new TFile(path+"HNDiMuonOptimisation_MC_trilep_cat_v8-0-7.root");
 

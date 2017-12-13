@@ -13,6 +13,7 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 
+#include <vector>
 #include "TString.h"
 #include "TSystem.h"
 
@@ -22,251 +23,61 @@ void setTDRStyle();
 bool CheckFile(TFile* f);
 bool CheckHist(TH2* h);
 
-void MakeFRRootFile(TString file, TString tag);
 
-void MakeFRRootFile(){
-  //MakeFRRootFile("SingleMuon","iso");
-  MakeFRRootFile("DoubleMuon","");
-}
+void MakeFRFile(){
 
-
-void MakeFRRootFile(TString file, TString tag){
   
-  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/FakeRateCalculator_Mu/periodBtoH/2017-08-01/";
+  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/2017-11-13/HNDiLepton_data_DoubleMuon_cat_v8-0-7.root";
   
-  TFile * fdata = new TFile(path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
-  TFile * fmc = new TFile(path + "FakeRateCalculator_Mu_mc_v8-0-7.root");
-  
-  if(!fdata)cout << "No Data" << endl;
-  if (!fmc) cout << "No MC" << endl;
-  cout << "Data File = : " << path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root" << endl;
-
-  cout << "List of keys in file:" << endl;
-
-  //gSystem->Exec("python ~/scripts/listkeys.py -f " + path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
+  TFile * fdata = new TFile(path);
   
   /// Set Plotting style
   setTDRStyle();
   gStyle->SetPalette(1);
     
-  TString outfile = "FakeRate13TeV_muon_"+file+"_2016_opt_snu.root";
+  TString outfile = "FakeRate13TeV_muon_aux_2016_opt_snu.root";
   TFile* fout = new TFile(outfile.Data(),"RECREATE");
   fout->cd();
   
   std::vector<TString> fakes40;
-  fakes40.push_back("20_pt_eta");
-  fakes40.push_back("20_ptcorr_eta");
-  fakes40.push_back("30_pt_eta");
-  fakes40.push_back("30_ptcorr_eta");
-  fakes40.push_back("40_pt_eta");
-  fakes40.push_back("60_ptcorr_eta");
-  fakes40.push_back("60_pt_eta");
-  fakes40.push_back("40_ptcorr_eta");
-  //fakes40.push_back("40_pt_eta_cb_l");
-  //fakes40.push_back("40_ptcorr_eta_cb_l");
-  //fakes40.push_back("40_pt_eta_cb_m");
-  //fakes40.push_back("40_ptcorr_eta_cb_m");
-  //fakes40.push_back("40_pt_eta_cb_t");
-  //fakes40.push_back("40_ptcorr_eta_cb_t");
-  //fakes40.push_back("40_pt_eta_ncb_l");
-  //fakes40.push_back("40_ptcorr_eta_ncb_l");
-  //fakes40.push_back("40_pt_eta_ncb_m");
-  //fakes40.push_back("40_ptcorr_eta_ncb_m");
-  //fakes40.push_back("40_pt_eta_ncb_t");
-  //fakes40.push_back("40_ptcorr_eta_ncb_t");
-
-
-  std::vector<TString> isocut;
-
-  int ndxy=10;
-  int ndz=4;
-  int niso=5;
-  vector<TString> vcut_mva_s;
-
-  vector<TString> vcut_dxy_b_s;
-
-  for(unsigned int dxy_b=0;dxy_b < ndxy; dxy_b++){
-    float cut_dxy_b =  float(dxy_b)*0.005 + 0.005;
-    stringstream ss;
-    ss <<cut_dxy_b;
-    vcut_dxy_b_s.push_back(TString(ss.str()));
-  }
-
-  vector<float> vcut_dxysig_b;
-  vcut_dxysig_b.push_back(3.);
-  vcut_dxysig_b.push_back(4.);
-  vector<TString> vcut_dxysig_b_s;
-  vcut_dxysig_b_s.push_back("3");
-  vcut_dxysig_b_s.push_back("4");
-
-
-  vector<TString> vcut_dz_b_s;
-
-  for(unsigned int dz_b=0;dz_b < ndz; dz_b++){
-    float cut_dz_b =  float(dz_b)*0.02 + 0.02;
-    stringstream ss;
-    ss <<cut_dz_b;
-    vcut_dz_b_s.push_back(TString(ss.str()));
-  }
-
-
-  vector<TString> vcut_iso_b_s;
-  for(unsigned int iso_b=0;iso_b < niso; iso_b++){
-    float cut_iso_b = float(iso_b)*0.01 + 0.05;
-    stringstream ss;
-    ss <<cut_iso_b;
-    vcut_iso_b_s.push_back(TString(ss.str()));
-  }
+  fakes40.push_back("SS_auxFake_ptcone_IB_");
+  fakes40.push_back("SS_auxFake_ptcone_OB_");
+  fakes40.push_back("SS_auxFake_ptcone_EC_");
+  Float_t ptbins[11] = { 5., 12., 15.,20.,25.,30.,35.,45.,  60.,100., 200.};
+  Float_t etabins[4] = {0., 0.8, 1.5, 2.5};
+  TH2D* h = new TH2D("SS_auxFake_ptcone","SS_auxFake_ptcone", 10., ptbins, 3 , etabins);
   
+  for(unsigned int i=0; i < fakes40.size(); i++){
   
-  for(unsigned int dxy_b=0; dxy_b < vcut_dxy_b_s.size(); dxy_b++){
-    for(unsigned int dxysig_b=0; dxysig_b < vcut_dxysig_b_s.size(); dxysig_b++){
-      for(unsigned int dz_b=0; dz_b < vcut_dz_b_s.size(); dz_b++){
-        for(unsigned int iso_b=0; iso_b < vcut_iso_b_s.size(); iso_b++){
-	  //isocut.push_back("SNUTight"+tag+"dijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
-	  //isocut.push_back("SNUMedium"+tag+"dijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
-	  //isocut.push_back(tag+"Gentdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
-	}
-      }
+    TString denom = "Hists/" +fakes40[i] +"loose";
+    TString num = "Hists/"+ fakes40[i]  +"tight";
+
+    TH2D* h_pt_num= (TH2D*)fdata->Get(num.Data());
+    TH2D* h_pt_denom= (TH2D*)fdata->Get(denom.Data());
+      
+
+    CheckHist(h_pt_denom);
+    CheckHist(h_pt_num);
+    TString name = fakes40[i] ;
+      
+    TH2D* eff_rate = (TH2D*)h_pt_num->Clone(("FakeRate_" + name).Data());
+    TH2D* hratedenom = (TH2D*)h_pt_denom->Clone((name +"_denom").Data());
+      
+    eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
+
+    for(unsigned int ibin = 1; ibin < eff_rate->GetNbinsX()+1; ibin++){
+      cout << eff_rate->GetBinContent(ibin) << endl;
+      h->SetBinContent(ibin, i+1, eff_rate->GetBinContent(ibin));
+      h->SetBinError(ibin, i+1, eff_rate->GetBinError(ibin));
+
     }
   }
-  
-  isocut.push_back("SNUTightdijet_0.07_0.005_3_0.04");
-
-
-  for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
-    for(vector<TString>::iterator it3 = isocut.begin(); it3!=isocut.end(); ++it3){
-      
-      if(!CheckFile(fdata))return;
-      if(!CheckFile(fmc))return;
-      TString denom ="LooseMu"+ *it3 +"_"+ *it2;
-      TString num ="TightMu" + *it3 + "_"+*it2;
-      
-      
-      TH2D* h_pt_num= (TH2D*)fdata->Get(num.Data());
-      TH2D* h_pt_denom= (TH2D*)fdata->Get(denom.Data());
-      
-      cout << h_pt_num << " " << h_pt_denom << endl;
-      cout << num << " " << denom << endl;
-      CheckHist(h_pt_denom);
-      CheckHist(h_pt_num);
-      TH2D* h_mcpt_num= (TH2D*)fmc->Get(num.Data());
-      TH2D* h_mcpt_denom= (TH2D*)fmc->Get(denom.Data());
-      CheckHist(h_mcpt_denom);
-      CheckHist(h_mcpt_num);
-      
-      TString name =*it2 + *it3;
-      
-      TH2D* eff_rate = (TH2D*)h_pt_num->Clone(("FakeRate_" + name).Data());
-      TH2D* hratedenom = (TH2D*)h_pt_denom->Clone((name +"_denom").Data());
-      
-      TH2D* eff_rate_mcup10 = (TH2D*)h_pt_num->Clone(("FakeRate_up_" + name).Data());
-      TH2D* eff_rate_mcdown10 = (TH2D*)h_pt_num->Clone(("FakeRate_down)" + name).Data());
-      TH2D* hratedenom_mcup10 = (TH2D*)h_pt_denom->Clone((name +"_up_denom").Data());
-      TH2D* hratedenom_mcdown10 = (TH2D*)h_pt_denom->Clone((name +"_down_denom").Data());
-
-      
-      eff_rate->Add(h_mcpt_num,-1.);
-      hratedenom->Add(h_mcpt_denom, -1.);
-      
-      eff_rate_mcup10->Add(h_mcpt_num,-1.1);
-      hratedenom_mcup10->Add(h_mcpt_denom, -1.1);
-
-      eff_rate_mcdown10->Add(h_mcpt_num,-0.9);
-      hratedenom_mcdown10->Add(h_mcpt_denom, -0.9);
-
-
-      TH1D *hloose_ptnum = (TH1D*)eff_rate->ProjectionX()->Clone(("FakeRate_1D_x_" + name).Data());
-      TH1D *hloose_ptden = (TH1D*)hratedenom->ProjectionX()->Clone(("FakeRate_1D_x_" + name).Data());
-      TH1D *hloose_etanum = (TH1D*)eff_rate->ProjectionY()->Clone(("FakeRate_1D_y_" + name).Data());
-      TH1D *hloose_etaden = (TH1D*)hratedenom->ProjectionY()->Clone(("FakeRate_1D_y_" + name).Data());
-      
-      TH1D *hloose_ptnum_mcup10 = (TH1D*)eff_rate_mcup10->ProjectionX()->Clone(("FakeRate_1D_x_up_" + name).Data());
-      TH1D *hloose_ptden_mcup10 = (TH1D*)hratedenom_mcup10->ProjectionX()->Clone(("FakeRate_1D_up_x_" + name).Data());
-      TH1D *hloose_etanum_mcup10 = (TH1D*)eff_rate_mcup10->ProjectionY()->Clone(("FakeRate_1D_up_y_" + name).Data());
-      TH1D *hloose_etaden_mcup10 = (TH1D*)hratedenom_mcup10->ProjectionY()->Clone(("FakeRate_1D_up_y_" + name).Data());
-
-      TH1D *hloose_ptnum_mcdown10 = (TH1D*)eff_rate_mcdown10->ProjectionX()->Clone(("FakeRate_1D_down_x_" + name).Data());
-      TH1D *hloose_ptden_mcdown10 = (TH1D*)hratedenom_mcdown10->ProjectionX()->Clone(("FakeRate_1D_down_x_" + name).Data());
-      TH1D *hloose_etanum_mcdown10 = (TH1D*)eff_rate_mcdown10->ProjectionY()->Clone(("FakeRate_1D_down_y_" + name).Data());
-      TH1D *hloose_etaden_mcdown10 = (TH1D*)hratedenom_mcdown10->ProjectionY()->Clone(("FakeRate_1D_down_y_" + name).Data());
-
-      
-      TH1D *hloose_ptnum_err = (TH1D*)eff_rate_mcup10->ProjectionX()->Clone(("FakeRate_1D_x_err_" + name).Data());
-      TH1D *hloose_etanum_err = (TH1D*)eff_rate_mcup10->ProjectionY()->Clone(("FakeRate_1D_y_err_" + name).Data());
-      
-
-      eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-      eff_rate->Write();
-      
-
-      bool drawall(false);
-      
-      
-      hloose_ptnum->Divide(hloose_ptden);
-      hloose_etanum->Divide(hloose_etaden);
-      hloose_ptnum_mcup10->Divide(hloose_ptden_mcup10);
-      hloose_etanum_mcup10->Divide(hloose_etaden_mcup10);
-      hloose_ptnum_mcdown10->Divide(hloose_ptden_mcdown10);
-      hloose_etanum_mcdown10->Divide(hloose_etaden_mcdown10);
-      
-      if(drawall){
-	
-	TCanvas* c1 = new TCanvas(name , name, 800, 600);
-	
-	hloose_ptnum->GetXaxis()->SetTitle("p_T (GeV)");
-	
-	for (Int_t i=1;i<=hloose_ptnum_mcup10->GetNbinsX()+1;i++) {
-	  cout << hloose_ptnum->GetBinContent(i) << " up = " << hloose_ptnum_mcup10->GetBinContent(i) << " down = " << hloose_ptnum_mcdown10->GetBinContent(i) << endl;
-	  hloose_ptnum_err->SetBinError( i,(hloose_ptnum_mcup10->GetBinContent(i)  - hloose_ptnum_mcdown10->GetBinContent(i))/2.);
-	  hloose_ptnum_err->SetBinContent(i, (hloose_ptnum_mcup10->GetBinContent(i)  + hloose_ptnum_mcdown10->GetBinContent(i))/2.);
-	}
-	for (Int_t i=1;i<=hloose_etanum_mcup10->GetNbinsX()+1;i++) {
-	  cout << hloose_etanum->GetBinContent(i) << " up = " << hloose_etanum_mcup10->GetBinContent(i) << " down = " << hloose_etanum_mcdown10->GetBinContent(i) << endl;
-	  
-	  hloose_etanum_err->SetBinError( i,(hloose_etanum_mcup10->GetBinContent(i)  - hloose_etanum_mcdown10->GetBinContent(i))/2.);
-	  hloose_etanum_err->SetBinContent(i, (hloose_etanum_mcup10->GetBinContent(i)  +hloose_etanum_mcdown10->GetBinContent(i))/2.);
-	}
-	
-	hloose_ptnum->GetYaxis()->SetRangeUser(0., 0.5);
-	hloose_ptnum->Draw("hist");
-	hloose_ptnum_err->SetFillStyle(3444);
-	hloose_ptnum_err->SetLineColor(kRed);
-	hloose_ptnum_err->SetFillColor(kRed);
-	hloose_ptnum_err->Draw("E2same");
-	
-	TLatex label;
-	label.SetTextSize(0.04);
-	label.SetTextColor(2);
-	label.SetTextFont(42);
-	label.SetNDC();
-	label.SetTextColor(1);
-	label.DrawLatex(0.3 ,0.24,name);
-	c1->SaveAs(name+ "_pt.pdf");
-	
-	hloose_etanum->GetXaxis()->SetTitle("#eta");
-	hloose_etanum->GetYaxis()->SetRangeUser(0., 0.5);
-	
-	hloose_etanum->Draw("hist");
-	
-	
-	hloose_etanum_err->SetFillStyle(3444);
-	hloose_etanum_err->SetLineColor(kRed);
-	hloose_etanum_err->SetFillColor(kRed);
-	hloose_etanum_err->Draw("E2same");
-	
-	
-	c1->SaveAs(name+ "_eta.pdf");
-      }
-    }
-    
-  }
-  
+  h->Write();
   
   return;
-
 }
-
+  
+  
   
 bool CheckFile(TFile* f ){
     bool file_exist = true;

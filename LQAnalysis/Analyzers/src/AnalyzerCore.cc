@@ -353,6 +353,21 @@ void AnalyzerCore::setTDRStyle() {
 
 }
 
+float AnalyzerCore::GetConvWeight(snu::KMuon mu){
+
+  if(mu.Pt() < 10) return  0.460224;
+  else if(mu.Pt() < 15) return 0.476428;
+  else if(mu.Pt() < 20) return 0.531144;
+  else if(mu.Pt() < 25) return 0.57826;
+  else if(mu.Pt() < 30) return 0.591419;
+  else if(mu.Pt() < 35) return 0.64385;
+  else if(mu.Pt() < 45) return 0.641256;
+  else if(mu.Pt() < 60) return 0.724696;
+  else if(mu.Pt() < 100) return 0.727273;
+  else return 0.730769;
+
+}
+
 void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
   if(isData) return ;
 
@@ -1635,10 +1650,102 @@ float AnalyzerCore::GetDiLepMass(std::vector<snu::KMuon> muons){
   return p.M();
 }
 
-float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, vector<int> ijets, bool lowmass){
+
+
+float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  std::vector<snu::KFatJet> fatjets, vector<int> ijets, bool lowmass){
+  if(electrons.size() != 2) return 0.;
+
+
+  // variable 1 = lljj                                                                                                                                                               
+  // variable 2 = l1jj                                                                                                                                                               
+  // variable 3 = l2jj                                                                                                                                                               
+  // variable 4 = llj                                                                                                                                                                
+  // variable 5 = jj                                                                                                                                                                 
+  // variable 6 = contra JJ mass                                                                                                                                                     
+
+  int variable (-1);
+  if(svariable == "lljj") variable = 1;
+  else if(svariable == "l1jj") variable = 2;
+  else if(svariable == "l2jj") variable = 3;
+  else if(svariable == "llj") variable = 4;
+  else if(svariable == "l1j") variable = 7;
+  else if(svariable == "l2j") variable = 8;
+  else if(svariable == "jj") variable = 5;
+  else if(svariable == "contMT") variable = 6;
+  else if(svariable == "llfj") variable = -1;
+  else if(svariable == "l1fj") variable = -2;
+  else if(svariable == "l2fj") variable = -3;
+  else if(svariable == "fj") variable = -4;
+  else return -999.;
+
+  snu::KFatJet fatjet;
+  float dMFatJet=9999.;
+  for(UInt_t emme=0; emme<fatjets.size(); emme++){
+    if(fabs(fatjets[emme].PrunedMass() -  80.4) < dMFatJet){
+      dMFatJet=fatjets[emme].PrunedMass();
+      fatjet=fatjets[emme];
+    }
+  }
+  fatjet.SetPtEtaPhiM(fatjet.Pt(), fatjet.E(), fatjet.Phi(), fatjet.PrunedMass());
+  if(variable==-1) return (electrons[0] + electrons[1] + fatjet).M();
+  if(variable==-2) return (electrons[0] + fatjet).M();
+  if(variable==-3) return (electrons[1] + fatjet).M();
+  if(variable==-4) return fatjet.PrunedMass();
+
+  if(jets.size() == 1){
+    if(variable==4) return (electrons[0] + electrons[1] + jets[0]).M();
+    if(variable==7) return (electrons[0]  + jets[0]).M();
+    if(variable==8) return (electrons[1] + jets[0]).M();
+
+  }
+  if(jets.size() < 2) return -999.;
+
+
+  float dijetmass_tmp=999.;
+  float dijetmass=9990000.;
+  int m=-999;
+  int n=-999;
+  for(UInt_t emme=0; emme<jets.size(); emme++){
+    for(UInt_t enne=1; enne<jets.size(); enne++) {
+      if(emme == enne) continue;
+      if(lowmass)   dijetmass_tmp = (jets[emme]+jets[enne]+electrons[0] + electrons[1]).M();
+      else dijetmass_tmp = (jets[emme]+jets[enne]).M();
+      if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
+        dijetmass = dijetmass_tmp;
+        m = emme;
+        n = enne;
+      }
+    }
+  }
+
+  if(ijets.size() ==2){
+    if(ijets[0] != 0){
+      ijets.push_back(m);
+      ijets.push_back(n);
+    }
+  }
+
+  if(variable==1) return (electrons[0] + electrons[1] + jets[m]+jets[n]).M();
+  if(variable==2) return (electrons[0]  + jets[m]+jets[n]).M();
+  if(variable==3) return (electrons[1] + jets[m]+jets[n]).M();
+  if(variable==5) return (jets[m]+jets[n]).M();
+  if(variable==6) {
+    float dPhi = fabs(TVector2::Phi_mpi_pi(jets[m].Phi() - jets[n].Phi()));
+    float contramass=2*jets[m].Pt()*jets[n].Pt()*(1+cos(dPhi));
+    contramass=sqrt(contramass);
+    return contramass;
+  }
+
+  return 0.;
+
+
+
+}
+
+float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets,  std::vector<snu::KFatJet> fatjets, vector<int> ijets, bool lowmass){
   
   if(muons.size() != 2) return 0.;
-  if(jets.size() == 0) return 0.;
+
 
   // variable 1 = lljj
   // variable 2 = l1jj
@@ -1652,12 +1759,36 @@ float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, 
   else if(svariable == "l1jj") variable = 2;
   else if(svariable == "l2jj") variable = 3;
   else if(svariable == "llj") variable = 4;
+  else if(svariable == "l1j") variable = 7;
+  else if(svariable == "l2j") variable = 8;
   else if(svariable == "jj") variable = 5;
   else if(svariable == "contMT") variable = 6;
+  else if(svariable == "llfj") variable = -1;
+  else if(svariable == "l1fj") variable = -2;
+  else if(svariable == "l2fj") variable = -3;
+  else if(svariable == "fj") variable = -4;
   else return -999.;
 
-  if(variable==4) return (muons[0] + muons[1] + jets[0]).M();
+  snu::KFatJet fatjet;
+  float dMFatJet=9999.;
+  for(UInt_t emme=0; emme<fatjets.size(); emme++){
+    if(fabs(fatjets[emme].PrunedMass() -  80.4) < dMFatJet){
+      dMFatJet=fatjets[emme].PrunedMass();
+      fatjet=fatjets[emme];
+    }
+  }
 
+  if(variable==-1) return (muons[0] + muons[1] + fatjet).M();
+  if(variable==-2) return (muons[0] + fatjet).M();
+  if(variable==-3) return (muons[1] + fatjet).M();
+  if(variable==-4) return fatjet.PrunedMass();
+
+  if(jets.size() == 1){
+    if(variable==4) return (muons[0] + muons[1] + jets[0]).M();
+    if(variable==7) return (muons[0]  + jets[0]).M();
+    if(variable==8) return (muons[1] + jets[0]).M();
+    
+  }
   if(jets.size() < 2) return -999.;
 
 
@@ -2635,9 +2766,15 @@ int AnalyzerCore::AssignnNumberOfTruth(){
 
 
 bool AnalyzerCore::IsSignal(){
-  
+
+  if(isData) return false;
   if(k_sample_name.Contains("Majornana")) return true;
-  if(k_sample_name.Contains("HN")) return true;
+  if(k_sample_name.Contains("Tchannel")) return true;
+  if(k_sample_name.Contains("HNE")) return true;
+  if(k_sample_name.Contains("HNM")) return true;
+  if(k_sample_name.Contains("HNDilepton"))  return false;
+  if(k_sample_name.Contains("MM")) return true;
+  
   return false;
 }
 
@@ -2720,6 +2857,60 @@ bool AnalyzerCore::ISCF(snu::KElectron el){
   if(el.GetType() == 21)return true;
   return false;
 }
+
+bool AnalyzerCore::IsInternalConversion(snu::KMuon mu){
+
+  if(isData) return false;
+
+  bool conv=false;
+  std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+
+  if(GetLeptonType(mu,truthColl )== 4 ||  GetLeptonType(mu,truthColl )==  5) {
+    int tr_index= mu.MCTruthIndex();
+    while(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 13 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 22){
+      tr_index = eventbase->GetTruth().at(tr_index).IndexMother();
+    }
+    if(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 23 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 24 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 15) conv=true;
+  }
+  
+  return conv;
+
+}
+
+bool AnalyzerCore::IsInternalConversion(snu::KElectron el){
+
+  if(isData) return false;
+  std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+
+  bool conv=false;
+  if(GetLeptonType(el,truthColl )== 4 ||  GetLeptonType(el,truthColl )==  5) {
+    int tr_index= el.MCTruthIndex();
+    while(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 11 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 22){
+      tr_index = eventbase->GetTruth().at(tr_index).IndexMother();
+    }
+    if(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 23 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 24 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 15) conv=true;
+  }
+
+  return conv;
+
+}
+
+bool AnalyzerCore::IsExternalConversion(snu::KElectron el){
+
+  if(isData) return false;
+
+  std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+
+  bool conv=false;
+  if(GetLeptonType(el,truthColl )== -5 ||  GetLeptonType(el,truthColl )==  -6) {
+    conv=true;
+  }
+  if(el.GetType()==40) conv=true;
+  return conv;
+
+}
+
+
 
 bool AnalyzerCore::TruthMatched(snu::KElectron el, bool keepCF){
   bool pass=false;
@@ -2824,6 +3015,83 @@ bool AnalyzerCore::TruthMatched(snu::KMuon mu){
   return pass;
 }
 
+vector<int> AnalyzerCore::GetVirtualMassIndex(int mode, int pdgid){
+  
+  vector<int> indexZ;
+  vector<int> indexG;
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+    if(indexZ.size()==2&&mode==1) return indexZ;
+    if(indexZ.size()>1) continue;
+    if(fabs(eventbase->GetTruth().at(ig).PdgId()) == pdgid){
+      int index_m=eventbase->GetTruth().at(ig).IndexMother() ;
+      if(eventbase->GetTruth().at(ig).GenStatus() ==1  || eventbase->GetTruth().at(ig).GenStatus() ==23 ){
+	int daughter=ig;
+	while(fabs(eventbase->GetTruth().at(index_m).PdgId()) == pdgid){
+	  daughter=index_m;
+	  index_m=eventbase->GetTruth().at(index_m).IndexMother();
+	}
+	if(eventbase->GetTruth().at(index_m).PdgId() == 23 || fabs(eventbase->GetTruth().at(index_m).PdgId()) < 6 ){
+	  cout << "daughter = " << daughter << endl;
+	  indexZ.push_back(daughter);
+	  for(unsigned int ig2=0; ig2 < eventbase->GetTruth().size(); ig2++){
+	    if(eventbase->GetTruth().at(ig2).IndexMother() <= 0)continue;
+	    if(ig2 == daughter) continue;
+	    if(fabs(eventbase->GetTruth().at(ig2).PdgId()) == pdgid){
+	      cout << eventbase->GetTruth().at(ig2).IndexMother() << " ind " << index_m << endl;
+	      if(eventbase->GetTruth().at(ig2).IndexMother()==index_m)           indexZ.push_back(ig2);
+	    }
+	  }
+	}
+      }
+    }
+  }
+  if(mode==1) return indexZ;
+  if(indexZ.size()!=2) return indexG;
+
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+  
+  if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+
+    if(fabs(eventbase->GetTruth().at(ig).PdgId()) == pdgid){
+      if(indexZ[0] == ig || indexZ[1] == ig ) continue;
+      
+      if(eventbase->GetTruth().at(ig).GenStatus() ==1){
+
+	int index_m=eventbase->GetTruth().at(ig).IndexMother() ;
+	
+	while(fabs(eventbase->GetTruth().at(index_m).PdgId()) == pdgid){
+	  index_m=eventbase->GetTruth().at(index_m).IndexMother();
+	}
+	
+	for(unsigned int ig2=0; ig2 < eventbase->GetTruth().size(); ig2++){
+	  
+	  if(eventbase->GetTruth().at(ig2).IndexMother() <= 0)continue;
+	  if(eventbase->GetTruth().at(ig2).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+	  if(fabs(eventbase->GetTruth().at(ig2).PdgId()) == pdgid){
+	    if(indexZ[0] == ig2 || indexZ[1] == ig2 ) continue;
+	    if(ig==ig2) continue;
+	    if(eventbase->GetTruth().at(ig2).GenStatus() ==1){
+	      int index_m2=eventbase->GetTruth().at(ig2).IndexMother() ;
+	      while(fabs(eventbase->GetTruth().at(index_m2).PdgId()) == pdgid){
+		index_m2=eventbase->GetTruth().at(index_m2).IndexMother();
+	      }
+	      if(index_m2 == index_m){
+		indexG.push_back(ig);
+		indexG.push_back(ig2);
+		return indexG;
+	      }
+	    }
+	  }
+	}
+      }
+    }
+  }
+   
+
+}
 float AnalyzerCore::GetVirtualMass(int pdg, bool includenu, bool includeph){
   if(isData) return -999.;
   vector<KTruth> es1;
@@ -2862,6 +3130,8 @@ float AnalyzerCore::GetVirtualMass(int pdg, bool includenu, bool includeph){
   if(!includeph){
     if(!includenu){
       if(es1.size()==2){
+	cout << "Mother = " << eventbase->GetTruth().at(es1[0].IndexMother()).PdgId() << endl;
+
 	snu::KParticle ll = es1[0]  + es1[1];
 	return ll.M();
       }
@@ -2941,7 +3211,7 @@ void AnalyzerCore::TruthPrintOut(){
 
     }
     else{
-      cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " <<	eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+      cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " <<	eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  " " <<  eventbase->GetTruth().at(ig).M() <<endl;
     }
   }
 
@@ -3273,10 +3543,11 @@ void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xm
 }
 
 
-void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, TString label) {
+void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, TString label, TString labely) {
 
   maphist2D[hname] =  new TH2D(hname.Data(),hname.Data(),nbinsx,xmin,xmax, nbinsy,ymin,ymax);
   maphist2D[hname]->GetXaxis()->SetTitle(label);
+  maphist2D[hname]->GetYaxis()->SetTitle(labely);
 }
 
 
@@ -3286,10 +3557,11 @@ void AnalyzerCore::MakeHistograms3D(TString hname, int nbinsx, float xmin, float
   maphist3D[hname]->GetXaxis()->SetTitle(label);
 }
 
-void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], int nbinsy,  float ybins[], TString label) {
+void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], int nbinsy,  float ybins[], TString label, TString labely) {
 
   maphist2D[hname] =  new TH2D(hname.Data(),hname.Data(),nbinsx , xbins, nbinsy,ybins);
   maphist2D[hname]->GetXaxis()->SetTitle(label);
+  maphist2D[hname]->GetYaxis()->SetTitle(labely);
 }
 
 
@@ -3374,7 +3646,7 @@ void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, 
   
 }
 
-void AnalyzerCore::FillHist(TString histname, float value1, float value2, float w, float xmin, float xmax, int nbinsx, float ymin, float ymax, int nbinsy , TString label){
+void AnalyzerCore::FillHist(TString histname, float value1, float value2, float w, float xmin, float xmax, int nbinsx, float ymin, float ymax, int nbinsy , TString label, TString labely){
 
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
   if(GetHist2D(histname)) GetHist2D(histname)->Fill(value1,value2, w);
@@ -3384,14 +3656,15 @@ void AnalyzerCore::FillHist(TString histname, float value1, float value2, float 
       exit(0);
     }
     m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
-    MakeHistograms2D(histname, nbinsx, xmin, xmax,nbinsy, ymin, ymax , label);
+    MakeHistograms2D(histname, nbinsx, xmin, xmax,nbinsy, ymin, ymax , label, labely);
     if(GetHist2D(histname)) GetHist2D(histname)->GetXaxis()->SetTitle(label);
+    if(GetHist2D(histname)) GetHist2D(histname)->GetYaxis()->SetTitle(labely);
     if(GetHist2D(histname)) GetHist2D(histname)->Fill(value1,value2, w);
   }
 
 }
 
-void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float w, float xbins[], int nxbins, float ybins[], int nybins , TString label){
+void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float w, float xbins[], int nxbins, float ybins[], int nybins , TString label, TString labely){
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
   if(GetHist2D(histname)) GetHist2D(histname)->Fill(valuex,valuey, w);
 
@@ -3401,7 +3674,7 @@ void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float 
       exit(0);
     }
     m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
-    MakeHistograms2D(histname, nxbins, xbins, nybins, ybins , label);
+    MakeHistograms2D(histname, nxbins, xbins, nybins, ybins , label,labely);
     if(GetHist2D(histname)) GetHist2D(histname)->GetXaxis()->SetTitle(label);
     
     if(GetHist2D(histname)) GetHist2D(histname)->Fill(valuex, valuey, w);

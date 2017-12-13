@@ -28,9 +28,15 @@
 ### MUON_MU17_TRIGGER_GH_HNTRILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNTRILEP_DoubleIsoMu17Mu8_IsoMu17leg_RunGH.root  TriggerEff_HNTrilepton_GH  TH2F
 ### MUON_MU8_OR_TKMU8_TRIGGER_GH_HNTRILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNTRILEP_Mu8_OR_TkMu8_RunGH.root TriggerEff_HNTrilepton_GH  TH2F
 ### MUON_MU17_TRIGGER_BCDEF_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_DoubleIsoMu17Mu8_IsoMu17leg_RunBCDEF.root  TriggerEff_HNDilepton_BCDEF  TH2F
-### MUON_MU8_OR_TKMU8_TRIGGER_BCDEF_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_Mu8_OR_TkMu8_RunBCDEF.root TriggerEff_HNDilepton_BCDEF  TH2F
 ### MUON_MU17_TRIGGER_GH_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_DoubleIsoMu17Mu8_IsoMu17leg_RunGH.root  TriggerEff_HNDilepton_GH  TH2F
+### MUON_MU8_OR_TKMU8_TRIGGER_BCDEF_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_Mu8_OR_TkMu8_RunBCDEF.root TriggerEff_HNDilepton_BCDEF  TH2F
 ### MUON_MU8_OR_TKMU8_TRIGGER_GH_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_Mu8_OR_TkMu8_RunGH.root TriggerEff_HNDilepton_GH  TH2F
+### MUON_ISOMU24_TRIGGER_BCDEF_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_IsoMu24_OR_IsoTkMu24_RunBCDEF.root  TriggerEff_HNDilepton_BCDEF  TH2F
+### MUON_ISOMU24_TRIGGER_GH_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_IsoMu24_OR_IsoTkMu24_RunGH.root  TriggerEff_HNDilepton_GH  TH2F
+### MUON_MU23_TRIGGER_BCDEF_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_Mu23_TrkIsoVVL_RunBCDEF.root  TriggerEff_HNDilepton_BCDEF  TH2F
+### MUON_MU23_TRIGGER_GH_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_Mu23_TrkIsoVVL_RunGH.root  TriggerEff_HNDilepton_GH  TH2F
+### MUON_MU8_TRIGGER_BCDEF_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_Mu8_RunBCDEF.root TriggerEff_HNDilepton_BCDEF  TH2F
+### MUON_MU8_TRIGGER_GH_HNDILEP TRIGGERFILEDIR  MuonTriggerEfficiency_HNDILEP_Mu8_RunGH.root TriggerEff_HNDilepton_GH  TH2F
 ### ID_BCDEF_MUON_HN_TRI_TIGHT IDFILEDIR MuonIDSF_TRILEP_RunBCDEF.root abseta_pt_PLOT TH2F
 ### ID_GH_MUON_HN_TRI_TIGHT IDFILEDIR MuonIDSF_TRILEP_RunGH.root abseta_pt_PLOT TH2F
 ### ID_BCDEF_MUON_HN_TIGHT IDFILEDIR MuonIDSF_DILEP_RunBCDEF.root abseta_pt_PLOT TH2F
@@ -48,7 +54,11 @@
 ### ELECTRON_ELE12_TRIGGER_BCDEF TRIGGERFILEDIR ElectronTriggerEfficiency_Ele12_CaloIdL_TrackIdL_IsoVL.root EGamma_Eff TH2F
 ### ELECTRON_ELE23_TRIGGER_GH TRIGGERFILEDIR ElectronTriggerEfficiency_Ele23_CaloIdL_TrackIdL_IsoVL.root EGamma_Eff TH2F
 ### ELECTRON_ELE12_TRIGGER_GH TRIGGERFILEDIR ElectronTriggerEfficiency_Ele12_CaloIdL_TrackIdL_IsoVL.root EGamma_Eff TH2F
-### MUON_Mu3_METREWEIGHT  PILEUPFILEDIR MET_reweight_single_muon.root HLT_Mu3_PFJet40_v_ZPeak_PFMET_data TH1D
-### MUON_Mu8_METREWEIGHT  PILEUPFILEDIR MET_reweight_single_muon.root HLT_Mu8_TrkIsoVVL_v_ZPeak_PFMET_data TH1D
-### MUON_Mu17_METREWEIGHT  PILEUPFILEDIR MET_reweight_single_muon.root  HLT_Mu17_TrkIsoVVL_v_ZPeak_PFMET_data  TH1D
+### MUON_Mu17_VTXREWEIGHT  PILEUPFILEDIR Nvtx_reweight_single_muon.root  HLT_Mu17_TrkIsoVVL_v_ZPeak_Nvtx_data  TH1D
+### MUON_Mu8_VTXREWEIGHT  PILEUPFILEDIR Nvtx_reweight_single_muon.root  HLT_Mu8_TrkIsoVVL_v_ZPeak_Nvtx_data  TH1D
+### MUON_Mu3_VTXREWEIGHT  PILEUPFILEDIR Nvtx_reweight_single_muon.root  HLT_Mu3_PFJet40_v_ZPeak_Nvtx_data  TH1D
+### ELECTRON_El23_VTXREWEIGHT  PILEUPFILEDIR Nvtx_reweight_single_electron.root  HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v_ZPeak_Nvtx_data  TH1D
+### ELECTRON_El17_VTXREWEIGHT  PILEUPFILEDIR Nvtx_reweight_single_electron.root  HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v_ZPeak_Nvtx_data  TH1D
+### ELECTRON_El12_VTXREWEIGHT  PILEUPFILEDIR Nvtx_reweight_single_electron.root  HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v_ZPeak_Nvtx_data  TH1D
+### ELECTRON_El8_VTXREWEIGHT  PILEUPFILEDIR Nvtx_reweight_single_electron.root  HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v_ZPeak_Nvtx_data  TH1D
 #END

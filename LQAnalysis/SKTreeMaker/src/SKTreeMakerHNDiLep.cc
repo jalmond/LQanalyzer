@@ -41,13 +41,16 @@ void SKTreeMakerHNDiLep::ExecuteEvents()throw( LQError ){
   bool _doubleEG =(k_channel.Contains("DoubleEG"));
   bool _doubleMuon =(k_channel.Contains("DoubleMuon"));
   TString analysis_trigger_eg="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
-  TString analysis_trigger_muon="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
-  TString analysis_trigger_tkmuon="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
+  TString analysis_trigger_muon_dz="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
+  TString analysis_trigger_tkmuon_dz="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
+  TString analysis_trigger_muon="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v";
+  TString analysis_trigger_tkmuon="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v";
+
   if(isData && _singleEG && PassTrigger(analysis_trigger_eg)) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
   if(isData && _singleMuon && (PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
   if(isData && _doubleEG && !PassTrigger(analysis_trigger_eg))  throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-  if(isData && _doubleMuon && !(PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-															    
+  if(isData && _doubleMuon && !(PassTrigger(analysis_trigger_muon_dz) || PassTrigger(analysis_trigger_tkmuon_dz) || PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+  
 
   //////////////////////////////////////////////////////
   //////////// Select objetcs

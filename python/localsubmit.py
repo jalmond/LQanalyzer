@@ -601,7 +601,7 @@ output_catversion=os.getenv("CATVERSION")
 iversion=0
 
 
-if "HN" in  sample or "CHT" in sample or "TTToH" in sample:
+if "HeavyNeutrino" in sample or "Majorana" in sample or "HN" in  sample or "CHT" in sample or "TTToH" in sample:
     datasetfile="datasets_snu_sig_CAT_mc_"
 else:
     datasetfile="datasets_snu_nonsig_CAT_mc_"
@@ -1307,16 +1307,20 @@ while not JobSuccess:
                 if "Processing entry" in line:
                     if "LQCycleController" not in line:
                         entries = line.split()
-                        if len(entries)> 6:                        
+                        if len(entries)> 7:                        
                             num = entries[7]
+                            lineok=False
+                            if "/" in num:
+                                lineok=True
                             s = num.replace("/", " ")
                             event_split = s.split()
                             if len(event_split) < 2:
-                                print "Error [2002] " + event_split 
+                                print "Warning [2002] " + s
                                 print line
                                 os.system("cp " + local_sub_dir + '/outlog.txt ~/error_log_'+str(array_batchjobs[i-1]))
-                            nevent_processed_i = float(event_split[0])
-                            nevents_total_i= float(event_split[1])
+                            if lineok:
+                                nevent_processed_i = float(event_split[0])
+                                nevents_total_i= float(event_split[1])
             nevent_processed+=nevent_processed_i                
             nevents_total+=nevents_total_i
 

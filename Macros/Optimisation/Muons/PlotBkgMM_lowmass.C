@@ -25,7 +25,7 @@ void FixUnderFlows(TH1* hist) ;
 void FixOverUnderFlows(TH1* hist, float max_x) ;
 TH1* MakeSumHist2(THStack* thestack);
 
-void PlotBkgMM(){
+void PlotBkgMM_lowmass(){
  
   
   setTDRStyle();
@@ -46,7 +46,7 @@ void PlotBkgMM(){
   legend->SetBorderSize(0);
   legend->SetTextSize(0.04);
 
-  TString path= "/afs/cern.ch/work/j/jalmond/CAT/HNDiMuonOptimisation/periodBtoH/";
+  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiMuonOptimisation/periodBtoH/";
   TFile * fnp = new TFile(path+"HNDiMuonOptimisation_DoubleMuon_SKnonprompt_hndilep_cat_v8-0-7.root");
   TFile * fwz = new TFile(path+"HNDiMuonOptimisation_MC_trilep_cat_v8-0-7.root");
   

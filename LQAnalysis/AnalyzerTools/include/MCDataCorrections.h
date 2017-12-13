@@ -47,7 +47,10 @@ class MCDataCorrections{
 
 
   double GetMETReweight(TString trigname, double met);
+  double GetVtxReweight(TString trigname, int Nvtx);
 
+
+  TH1D* GetCorrectionHist1D(TString label);
   TH2F* GetCorrectionHist(TString label);
   bool CheckCorrectionHist(TString label);
   TGraphAsymmErrors* GetCorrectionGraph(TString label);
@@ -81,8 +84,14 @@ class MCDataCorrections{
 
   double TriggerEfficiencyLegByLeg(std::vector<snu::KElectron> el, TString elid, std::vector<snu::KMuon> mu, TString muid, int TriggerCategory, int DataOrMC, int direction=0);
   double TriggerEfficiencyLegByLegPeriodDependant(std::vector<snu::KElectron> el, TString elid, std::vector<snu::KMuon> mu, TString muid, int TriggerCategory, int catperiod, int DataOrMC, int direction=0);
+
+  double TriggerEfficiency_DiMuon_passing_DoubleMuonOrSingleTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, TString leg3, TString muid, int DataOrMC, int catperiod, int direction=0);
+  double TriggerEfficiency_DiElectron_passing_DoubleElectronOrSingleTrigger(snu::KElectron el1, snu::KElectron el2, TString leg1, TString leg2, TString leg3, TString muid, int DataOrMC, int catperiod, int direction=0);
+  double TriggerEfficiency_EMu_passing_SingleLeptonTrigger(snu::KMuon mu, snu::KElectron el, TString leg1, TString leg2, TString muid, TString elid, int DataOrMC, int catperiod, int direction=0);
+
   double TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, TString muid, int DataOrMC, int catperiod, int direction=0);
   double TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger(snu::KElectron el1, snu::KElectron el2, TString leg1, TString leg2, TString elid, int DataOrMC, int catperiod, int direction=0);
+  double TriggerEfficiency_EMu_passing_EMuTrigger(snu::KMuon mu1, snu::KElectron el1, TString leg1, TString leg2, TString muid, TString elid, int DataOrMC, int catperiod, int direction=0);
   
   
 
@@ -103,6 +112,8 @@ class MCDataCorrections{
   double k_period;
 
   std::map<TString, TH2F*>  CorrectionMap;
+  std::map<TString, TH1D*>  CorrectionMap1D;
+
   std::map<TString, TGraphAsymmErrors*>  CorrectionMapGraph;
   std::map<float, std::vector<float>* > deg_etaptmap_leg1;
   std::map<float, std::vector<float>* > deg_etaptmap_leg2;

@@ -277,6 +277,12 @@ float HNCommonLeptonFakes::getPromptRate(float val, float eta, TString tag){
 
   float eff_prompt=1.;
   if (tag == "") return 1.;
+  if(tag =="tmp"){
+    if (val < 20) return 0.65;
+    else if (val < 30) return 0.75;
+    else if (val < 40) return 0.85;
+    else return 0.9;
+  }
 
   if(fabs(eta) >= 2.5) eta = 2.4;
 

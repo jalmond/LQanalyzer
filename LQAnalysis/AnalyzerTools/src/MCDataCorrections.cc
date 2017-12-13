@@ -28,6 +28,7 @@ MCDataCorrections::MCDataCorrections() {
 
 
   CorrectionMap.clear();
+  CorrectionMap1D.clear();
   CorrectionMapGraph.clear();
   
   string pileupdir = getenv("PILEUPFILEDIR");
@@ -194,6 +195,21 @@ void MCDataCorrections::FillCorrectionHist(string label, string dirname, string 
     origDir->cd();
   }
 
+
+  if(TString(histtype).Contains("TH1")) {
+    //cout << "[MET reweight]" << endl;
+    //cout << "TH1 if in" << endl;
+    TFile *infile_sf = TFile::Open((string(getenv(dirname.c_str()))+ "/" + filename).c_str());
+    CheckFile(infile_sf);
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    TH1D* tmp = (TH1D*)infile_sf->Get(histsname.c_str())->Clone();
+    CorrectionMap1D[label] = tmp;
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
+
   if(!TString(histtype).Contains("TH2")) return;
   TFile *infile_sf = TFile::Open((string(getenv(dirname.c_str()))+ "/" + filename).c_str());
   CheckFile(infile_sf);
@@ -245,21 +261,91 @@ void MCDataCorrections::FillCorrectionHist(string label, string dirname, string 
 
 }
 
+
 double MCDataCorrections::GetMETReweight(TString trigname, double imet){
-  
+  //cout << "trigname : " << trigname << ", corr_isdata : " << corr_isdata << endl;
   if(corr_isdata) return 1.;
   if(trigname.Contains("HLT_Mu3")) {
-    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT"))  return GetCorrectionHist("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+      return GetCorrectionHist1D("MUON_Mu3_METREWEIGHT")->GetBinContent(bin);
+    }
   }
   if(trigname.Contains("HLT_Mu8")) {
-    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT"))  return GetCorrectionHist("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+    if(CheckCorrectionHist("MUON_Mu8_METREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu8_METREWEIGHT")->FindBin(imet);
+      return GetCorrectionHist1D("MUON_Mu8_METREWEIGHT")->GetBinContent(bin);
+    }
   }
   if(trigname.Contains("HLT_Mu17")) {
-    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT"))  return GetCorrectionHist("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+    if(CheckCorrectionHist("MUON_Mu17_METREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu17_METREWEIGHT")->FindBin(imet);
+      return GetCorrectionHist1D("MUON_Mu17_METREWEIGHT")->GetBinContent(bin);
+    }
   }
 
   return 1.;
 }
+
+double MCDataCorrections::GetVtxReweight(TString trigname, int Nvtx){
+  //cout << "trigname : " << trigname << ", corr_isdata : " << corr_isdata << endl;
+  if(corr_isdata) return 1.;
+  //for muon
+  if(trigname.Contains("HLT_Mu3")) {
+    if(CheckCorrectionHist("MUON_Mu3_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu3_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx > 50) bin = GetCorrectionHist1D("MUON_Mu3_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("MUON_Mu3_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  if(trigname.Contains("HLT_Mu8")) {
+    if(CheckCorrectionHist("MUON_Mu8_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu8_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx >50) bin= GetCorrectionHist1D("MUON_Mu8_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("MUON_Mu8_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  if(trigname.Contains("HLT_Mu17")) {
+    if(CheckCorrectionHist("MUON_Mu17_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu17_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx >50) bin= GetCorrectionHist1D("MUON_Mu17_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("MUON_Mu17_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  //for electron
+  if(trigname.Contains("HLT_Ele23")) {
+    if(CheckCorrectionHist("ELECTRON_El23_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("ELECTRON_El23_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx > 50) bin = GetCorrectionHist1D("ELECTRON_El23_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("ELECTRON_El23_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  if(trigname.Contains("HLT_Ele17")) {
+    if(CheckCorrectionHist("ELECTRON_El17_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("ELECTRON_El17_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx > 50) bin = GetCorrectionHist1D("ELECTRON_El17_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("ELECTRON_El17_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  if(trigname.Contains("HLT_Ele12")) {
+    if(CheckCorrectionHist("ELECTRON_El12_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("ELECTRON_El12_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx > 50) bin = GetCorrectionHist1D("ELECTRON_El12_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("ELECTRON_El12_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  if(trigname.Contains("HLT_Ele8")) {
+    if(CheckCorrectionHist("ELECTRON_El8_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("ELECTRON_El8_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx > 50) bin = GetCorrectionHist1D("ELECTRON_El8_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("ELECTRON_El8_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+
+  //no histograms found
+  return 1.;
+}
+
 
 double MCDataCorrections::MuonTrackingEffScaleFactor(vector<snu::KMuon> mu){
   float sf= 1.;
@@ -708,6 +794,11 @@ double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<s
   //==== - HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
   //==== ==> Leg1 : Ele23_CaloIdL_TrackIdL_IsoVL
   //====     Leg2 : Ele12_CaloIdL_TrackIdL_IsoVL
+  //==== 3) TriggerCategory = 2
+  //==== - HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_(DZ_)v
+  //==== - HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_(DZ_)v
+  //==== ==> Leg1 : Mu8(23)_TrkIsoVVL
+  //====     Leg2 : Ele23(8)_CaloIdL_TrackIdL_IsoVL
 
   if(TriggerCategory==0){
 
@@ -761,13 +852,216 @@ double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<s
     return 1.-faileff;
 
   }
+  else if(TriggerCategory==2){
 
+    if( !(mu.size()==1 && el.size()==1)  ) return 1.;
+
+    double faileff(1.);
+
+    snu::KMuon mu1 = mu.at(0);
+    snu::KElectron el1 = el.at(0);
+
+    double mu23ele8eff = TriggerEfficiency_EMu_passing_EMuTrigger(mu1, el1, "MU23", "ELE8", muid, elid, DataOrMC, catperiod, direction);
+    double mu8ele23eff = TriggerEfficiency_EMu_passing_EMuTrigger(mu1, el1, "MU8", "ELE23", muid, elid, DataOrMC, catperiod, direction);
+
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] mu23ele8eff = " << mu23ele8eff << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] mu8ele23eff = " << mu8ele23eff << endl;
+
+    faileff *= (1.-mu23ele8eff);
+    faileff *= (1.-mu8ele23eff);
+
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] faileff = " << faileff << endl;
+
+    bool debug(false);
+    if(debug){
+      cout << "Direction = " << direction << "n_el " << el.size() << endl;
+    }
+
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] 1.-faileff = " << 1.-faileff << endl;
+
+    return 1.-faileff;
+
+
+  }
+  else if(TriggerCategory==3){
+
+    if(mu.size()<2) return 1.;
+  
+    TString leg1 = "MU17";
+    TString leg2 = "MU8_OR_TKMU8";
+    
+    
+    double faileff(1.);
+    
+    for(unsigned int i=0; i<mu.size()-1; i++){
+      snu::KMuon mu1 = mu.at(i);
+      for(unsigned j=i+1; j<mu.size(); j++){
+	      snu::KMuon mu2 = mu.at(j);
+        double dimueff = TriggerEfficiency_DiMuon_passing_DoubleMuonOrSingleTrigger(mu1, mu2, "MU17", "MU8_OR_TKMU8", "ISOMU24", muid, DataOrMC, catperiod, direction);
+
+        faileff *= (1.-dimueff);
+      }
+    }
+    bool debug(false);
+    if(debug){
+      cout << "Direction = " << direction << "n_el " << el.size() << endl;
+    }
+    return 1.-faileff;
+
+  }
+  else if(TriggerCategory==4){
+
+    if(el.size()<2) return 1.;
+
+
+
+    double faileff(1.);
+
+    for(unsigned int i=0; i<el.size()-1; i++){
+      snu::KElectron el1 = el.at(i);
+      for(unsigned j=i+1; j<el.size(); j++){
+        snu::KElectron el2 = el.at(j);
+        double dieleff = TriggerEfficiency_DiElectron_passing_DoubleElectronOrSingleTrigger(el1, el2, "ELE23", "ELE12", "ELE27",elid, DataOrMC, catperiod, direction);
+
+        faileff *= (1.-dieleff);
+      }
+    }
+    bool debug(false);
+    if(debug){
+      cout << "Direction = " << direction << "n_el " << el.size() << endl;
+    }
+    return 1.-faileff;
+
+  }
+  else if(TriggerCategory==5){
+
+    if( !(mu.size()==1 && el.size()==1)  ) return 1.;
+
+    double faileff(1.);
+
+    snu::KMuon mu1 = mu.at(0);
+    snu::KElectron el1 = el.at(0);
+
+    double mu23ele8eff = TriggerEfficiency_EMu_passing_EMuTrigger(mu1, el1, "MU23", "ELE8", muid, elid, DataOrMC, catperiod, direction);
+    double mu8ele23eff = TriggerEfficiency_EMu_passing_EMuTrigger(mu1, el1, "MU8", "ELE23", muid, elid, DataOrMC, catperiod, direction);
+    double isomu24ORele27_eff = TriggerEfficiency_EMu_passing_SingleLeptonTrigger(mu1, el1, "ISOMU24", "ELE23", muid, elid, DataOrMC, catperiod, direction); //FIXME change ELE23 to ELE27
+
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] mu23ele8eff = " << mu23ele8eff << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] mu8ele23eff = " << mu8ele23eff << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] isomu24ORele27_eff = " << isomu24ORele27_eff << endl;
+
+    faileff *= (1.-mu23ele8eff);
+    faileff *= (1.-mu8ele23eff);
+    faileff *= (1.-isomu24ORele27_eff);
+
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] faileff = " << faileff << endl;
+
+    bool debug(false);
+    if(debug){
+      cout << "Direction = " << direction << "n_el " << el.size() << endl;
+    }
+
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] 1.-faileff = " << 1.-faileff << endl;
+
+    return 1.-faileff;
+
+
+  }
   else{
     return 1.;
   }
 
 }
+double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonOrSingleTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, TString leg3, TString muid, int DataOrMC, int catperiod, int direction){
 
+  TString labelkey = "";
+  if(muid=="MUON_HN_TIGHT"){
+    labelkey = "HNDILEP";
+  }
+  else if(muid=="MUON_HN_TRI_TIGHT"){
+    labelkey = "HNTRILEP";
+  }
+  else{
+    cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonOrSingleTrigger] muid should be DILEP or TRILEP (or you should add them)" << endl;
+    return 0.;
+  }
+
+  TString tag = "";
+  if(catperiod < 6) tag = "_BCDEF";
+  else tag = "_GH";
+
+  TString sample="";
+  if(DataOrMC==0) sample = "_Data";
+  else sample = "_MC";
+
+  double eta1 = abs(mu1.Eta());
+  double pt1 = mu1.MiniAODPt();
+  if(pt1>=120.) pt1 = 119.;
+  if(pt1<10.) pt1 = 10.1;
+  double eta2 = abs(mu2.Eta());
+  double pt2 = mu2.MiniAODPt();
+  if(pt2>120.) pt2 = 119.;
+  if(pt2<10.) pt2 = 10.1;
+  
+  if(! (leg1=="MU17" && leg2=="MU8_OR_TKMU8" && leg3=="ISOMU24")) return 1.;
+
+  TH2F *hist_leg1 = GetCorrectionHist("MUON_"+leg1+"_TRIGGER"+tag+"_"+labelkey+sample);
+  TH2F *hist_leg2 = GetCorrectionHist("MUON_"+leg2+"_TRIGGER"+tag+"_"+labelkey+sample);
+  int bin_11 = hist_leg1->FindBin(eta1,pt1);
+  int bin_22 = hist_leg2->FindBin(eta2,pt2);
+
+  double eff_mu1leg1 = hist_leg1->GetBinContent( bin_11 );
+  double eff_mu2leg2 = hist_leg2->GetBinContent( bin_22 );
+  double eff_mu1leg1_err = hist_leg1->GetBinError( bin_11 );
+  double eff_mu2leg2_err = hist_leg2->GetBinError( bin_22 );
+
+  int bin_12 = hist_leg2->FindBin(eta1,pt1);
+  int bin_21 = hist_leg1->FindBin(eta2,pt2);
+
+  double eff_mu1leg2 = hist_leg2->GetBinContent( bin_12 );
+  double eff_mu2leg1 = hist_leg1->GetBinContent( bin_21 );
+  double eff_mu1leg2_err = hist_leg2->GetBinError( bin_12 );
+  double eff_mu2leg1_err = hist_leg1->GetBinError( bin_21 );
+
+  eff_mu1leg1 += 1.*direction*eff_mu1leg1_err;
+  eff_mu2leg2 += 1.*direction*eff_mu2leg2_err;
+  eff_mu1leg2 += 1.*direction*eff_mu1leg2_err;
+  eff_mu2leg1 += 1.*direction*eff_mu2leg1_err;
+
+  if(pt1 < 20) eff_mu1leg1 = 1.;
+  if(pt1 < 10) eff_mu1leg2 = 1.;
+  if(pt2 < 20) eff_mu2leg1 = 1.;
+  if(pt2 < 10) eff_mu2leg2 = 1.;
+  
+
+  /// single mu  trigger  //// FIX "MUON_"+leg1+"_TRIGGER"+tag+"_"+labelkey+sample
+
+  TH2F *hist_Iso = GetCorrectionHist("MUON_"+leg3+"_TRIGGER"+tag+"_"+labelkey+sample);
+  int bin_iso_1 = hist_Iso->FindBin(eta1,pt1);
+  int bin_iso_2 = hist_Iso->FindBin(eta2,pt2);
+
+  double eff_mu1_iso = hist_Iso->GetBinContent( bin_iso_1 );
+  double eff_mu2_iso = hist_Iso->GetBinContent( bin_iso_2 );
+  double eff_mu1_iso_err = hist_Iso->GetBinError( bin_iso_1 );
+  double eff_mu2_iso_err = hist_Iso->GetBinError( bin_iso_2 );
+
+  eff_mu1_iso += 1.*direction*eff_mu1_iso_err;
+  eff_mu2_iso += 1.*direction*eff_mu2_iso_err;
+
+  if(pt1 < 26) eff_mu1_iso = 1.;
+  if(pt2 < 26) eff_mu1_iso = 1.;
+
+  
+  /// Prob to pass single = eff_mu1_iso + eff_mu2_iso
+  double eff_singlemu= eff_mu1_iso + eff_mu2_iso * (1. - eff_mu1_iso);
+  double eff_doublemu = eff_mu1leg2*eff_mu2leg1 + (1- eff_mu1leg2*eff_mu2leg1)*(eff_mu1leg1*eff_mu2leg2);
+  double eff =  eff_singlemu + (1-eff_singlemu)* (eff_doublemu)*1.;
+  
+  return eff;
+
+  
+  
+}
 double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, TString muid, int DataOrMC, int catperiod, int direction){
 
   TString labelkey = "";
@@ -834,6 +1128,7 @@ double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu
     eff_mu1leg2 += 1.*direction*eff_mu1leg2_err;
     eff_mu2leg1 += 1.*direction*eff_mu2leg1_err;
 
+
     double eff = 1.-(1.-eff_mu1leg1*eff_mu2leg2)*(1.-eff_mu1leg2*eff_mu2leg1); 
 
     return eff;
@@ -844,6 +1139,103 @@ double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu
     return 1.;
   }
 }
+
+double MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronOrSingleTrigger(snu::KElectron el1, snu::KElectron el2, TString leg1, TString leg2, TString leg3, TString elid, int DataOrMC, int catperiod, int direction){
+
+  TString labelkey = ""; //When we have multiple ids..                                                                                                                                                                                                                                                                                   
+
+  TString tag = "";
+  if(catperiod < 6) tag = "_BCDEF";
+  else tag = "_GH";
+
+  TString sample="";
+  //if(DataOrMC==0) sample = "_Data";                                                                                                                                                                                                                                                                                                    
+  //else sample = "_MC";                                                                                                                                                                                                                                                                                                                 
+  if(DataOrMC==0) sample = "Data"; // if labelkey != "", add _                                                                                                                                                                                                                                                                           
+  else sample = "MC";
+
+  double eta1 = el1.SCEta();
+  if(eta1<-2.5) eta1 = -2.4;
+  if(eta1>=2.5) eta1 = 2.4;
+  double pt1 = el1.Pt();
+  if(pt1>=500.) pt1 = 499.;
+  if(pt1 <10.) pt1 = 10.1;
+  double eta2 = el2.SCEta();
+  if(eta2<-2.5) eta2 = -2.4;
+  if(eta2>=2.5) eta2 = 2.4;
+  double pt2 = el2.Pt();
+  if(pt2>=500.) pt2 = 499.;
+  if(pt2 <10.) pt2 = 10.1;
+
+
+  if( !( leg1=="ELE23" && leg2=="ELE12" && leg3 =="ELE27")) return 1.;
+
+  TH2F *hist_leg1 = GetCorrectionHist("ELECTRON_"+leg1+"_TRIGGER"+tag+"_"+labelkey+sample);
+  TH2F *hist_leg2 = GetCorrectionHist("ELECTRON_"+leg2+"_TRIGGER"+tag+"_"+labelkey+sample);
+
+  int bin_11 = hist_leg1->FindBin(eta1,pt1);
+  int bin_22 = hist_leg2->FindBin(eta2,pt2);
+
+  double eff_el1leg1 = hist_leg1->GetBinContent( bin_11 );
+  double eff_el2leg2 = hist_leg2->GetBinContent( bin_22 );
+  double eff_el1leg1_err = hist_leg1->GetBinError( bin_11 );
+  double eff_el2leg2_err = hist_leg2->GetBinError( bin_22 );
+
+  int bin_12 = hist_leg2->FindBin(eta1,pt1);
+  int bin_21 = hist_leg1->FindBin(eta2,pt2);
+
+  double eff_el1leg2 = hist_leg2->GetBinContent( bin_12 );
+  double eff_el2leg1 = hist_leg1->GetBinContent( bin_21 );
+  double eff_el1leg2_err = hist_leg2->GetBinError( bin_12 );
+  double eff_el2leg1_err = hist_leg1->GetBinError( bin_21 );
+
+  //cout << "[MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger] pt1 = " << pt1 << ", eta1 = " << eta1 << endl;                                                                                                                                                                                            
+  //cout << "[MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger] => " << leg1 << " : " << eff_el1leg1 << endl;                                                                                                                                                                                             
+  //cout << "[MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger] => " << leg2 << " : " << eff_el1leg2 << endl;                                                                                                                                                                                             
+  //cout << "[MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger] pt2 = " << pt2 << ", eta2 = " << eta2 << endl;                                                                                                                                                                                            
+  //cout << "[MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger] => " << leg1 << " : " << eff_el2leg1 << endl;                                                                                                                                                                                             
+  //cout << "[MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger] => " << leg2 << " : " << eff_el2leg2 << endl;                                                                                                                                                                                             
+
+  eff_el1leg1 += 1.*direction*eff_el1leg1_err;
+  eff_el2leg2 += 1.*direction*eff_el2leg2_err;
+  eff_el1leg2 += 1.*direction*eff_el1leg2_err;
+  eff_el2leg1 += 1.*direction*eff_el2leg1_err;
+
+
+  if(pt1 < 25) eff_el1leg1 = 1.;
+  if(pt1 < 15) eff_el1leg2 = 1.;
+  if(pt2 < 25) eff_el2leg1 = 1.;
+  if(pt2 < 15) eff_el2leg2 = 1.;
+
+  /// single el  trigger  //// FIX "ELECTRON_"+leg1+"_TRIGGER"+tag+"_"+labelkey+sample);
+
+  TH2F *hist_Gsf = GetCorrectionHist("ELECTRON_"+leg1+"_TRIGGER"+tag+"_"+labelkey+sample);
+  int bin_gsf_1 = hist_Gsf->FindBin(eta1,pt1);
+  int bin_gsf_2 = hist_Gsf->FindBin(eta2,pt2);
+
+  double eff_el1_gsf = hist_Gsf->GetBinContent( bin_gsf_1 );
+  double eff_el2_gsf = hist_Gsf->GetBinContent( bin_gsf_2 );
+  double eff_el1_gsf_err = hist_Gsf->GetBinError( bin_gsf_1 );
+  double eff_el2_gsf_err = hist_Gsf->GetBinError( bin_gsf_2 );
+
+  eff_el1_gsf += 1.*direction*eff_el1_gsf_err;
+  eff_el2_gsf += 1.*direction*eff_el2_gsf_err;
+
+  if(pt1 < 29) eff_el1_gsf = 1.;
+  if(pt2 < 29) eff_el1_gsf = 1.;
+
+
+  /// Prob to pass single = eff_mu1_gsf + eff_mu2_gsf                                                                                                                                                                                                                                                                                    
+  double eff_singleel= eff_el1_gsf + eff_el2_gsf * (1. - eff_el1_gsf);
+  double eff_doubleel = eff_el1leg2*eff_el2leg1 + (1- eff_el1leg2*eff_el2leg1)*(eff_el1leg1*eff_el2leg2);
+  double eff =  eff_singleel + (1-eff_singleel)* (eff_doubleel)*1.;
+
+  return eff;
+
+
+
+}
+
 
 double MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger(snu::KElectron el1, snu::KElectron el2, TString leg1, TString leg2, TString elid, int DataOrMC, int catperiod, int direction){
 
@@ -922,7 +1314,162 @@ double MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTri
   }
 }
 
+double MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger(snu::KMuon mu, snu::KElectron el, TString leg1, TString leg2, TString muid, TString elid, int DataOrMC, int catperiod, int direction){
 
+  TString labelkey_mu = "";
+  if(muid=="MUON_HN_TIGHT"){
+    labelkey_mu = "HNDILEP";
+  }
+  else if(muid=="MUON_HN_TRI_TIGHT"){
+    labelkey_mu = "HNTRILEP";
+  }
+  else{
+    cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] muid should be DILEP or TRILEP (or you should add them)" << endl;
+    return 0.;
+  }
+
+  TString labelkey_el = "";
+
+  TString tag = "";
+  if(catperiod < 6) tag = "_BCDEF";
+  else tag = "_GH";
+
+  TString sample="";
+  //if(DataOrMC==0) sample = "_Data";
+  //else sample = "_MC";
+  if(DataOrMC==0) sample = "Data"; // if labelkey != "", add _
+  else sample = "MC";
+
+  double eta1 = abs(mu.Eta());
+  double pt1 = mu.MiniAODPt();
+  if(pt1>=120.) pt1 = 119.;
+  if(pt1<10.) pt1 = 10.1;
+
+  double eta2 = el.SCEta();
+  if(eta2<-2.5) eta2 = -2.4;
+  if(eta2>=2.5) eta2 = 2.4;
+  double pt2 = el.Pt();
+  if(pt2>=500.) pt2 = 499.;
+  if(pt2 <10.) pt2 = 10.1;
+
+  //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] tag = " << tag << ", sample = " << sample << endl;
+  //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] leg1 = " << leg1 << ", leg2 = " << leg2 << endl;
+
+  if(leg2=="ELE8") leg2 = "ELE12"; //FIXME ELE12 to ELE8
+
+  if( (leg1=="MU23" && leg2=="ELE12") || (leg1=="MU8" && leg2=="ELE23") ){ //FIXME ELE12 to ELE8
+
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] MUON_"+leg1+"_TRIGGER"+tag+"_"+labelkey_mu+"_"+sample << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] ELECTRON_"+leg2+"_TRIGGER"+tag+"_"+labelkey_el+sample << endl;
+
+    TH2F *hist_leg1 = GetCorrectionHist("MUON_"+leg1+"_TRIGGER"+tag+"_"+labelkey_mu+"_"+sample);
+    TH2F *hist_leg2 = GetCorrectionHist("ELECTRON_"+leg2+"_TRIGGER"+tag+"_"+labelkey_el+sample);
+
+    int bin_11 = hist_leg1->FindBin(eta1,pt1);
+    int bin_22 = hist_leg2->FindBin(eta2,pt2);
+
+    double eff_muleg1 = hist_leg1->GetBinContent( bin_11 );
+    double eff_elleg2 = hist_leg2->GetBinContent( bin_22 );
+    double eff_muleg1_err = hist_leg1->GetBinError( bin_11 );
+    double eff_elleg2_err = hist_leg2->GetBinError( bin_22 );
+
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] pt1 = " << pt1 << ", eta1 = " << eta1 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] => " << leg1 << " : " << eff_muleg1 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] pt2 = " << pt2 << ", eta2 = " << eta2 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] => " << leg2 << " : " << eff_elleg2 << endl;
+
+    eff_muleg1 += 1.*direction*eff_muleg1_err;
+    eff_elleg2 += 1.*direction*eff_elleg2_err;
+
+    double eff = 1.-(1.-eff_muleg1*eff_elleg2);
+
+    return eff;
+
+  }
+  else{
+    return 1.;
+  }
+
+}
+
+double MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger(snu::KMuon mu, snu::KElectron el, TString leg1, TString leg2, TString muid, TString elid, int DataOrMC, int catperiod, int direction){
+
+  TString labelkey_mu = "";
+  if(muid=="MUON_HN_TIGHT"){
+    labelkey_mu = "HNDILEP";
+  }
+  else if(muid=="MUON_HN_TRI_TIGHT"){
+    labelkey_mu = "HNTRILEP";
+  }
+  else{
+    cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger] muid should be DILEP or TRILEP (or you should add them)" << endl;
+    return 0.;
+  }
+
+  TString labelkey_el = "";
+
+  TString tag = "";
+  if(catperiod < 6) tag = "_BCDEF";
+  else tag = "_GH";
+
+  TString sample="";
+  //if(DataOrMC==0) sample = "_Data";
+  //else sample = "_MC";
+  if(DataOrMC==0) sample = "Data"; // if labelkey != "", add _
+  else sample = "MC";
+
+  double eta1 = abs(mu.Eta());
+  double pt1 = mu.MiniAODPt();
+  if(pt1>=120.) pt1 = 119.;
+  if(pt1<10.) pt1 = 10.1;
+
+  double eta2 = el.SCEta();
+  if(eta2<-2.5) eta2 = -2.4;
+  if(eta2>=2.5) eta2 = 2.4;
+  double pt2 = el.Pt();
+  if(pt2>=500.) pt2 = 499.;
+  if(pt2 <10.) pt2 = 10.1;
+
+  //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger] tag = " << tag << ", sample = " << sample << endl;
+  //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger] leg1 = " << leg1 << ", leg2 = " << leg2 << endl;
+
+  if(leg2=="ELE27") leg2 = "ELE23"; //FIXME ELE23 to ELE27
+
+  if( (leg1=="ISOMU24" && leg2=="ELE23") ){ //FIXME ELE23 to ELE27
+
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger] MUON_"+leg1+"_TRIGGER"+tag+"_"+labelkey_mu+"_"+sample << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger] ELECTRON_"+leg2+"_TRIGGER"+tag+"_"+labelkey_el+sample << endl;
+
+    TH2F *hist_leg1 = GetCorrectionHist("MUON_"+leg1+"_TRIGGER"+tag+"_"+labelkey_mu+"_"+sample);
+    TH2F *hist_leg2 = GetCorrectionHist("ELECTRON_"+leg2+"_TRIGGER"+tag+"_"+labelkey_el+sample);
+
+    int bin_11 = hist_leg1->FindBin(eta1,pt1);
+    int bin_22 = hist_leg2->FindBin(eta2,pt2);
+
+    double eff_muleg1 = hist_leg1->GetBinContent( bin_11 );
+    double eff_elleg2 = hist_leg2->GetBinContent( bin_22 );
+    double eff_muleg1_err = hist_leg1->GetBinError( bin_11 );
+    double eff_elleg2_err = hist_leg2->GetBinError( bin_22 );
+
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger] pt1 = " << pt1 << ", eta1 = " << eta1 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger] => " << leg1 << " : " << eff_muleg1 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger] pt2 = " << pt2 << ", eta2 = " << eta2 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger] => " << leg2 << " : " << eff_elleg2 << endl;
+
+    eff_muleg1 += 1.*direction*eff_muleg1_err;
+    eff_elleg2 += 1.*direction*eff_elleg2_err;
+
+    double eff = 1.-(1.-eff_muleg1)*(1.-eff_elleg2);
+    //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_SingleLeptonTrigger] eff = " << eff << endl;
+
+    return eff;
+
+  }
+  else{
+    return 1.;
+  }
+
+}
 
 double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectron> el, int sys){
   float sf= 1.;
@@ -941,15 +1488,14 @@ double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectr
     if(eleta>=2.5) eleta = 2.4;
     if(elpt>=500.) elpt= 499.;
     if(elpt <10.) elpt= 11;
-    float unc = 0.02; //// Check this
     
     if(CheckCorrectionHist("ID_" + elid)){
-      int bin =  GetCorrectionHist("ID_" + elid)->FindBin(itel->SCEta(), elpt);
-      sf *= GetCorrectionHist("ID_" + elid)->GetBinContent(bin);
-      float err =  GetCorrectionHist("EL_RECO")->GetBinError(bin);
-      err = sqrt (pow(err, 2.) + pow(unc, 2.));
-      if(sys == 1)sf *= (1. + err);
-      if(sys == -1)sf *= (1. - err);
+      TH2F *this_hist = GetCorrectionHist("ID_" + elid);
+      int this_bin = this_hist->FindBin(eleta, elpt);
+      double this_sf = this_hist->GetBinContent(this_bin);
+      double this_sf_err = this_hist->GetBinError(this_bin);
+
+     	sf *= ( this_sf + double(sys)*this_sf_err );
     }
   }
 
@@ -1020,7 +1566,11 @@ void MCDataCorrections::CheckFile(TFile* file){
 
 bool MCDataCorrections::CheckCorrectionHist(TString label){
   map<TString, TH2F*>::iterator  mapit = CorrectionMap.find(label);
+  map<TString, TH1D*>::iterator  mapit1D = CorrectionMap1D.find(label);
   if (mapit!= CorrectionMap.end()){
+    return true;
+  }
+  else if (mapit1D!= CorrectionMap1D.end()){
     return true;
   }
   else return false;
@@ -1054,6 +1604,15 @@ TH2F* MCDataCorrections::GetCorrectionHist(TString label){
 }
 
 
+TH1D* MCDataCorrections::GetCorrectionHist1D(TString label){
+  map<TString, TH1D*>::iterator mapit = CorrectionMap1D.find(label);
+  if (mapit!= CorrectionMap1D.end()){
+    return mapit->second;
+  }
+  else{
+    exit(0);
+  }
+}
 
 void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<snu::KTruth> truth){
   

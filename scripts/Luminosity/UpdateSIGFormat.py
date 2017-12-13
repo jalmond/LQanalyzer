@@ -52,8 +52,8 @@ for r in arr_master:
     if isnonsig:
         if "SKHN" in r:
             isnonsig=False
-    
-    if "HN" in r and not isnonsig  or "TTTo" in rsplit[0] or "CHToCB" in rsplit[0]:
+
+    if "Majorana" in r or "HeavyNeutrino" in r or "HN" in r and not isnonsig  or "TTTo" in rsplit[0] or "CHToCB" in rsplit[0]:
         sig=True
         for r2 in arr_sig:
             r2split = r2.split()
