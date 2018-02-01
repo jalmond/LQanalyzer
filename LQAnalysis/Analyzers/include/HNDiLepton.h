@@ -30,7 +30,7 @@ class HNDiLepton : public AnalyzerCore {
 
 
   void GetOptimisationID( std::vector<snu::KMuon> muons_veto, std::vector<snu::KElectron> electrons,std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, int nbjet_m, float ll_weight, std::vector<TString> trig,  float pt1, float pt2);
-  void FillMCFakes(TString label,vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,   std::vector<TString> trig, float ll_weight);
+  void FillMCFakes(TString label,vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,   std::vector<TString> trig, float ll_weight, TString looseid, TString tightid);
 
   void FillPreselection(int nfake, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,  float ll_weight, std::vector<TString> trig,  float pt1, float pt2);
   
@@ -50,6 +50,8 @@ class HNDiLepton : public AnalyzerCore {
 	
   void FillLowMass(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets, int nbjet_m, float ll_weight, std::vector<TString> trig , float pt1, float pt2);		 
 
+  void FillJets(TString lab, vector<snu::KJet> jets, std::vector<snu::KMuon> muons, float w);
+  void FillJets(TString lab, vector<snu::KJet> jets, std::vector<snu::KElectron> electrons, float w);
   void FillHighMass(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets, int nbjet_m,float ll_weight, std::vector<TString> trig,float pt1, float pt2);		 
 
   void FillLowMassBins(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,  int nbjet_m, float ll_weight , std::vector<TString> trig,float pt1, float pt2);

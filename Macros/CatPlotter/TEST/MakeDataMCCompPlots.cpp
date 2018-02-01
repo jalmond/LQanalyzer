@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus102.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus022.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl;
   cout << "Local directory = ~/CATAnalyzerPlots/" + path +  "/histograms/" + histdir  << endl;
@@ -173,39 +173,6 @@ int MakePlots(string hist) {
 
 vector<TH1*> hsig ;
 float int_bkg = hup->Integral()/2.; 
-TFile* file_sig0 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/2017-11-13/HNDiLepton_HNMuMu_40_cat_v8-0-7.root")); 
-TH1* hsig0 = dynamic_cast<TH1*> ((file_sig0->Get(name.c_str()))->Clone()); 
-hsig0->Rebin(rebin); 
-hsig0->Scale(0.03); 
-FixOverUnderFlows(hsig0, xmax); 
-ymax = GetMaximum(hsig0, hsig0, ylog, name, xmax, xmin); 
-hsig0->SetLineColor(2); 
-hsig0->SetLineWidth(3.); 
-hsig0->GetXaxis()->SetRangeUser(xmin,xmax); 
-hsig0->GetYaxis()->SetRangeUser(0.01,ymax); 
-hsig.push_back(hsig0);
-TFile* file_sig1 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/2017-11-13/HNDiLepton_HNMuMu_60_cat_v8-0-7.root")); 
-TH1* hsig1 = dynamic_cast<TH1*> ((file_sig1->Get(name.c_str()))->Clone()); 
-hsig1->Rebin(rebin); 
-hsig1->Scale(0.05); 
-FixOverUnderFlows(hsig1, xmax); 
-ymax = GetMaximum(hsig1, hsig1, ylog, name, xmax, xmin); 
-hsig1->SetLineColor(3); 
-hsig1->SetLineWidth(3.); 
-hsig1->GetXaxis()->SetRangeUser(xmin,xmax); 
-hsig1->GetYaxis()->SetRangeUser(0.01,ymax); 
-hsig.push_back(hsig1);
-TFile* file_sig2 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/2017-11-13/HNDiLepton_HNMuMu_80_cat_v8-0-7.root")); 
-TH1* hsig2 = dynamic_cast<TH1*> ((file_sig2->Get(name.c_str()))->Clone()); 
-hsig2->Rebin(rebin); 
-hsig2->Scale(0.3); 
-FixOverUnderFlows(hsig2, xmax); 
-ymax = GetMaximum(hsig2, hsig2, ylog, name, xmax, xmin); 
-hsig2->SetLineColor(4); 
-hsig2->SetLineWidth(3.); 
-hsig2->GetXaxis()->SetRangeUser(xmin,xmax); 
-hsig2->GetYaxis()->SetRangeUser(0.01,ymax); 
-hsig.push_back(hsig2);
 
 	unsigned int outputWidth = 1200;
 	unsigned int outputHeight = 1200;
@@ -584,6 +551,8 @@ TLegend* MakeLegend( map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata 
   legendH->SetTextSize(0.02);
   vector<TString> legorder;
 
+legorder.push_back("Top");
+legorder.push_back("DY #rightarrow ll");
   map<double, TString> order_hists;
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
     order_hists[it->second->Integral()] = it->first;
@@ -653,7 +622,9 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
 
-  
+if(sample.Contains("top")){    list.push_back(make_pair("TT_powheg",0.2));
+}if(sample.Contains("DY")){    list.push_back(make_pair("DYJets",0.15));
+}  
 
 
   if(list.size()==0) cout << "Error in making lists" << endl;
@@ -1293,9 +1264,13 @@ void SetUpMasterConfig(string name){
 void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples, vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples_ss, vector<string>& cut_label){
   
   /// Setup list of samples: grouped into different processes 
+vector<pair<TString,float> >  top = InitSample(" top"); 
+vector<pair<TString,float> >  DY = InitSample(" DY"); 
 
 
   for( unsigned int i = 0; i < listofsamples.size(); i++){
+   if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,kRed),"Top"));
+   if(listofsamples.at(i) =="DY")samples.push_back(make_pair(make_pair(DY,kYellow),"DY #rightarrow ll"));
 
   }
 
@@ -1378,11 +1353,6 @@ TCanvas* CompDataMC(TH1* hdata,  vector<TH1*> hsigs ,vector<THStack*> mcstack,TH
  
   showdata=true;
 
-hdata= dynamic_cast<TH1*>((h_nominal)->Clone((string(h_nominal->GetName())+"data").c_str()));;
-hdata->GetXaxis()->SetRangeUser(xmin, xmax);;
-hdata->GetYaxis()->SetRangeUser(0.01, ymax);;
-SetTitles(hdata, hname);
-showdata=false;
 
   //hdata= dynamic_cast<TH1*>((h_nominal)->Clone((string(h_nominal->GetName())+"data").c_str()));
 
@@ -1417,12 +1387,6 @@ bool drawsig=true;
   if(drawsig){
     /// Draw sig                                                                                                                                                                     
 
-hsigs[0]->Draw("hist9same"); 
-legend->AddEntry(hsigs[0], "m_{N} = 40 GeV, |V_{#muN}|^{2} = 3 #times 10^{-2} ","l");
-hsigs[1]->Draw("hist9same"); 
-legend->AddEntry(hsigs[1], "m_{N} = 60 GeV, |V_{#muN}|^{2} = 5 #times 10^{-2} ","l");
-hsigs[2]->Draw("hist9same"); 
-legend->AddEntry(hsigs[2], "m_{N} = 80 GeV, |V_{#muN}|^{2} = 3 #times 10^{-1} ","l");
 
   }
   
@@ -1525,9 +1489,6 @@ legend->AddEntry(hsigs[2], "m_{N} = 80 GeV, |V_{#muN}|^{2} = 3 #times 10^{-1} ",
   if(drawsig){
     /// Draw(2) sig                                                                                                                                                                     
 
-hsigs[0]->Draw("hist9same"); 
-hsigs[1]->Draw("hist9same"); 
-hsigs[2]->Draw("hist9same"); 
     //for(int i =0; i < hsigs.size();i++){
     //hsig[i]->Draw("hist9same");
     //}

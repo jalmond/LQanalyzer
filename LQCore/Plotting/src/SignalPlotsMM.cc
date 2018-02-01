@@ -68,6 +68,7 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_deltaRjj"]                 = SetupHist("h_deltaRjj_" + name, "DeltaR between jets", 100, 0., 10., "#Delta R (jj)");
   map_sig["h_fjmass"]                 = SetupHist("h_fatjetsmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
   map_sig["h_fjprunedmass"]                 = SetupHist("h_fatjetprunedmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
+  map_sig["h_fjsdmass"]                 = SetupHist("h_fatjetprunedmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
   map_sig["h_leadjetmass"]            = SetupHist("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",150,0.,750.,"M_{j1j2} GeV");
   map_sig["h_osllmass"]               = SetupHist("h_osllmass_"          + name,"Invariant mass of the two leading os muectrons",100,0,500,"M_{ll} GeV");
   map_sig["h_osll_closestZ_mass"]       =SetupHist("h_osll_closestZ_mass_"          + name,"Invariant mass of the two leading os muectrons",100,0,500,"M_{ll} GeV");
@@ -208,6 +209,12 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_FatJetPhi"]            = SetupHist("h_FatJetPhi_"      + name,"leading jet pt",64,-3.2,3.2);
   map_sig["h_FatJetM"]            = SetupHist("h_FatJetM_"      + name,"jet M",200,0.,400.);
   map_sig["h_FatJetTau21"]            = SetupHist("h_FatJetTau21_"      + name,"leading tau21",50,0.,2.);
+
+  map_sig["h_FatJetPuppiPt"]             = SetupHist("h_FatJetPuppiPt_"      + name,"leading jet pt",100,0,1000,"FatJet P_{T} (GeV)");
+  map_sig["h_FatJetPuppiEta"]            = SetupHist("h_FatJetPuppiEta_"      + name,"leading jet pt",120,-5,5,"FatJet #eta");
+  map_sig["h_FatJetPuppiPhi"]            = SetupHist("h_FatJetPuppiPhi_"      + name,"leading jet pt",64,-3.2,3.2);
+  map_sig["h_FatJetPuppiTau21"]            = SetupHist("h_FatJetPuppiTau21_"      + name,"leading tau21",50,0.,2.);
+
 
 
   map_sig["h_leadingJetPt"]           = SetupHist("h_leadingJetPt_"      + name,"leading jet pt",60,0,300,"j_{1} P_{T} (GeV)");
@@ -907,6 +914,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   if(fatjets.size()> 0){
     Fill("h_fjmass", (fatjets[ifn]).M(),weight);
     Fill("h_fjprunedmass", (fatjets[ifn]).PrunedMass(),weight);
+    Fill("h_fjsdmass", (fatjets[ifn]).SoftDropMass(),weight);
 
   }
   
@@ -919,6 +927,11 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_FatJetPhi", fatjets[ifn].Phi(),weight);
     Fill("h_FatJetM", fatjets[ifn].PrunedMass(),weight);
     Fill("h_FatJetTau21", (fatjets[ifn].Tau2()/fatjets[ifn].Tau1()),weight);
+    Fill("h_FatJetPuppiPt", fatjets[ifn].PuppiPt(),weight);
+    Fill("h_FatJetPuppiEta", fatjets[ifn].PuppiEta(),weight);
+    Fill("h_FatJetPuppiPhi", fatjets[ifn].PuppiPhi(),weight);
+    Fill("h_FatJetPuppiTau21", (fatjets[ifn].PuppiTau2()/fatjets[ifn].PuppiTau1()),weight);
+
     
     for(UInt_t j=0; j < fatjets.size(); j++){
       ht+= fatjets[j].Pt();

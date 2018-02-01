@@ -37,10 +37,12 @@ declare -a hn_ll_mm_hm=( 'HNMumMum_100' 'HNMumMum_1000' 'HNMumMum_1100' 'HNMumMu
 declare -a hn_ll_ee_lm=( 'HNEpEp_40' 'HNEpEp_50' 'HNEpEp_60' 'HNEpEp_70' 'HNEpEp_80'  'HNEmEm_40' 'HNEmEm_50' 'HNEmEm_60' 'HNEmEm_70' 'HNEmEm_80')
 declare -a hn_ll_ee_hm=( 'HNEmEm_100' 'HNEmEm_1000' 'HNEmEm_1100' 'HNEmEm_1200' 'HNEmEm_125' 'HNEmEm_1300' 'HNEmEm_1400' 'HNEmEm_150' 'HNEmEm_1500' 'HNEmEm_200' 'HNEmEm_250' 'HNEmEm_300' 'HNEmEm_400' 'HNEmEm_500' 'HNEmEm_600' 'HNEmEm_700'  'HNEmEm_800' 'HNEmEm_90' 'HNEmEm_900' 'HNDilepton_EE_Tchannel_M300'  'HNDilepton_EE_Tchannel_M600'  'HNDilepton_EE_Tchannel_M800'  'HNDilepton_EE_Tchannel_M1000'  'HNDilepton_EE_Tchannel_M1200' 'HNEpEp_100' 'HNEpEp_1000' 'HNEpEp_1100' 'HNEpEp_1200' 'HNEpEp_125' 'HNEpEp_1300' 'HNEpEp_1400' 'HNEpEp_150' 'HNEpEp_1500' 'HNEpEp_200' 'HNEpEp_250' 'HNEpEp_300' 'HNEpEp_400' 'HNEpEp_500' 'HNEpEp_600' 'HNEpEp_700'  'HNEpEp_800' 'HNEpEp_90'   )
 
+declare -a hn_ll_ee_tchan=( 'HNDilepton_EE_Tchannel_M300'   'HNDilepton_EE_Tchannel_M600' 'HNDilepton_EE_Tchannel_M800' 'HNDilepton_EE_Tchannel_M1000' 'HNDilepton_EE_Tchannel_M1200' 'HNDilepton_EE_Tchannel_M1500')
+declare -a hn_ll_mm_tchan=( 'HNDilepton_MuMu_Tchannel_M300'   'HNDilepton_MuMu_Tchannel_M600' 'HNDilepton_MuMu_Tchannel_M800' 'HNDilepton_MuMu_Tchannel_M1000' 'HNDilepton_MuMu_Tchannel_M1200' 'HNDilepton_MuMu_Tchannel_M1500')
 
 
+declare -a tmplist=('DYJets_MG_10to50_TrigInfoSample' 'DYJets_MG_TrigInfoSample' 'TT_powheg_TrigInfoSample')
 
-declare -a tmplist=('ggZZto4e' 'ttZToLL_M-1to10' 'ttWToLNu' 'ttZToLL_M-10' 'WZG' 'WWG')
 
 
 declare -a tmpall_mc=('TTJets_aMC' 'LowStat_WJets' 'WW'  'WZ' 'ZZ' 'LowStat_DYJets' 'DYJets_10to50' )
