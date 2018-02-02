@@ -354,6 +354,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 	snu::KFatJet tmpj= fatjetcoll_nocut[i];
 	tmpj.SetPtEtaPhiE(tmpj.PuppiPt(), tmpj.PuppiEta(),tmpj.PuppiPhi(),tmpj.E());
 	fatjetcoll_sd.push_back(tmpj);
+	cout << fatjetcoll_nocut[i].Pt () << " " << tmpj.Pt() << endl;
       }
     }
   }
