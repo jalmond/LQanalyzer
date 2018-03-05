@@ -88,8 +88,10 @@ void GetEffectiveLuminosity(TString path_of_list,  TString tag,TString version="
       if(mit->first.Contains("HN")|| mit->first.Contains("HeavyNeutrino") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
     }
     else if(mit->first.Contains("_Tchannel_")){
-      if(mit->first.Contains("HN") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
+      if(mit->first.Contains("HeavyNeutrino") || mit->first.Contains("HNDilepton")  || mit->first.Contains("HN") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
+      
     }
+
     else if(mit->first.Contains("eavyNeutrino_trilepton")){
       use_sum_genweight=true;
     }

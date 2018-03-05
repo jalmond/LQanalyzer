@@ -446,21 +446,23 @@ float AnalyzerCore::MC_CR_Correction(int syst){
 
   ///  updated 2 Oct
 
-  if(k_sample_name.Contains("WZTo3LNu_powheg")) return 0.988021 +  fsyst*0.0652167;
-  if(k_sample_name.Contains("ZGto2LG")) return  0.83069 + fsyst*0.174719;
+  if(k_sample_name.Contains("WZTo3LNu_mllmin01")) return 0.6 ;
+  if(k_sample_name.Contains("WZTo3LNu_powheg")) return 1.07706 +  fsyst*0.0652167;
+  if(k_sample_name.Contains("ZGto2LG")) return 1.11641 + fsyst*0.174719;
   if(k_sample_name.Contains("WGtoLNuG")) return 1.;
-  if(k_sample_name.Contains("ZZTo4L_powheg")) return 0.94117 + fsyst*0.105665;
-  if(k_sample_name.Contains("ggZZto2e2mu")) return 0.94117 + fsyst*0.105665;
-  if(k_sample_name.Contains("ggZZto2e2nu")) return 0.94117 + fsyst*0.105665;
-  if(k_sample_name.Contains("ggZZto2e2tau")) return 0.94117 + fsyst*0.105665;
-  if(k_sample_name.Contains("ggZZto2mu2nu")) return 0.94117 + fsyst*0.105665;
-  if(k_sample_name.Contains("ggZZto2mu2tau")) return 0.94117 + fsyst*0.105665;
-  if(k_sample_name.Contains("ggZZto4e")) return 0.94117 + fsyst*0.105665;
-  if(k_sample_name.Contains("ggZZto4mu")) return 0.94117 + fsyst*0.105665;
-  if(k_sample_name.Contains("ggZZto4tau")) return 0.94117 + fsyst*0.105665;
+  if(k_sample_name.Contains("ZZTo4L_powheg")) return 0.982672 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto2e2mu")) return 0.982672 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto2e2nu")) return 0.982672 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto2e2tau")) return 0.982672 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto2mu2nu")) return 0.982672 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto2mu2tau")) return 0.982672 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto4e")) return 0.982672 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto4mu")) return 0.982672 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto4tau")) return 0.982672 + fsyst*0.105665;
   
   return 1.;
 }
+
 
 float AnalyzerCore::GetTriggerPrescaleCorrection(TString triggername){
   float corr_trig=1.;
@@ -626,13 +628,10 @@ void  AnalyzerCore::CorrectedMETMuon( int sys, std::vector<snu::KMuon> muall,   
   float met_x1 = OrignialMET*TMath::Cos(OriginalMETPhi);
   float met_y1 = OrignialMET*TMath::Sin(OriginalMETPhi);
 
-  cout << "MET " << OrignialMET << " " << eventbase->GetEvent().PFMET() << endl;
 
   float met_x =eventbase->GetEvent().PFMETx();
   float met_y =eventbase->GetEvent().PFMETy();
   
-  cout << met_x1 << " " << met_x << endl;
-
   float px_orig(0.), py_orig(0.),px_shifted(0.), py_shifted(0.);
   for(unsigned int imu=0; imu < muall.size() ; imu++){
     
@@ -3033,13 +3032,11 @@ vector<int> AnalyzerCore::GetVirtualMassIndex(int mode, int pdgid){
 	  index_m=eventbase->GetTruth().at(index_m).IndexMother();
 	}
 	if(eventbase->GetTruth().at(index_m).PdgId() == 23 || fabs(eventbase->GetTruth().at(index_m).PdgId()) < 6 ){
-	  cout << "daughter = " << daughter << endl;
 	  indexZ.push_back(daughter);
 	  for(unsigned int ig2=0; ig2 < eventbase->GetTruth().size(); ig2++){
 	    if(eventbase->GetTruth().at(ig2).IndexMother() <= 0)continue;
 	    if(ig2 == daughter) continue;
 	    if(fabs(eventbase->GetTruth().at(ig2).PdgId()) == pdgid){
-	      cout << eventbase->GetTruth().at(ig2).IndexMother() << " ind " << index_m << endl;
 	      if(eventbase->GetTruth().at(ig2).IndexMother()==index_m)           indexZ.push_back(ig2);
 	    }
 	  }
@@ -3130,8 +3127,6 @@ float AnalyzerCore::GetVirtualMass(int pdg, bool includenu, bool includeph){
   if(!includeph){
     if(!includenu){
       if(es1.size()==2){
-	cout << "Mother = " << eventbase->GetTruth().at(es1[0].IndexMother()).PdgId() << endl;
-
 	snu::KParticle ll = es1[0]  + es1[1];
 	return ll.M();
       }
@@ -3159,7 +3154,6 @@ float AnalyzerCore::GetVirtualMass(int pdg, bool includenu, bool includeph){
 float AnalyzerCore::GetVirtualMassConv(int cmindex,int nconvindx){
 
   if(isData) return -999.;
-  cout << "cmindex = " << cmindex << endl;
   vector<KTruth> es1;
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
 

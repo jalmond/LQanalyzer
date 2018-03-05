@@ -51,7 +51,7 @@ class HNDiElectron : public AnalyzerCore {
 
   void GetOptimisationID( std::vector<snu::KElectron> electrons_veto, std::vector<snu::KMuon> muons, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, int nbjet_m, float ll_weight, std::vector<TString> trig,  float pt1, float pt2);
 			  
-  void FillMCFakes(TString label,vector<snu::KMuon> muons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,   std::vector<TString> trig, float ll_weight);
+  void FillMCFakes(TString label,vector<snu::KMuon> muons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,   std::vector<TString> trig, float ll_weight, TString looseID,  TString tightID);
 
   void FillPreselection(int nfake, TString label, vector<snu::KElectron> electrons, vector<snu::KElectron> electron_veto, vector<snu::KMuon> muons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,  float ll_weight, std::vector<TString> trig,  float pt1, float pt2);
 			

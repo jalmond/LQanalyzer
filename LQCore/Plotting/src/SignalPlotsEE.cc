@@ -85,6 +85,10 @@ SignalPlotsEE::SignalPlotsEE(TString name, int nel): StdPlots(name){
     map_sig["h_l2jjjj_os_mass"]          = SetupHist("h_l2jjjj_os_mass_"       + name,"Invariant mass of the four particles",200,0,2000,"M_{l2jjjj} (os) GeV");
     map_sig["h_l2jjjj_ss_mass"]          = SetupHist("h_l2jjjj_ss_mass_"       + name,"Invariant mass of the four particles",200,0,2000, "M_{l2jjjj} (s) GeV");
   }
+
+  map_sig["h_el_vetex_x"]          = SetupHist("h_el_vetex_x"       + name,"", 100, -0.1, 0.1, "");
+  map_sig["h_el_vetex_y"]          = SetupHist("h_el_vetex_y"       + name,"", 100, -0.1, 0.1, "");
+  map_sig["h_el_vetex_z"]          = SetupHist("h_el_vetex_z"       + name,"", 100, -0.1, 0.1, "");
   
   map_sig["h_st_forward"]          = SetupHist("h_st_forward_"       + name,"ST foward jets", 100, 0., 1000.,"ST_{fj} GeV");
   map_sig["h_st_central"]          = SetupHist("h_st_central_"       + name,"ST central jets", 100, 0., 1000.,"ST_{cj} GeV");
@@ -182,7 +186,11 @@ SignalPlotsEE::SignalPlotsEE(TString name, int nel): StdPlots(name){
   map_sig["h_Lepton_C4_zzmva"]           = SetupHist("h_LeptonC4_zzmva_"         + name,"el mva C4",200, -1.,1.);
   map_sig["h_Lepton_C5_zzmva"]           = SetupHist("h_LeptonC5_zzmva_"         + name,"el mva C5",200, -1.,1.);
   
-  map_sig["h_missinghits"]           = SetupHist("h_missinghits"      + name,"missing hits", 5,0, 5.); 
+  map_sig["h_missinghits_B"]           = SetupHist("h_missinghits_B"      + name,"missing hits", 5,0, 5.); 
+  map_sig["h_missinghits_EC"]           = SetupHist("h_missinghits_EC"      + name,"missing hits", 5,0, 5.); 
+
+  map_sig["h_LeptonRelIso_lowPt_B"]  = SetupHist("h_LeptonRelIso_lowPt_B_"    + name,"secondary lepton pt",100,0,1.);
+  map_sig["h_LeptonRelIso_lowPt_EC"]  = SetupHist("h_LeptonRelIso_lowPt_EC_"    + name,"secondary lepton pt",100,0,1.);
   if(nel > 1 || nel < 0) {
     map_sig["h_secondLeptonPt"]         = SetupHist("h_secondLeptonPt_"    + name,"secondary lepton pt",60,0,300);
     map_sig["h_secondLeptonEta"]        = SetupHist("h_secondLeptonEta_"   + name,"second lepton eta",60,-3.,3.);    
@@ -376,6 +384,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
       }
     }
   }
+  
   
   Fill("h_relpt_lepjet", ptrel,weight);
   Fill("h_ratiopt_lepjet", ptratio,weight);
@@ -788,6 +797,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonPt", elit->Pt(),weight);
     if(fabs(elit->Eta()) < 1.5)      Fill("h_LeptonPt_B", elit->Pt(),weight);
     else Fill("h_LeptonPt_EC", elit->Pt(),weight);
+
     Fill("h_LeptonEnergy", elit->Energy(),weight);
     Fill("h_LeptonPhi",elit->Phi(),weight);
     Fill("h_LeptonEta",elit->Eta(),weight);
@@ -870,12 +880,16 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
       else  Fill("h_Lepton_C3_mvapt" ,elit->Pt(), elit->MVA(), weight);
     }
 
-    Fill("h_missinghits", elit->MissingHits(), weight);
+
     if(fabs(elit->Eta()) > 1.5) {
+      Fill("h_missinghits_EC", elit->MissingHits(), weight);
       Fill("h_LeptonDXY_EC", elit->dxy(),weight);
       Fill("h_LeptonDZ_EC", elit->dz(),weight);
       if(elit->Pt() < 20.){
 	Fill("h_LeptonDXY_pt1_EC", elit->dxy(),weight);
+
+	Fill("h_LeptonRelIso_lowPt_EC", elit->PFAbsIso(0.3),weight);
+	
       }
       else   if(elit->Pt() < 50.){
 	Fill("h_LeptonDXY_pt2_EC", elit->dxy(),weight);
@@ -884,9 +898,11 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
 
     }    
     else{
+      Fill("h_missinghits_EC", elit->MissingHits(), weight);
       Fill("h_LeptonDZ_B", elit->dz(),weight);
       Fill("h_LeptonDXY_B", elit->dxy(),weight);
       if(elit->Pt() < 20.){
+	Fill("h_LeptonRelIso_lowPt_B", elit->PFAbsIso(0.3),weight);
 	Fill("h_LeptonDXY_pt1_B", elit->dxy(),weight);
       }      
       else   if(elit->Pt() < 50.){
@@ -1059,6 +1075,10 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   float lt=0.;
   float ltc=-0.;  float ltf=0.;
   for(unsigned int iel2=0 ; iel2 < electrons.size(); iel2++){
+    Fill("h_el_vetex_x" ,  ev.VertexX()  - electrons[iel2].TrkVx(), weight);
+    Fill("h_el_vetex_y" ,  ev.VertexY()  - electrons[iel2].TrkVy(), weight);
+    Fill("h_el_vetex_z" ,  ev.VertexZ()  - electrons[iel2].TrkVz(), weight);
+
     lt+=electrons[iel2].Pt();
     if(fabs(electrons[iel2].Eta()) < 1.5){
       st_central=st_central+ electrons[iel2].Pt();

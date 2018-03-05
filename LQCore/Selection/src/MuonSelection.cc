@@ -276,6 +276,7 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu, vector<pair<TString, T
   bool debug=false;
   if(debug) cout << "PassUserID(TString id, snu::KMuon mu, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf" << endl;
   LeptonRelIso = (mu.RelIso04());
+  float LeptonRelIso03 = (mu.RelIso03());
   if(id.Contains("miniiso")) LeptonRelIso= mu.RelMiniIso();
   
   for(unsigned int idel =0; idel < vidf.size(); idel++){
@@ -283,12 +284,23 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu, vector<pair<TString, T
     
     if(fabs(mu.Eta()) < 1.5){
       if(vidf[idel].first == "isomax04_b") {
-	if(LeptonRelIso > vidf[idel].second) {if(debug){ cout << "Fail iso"  << endl; } return false;}
+	if( vidf[idel].second < 0){
+	  if(LeptonRelIso03 > fabs(vidf[idel].second)) {if(debug){ cout << "Fail iso"  << endl; } return false;}
+
+	}
+	else{
+	  if(LeptonRelIso > vidf[idel].second) {if(debug){ cout << "Fail iso"  << endl; } return false;}
+	}
       }
     }
     else{
       if(vidf[idel].first == "isomax04_ec") {
-        if(LeptonRelIso > vidf[idel].second) {if(debug){ cout << "Fail iso"  << endl; } return false;}
+	if( vidf[idel].second < 0){
+	  if(LeptonRelIso03 > fabs(vidf[idel].second)) {if(debug){ cout << "Fail iso"  << endl; } return false;}
+	}
+	else{
+	  if(LeptonRelIso > vidf[idel].second) {if(debug){ cout << "Fail iso"  << endl; } return false;}
+	}
       }
     }
     if(vidf[idel].first == "|dxymax|") {
@@ -371,6 +383,7 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   bool debug=false;
   //if(id.Contains("VETO")) debug=true;
   LeptonRelIso = (mu.RelIso04());
+  float LeptonRelIso03 = (mu.RelIso04());
   if(id.Contains("miniiso")) LeptonRelIso= mu.RelMiniIso();
 
   bool pass_selection=true;
@@ -393,11 +406,21 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
 
 
   if(fabs(mu.Eta()) < 1.5){
-    if(checkisomax_b && (LeptonRelIso > isomax_b)) { pass_selection = false;if(debug){ cout << "Fail iso"  << endl;}}
+    if(isomax_b<0 ){
+      if(checkisomax_b && (LeptonRelIso03 > fabs(isomax_b))) { pass_selection = false;if(debug){ cout << "Fail iso"  << endl;}}
+    }
+    else{
+      if(checkisomax_b && (LeptonRelIso > isomax_b)) { pass_selection = false;if(debug){ cout << "Fail iso"  << endl;}}
+    }
   }
   else{
-    if(checkisomax_ec && (LeptonRelIso > isomax_ec)) { pass_selection = false;if(debug){ cout << "Fail iso"  << endl;}}
+    if(isomax_ec < 0){
+      if(checkisomax_ec && (LeptonRelIso03 > fabs(isomax_ec))) { pass_selection = false;if(debug){ cout << "Fail iso"  << endl;}}
+    }
+    else{
+      if(checkisomax_ec && (LeptonRelIso > isomax_ec)) { pass_selection = false;if(debug){ cout << "Fail iso"  << endl;}}
 
+    }
   }
 
   if(checkdxysigmin &&(fabs(mu.dXYSig()) < dxysigmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}

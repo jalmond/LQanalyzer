@@ -1,7 +1,7 @@
 ## alias                 |   Legend                                            |  Legend alias     |  Color  | uncert. |
 DoubleMuon_SKnonprompt    |   Misid. Lepton Background                          |  DoubleMuon_SKnonprompt | 870  | 0.3 |
 ZZTo4L_powheg             |   Diboson                                                |  diboson             |  kGreen     | 0.20     |
- WZTo3LNu_powheg		  |  Diboson                                                |  diboson             |  kGreen     | 0.20     |
+WZTo3LNu_powheg		  |  Diboson                                                |  diboson             |  kGreen     | 0.20     |
 #WZTo3LNu_mllmin01     |  Diboson                                                |  diboson             |  kGreen     | 0.20     |
 WpWpQCD                   |    Diboson                                                |  diboson             |  kGreen     |     0.15     |
 WpWpEWK                   |    Diboson                                                |  diboson             |  kGreen     |     0.15     |
