@@ -100,6 +100,10 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
     if(skim_muons.size() == 2){
       if(skim_muons.at(0).Charge() == skim_muons.at(1).Charge()) nlep = 3;
     }
+    if(skim_electrons.size() == 1 && skim_muons.size() ==  1){
+      if(skim_electrons.at(0).Charge() == skim_muons.at(0).Charge()) nlep = 3;
+    }
+
   }
   if(! ((nlep > 2) )) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   

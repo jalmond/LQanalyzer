@@ -205,10 +205,43 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electrons_fake = GetElectrons(true, true, elid);
   std::vector<snu::KElectron> electrons_cf = GetElectrons(true, false, elid);
 
+  for(unsigned int im=0; im< electrons_cf.size(); im++){
+    if(ISCF(electrons_cf[im]) || MCIsCF(electrons_cf[im]) ){
+      if(fabs(electrons_cf[im].Eta())< 0.8){
+
+	std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+
+	cout  <<  "CF el in barrel : " << MCIsCF(electrons_cf[im]) << " : "<<ISCF(electrons_cf[im]) << " " <<  electrons_cf[im].Pt()  << " " << electrons_cf[im].Eta() << electrons_cf[im].Phi() << "" << electrons_cf[im].Charge()<< " : " << electrons_cf[im].GetType() << " : JH " << GetLeptonType(electrons_cf[im], truthColl ) <<endl;
+	TruthPrintOut();
+	if(ISCF(electrons_cf[im]))FillHist("num_CF_B_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
+	FillHist("den_CF_B_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
+	
+      }
+      else{
+	if(ISCF(electrons_cf[im]))FillHist("num_CF_E_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
+        FillHist("den_CF_E_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
+
+      }
+    }
+  }
 
   if(SameCharge(electrons_cf)){
     if(GetDiLepMass(electrons_cf) < 101 && GetDiLepMass(electrons_cf) > 81.){
       
+      if(ISCF(electrons_cf[0]))FillHist("SSZ_num_CF_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
+      if(ISCF(electrons_cf[1]))FillHist("SSl_num_CF_pt", electrons_cf.at(1).Pt(), weight, 0., 200., 50);
+
+      FillHist("SSZ_Den_CF_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
+      FillHist("SSZ_Den_CF_pt", electrons_cf.at(1).Pt(), weight, 0., 200., 50);
+
+      for(unsigned int im=0; im< electrons_cf.size(); im++){
+	if(fabs(electrons_cf[im].Eta())< 0.8){
+	  if(ISCF(electrons_cf[im]))FillHist("SSZ_num_CF_B_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
+	  FillHist("SSZ_den_CF_B_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
+	}
+      }
+
+
       FillHist("SSEl_All", 1.,1., 0., 2., 2);
       FillHist("SSEl_All_tyoe", electrons_cf.at(0).GetType(), 1., 0., 50., 50);
       FillHist("SSEl_All_tyoe", electrons_cf.at(1).GetType(), 1., 0., 50., 50);
@@ -234,7 +267,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     }
   }
 
-  return;
 
   std::vector<snu::KMuon> muons_veto = GetMuons("MUON_HN_VETO",true);
   std::vector<snu::KElectron> electrons_veto = GetElectrons(true, true, "ELECTRON_HN_VETO");

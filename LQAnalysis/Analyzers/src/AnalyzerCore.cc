@@ -2009,7 +2009,7 @@ std::vector<snu::KJet> AnalyzerCore::GetJetsWFT(TString jetid,TString fatjetid,f
 
     if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetJetSel()->SelectJets(jetColl, it->second, fit->second, ptcut,etacut);
     else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
-    else eventbase->GetJetSel()->SelectJets(jetColl, fatjetColl,GetMuons(muontag), GetElectrons(eltag) , it->second, fit->second, ptcut,etacut);
+    else eventbase->GetJetSel()->SelectJets(jetColl, fatjetColl,GetMuons(muontag, true), GetElectrons(eltag) , it->second, fit->second, ptcut,etacut);
   }
   return jetColl;
 
@@ -2418,6 +2418,7 @@ AnalyzerCore::~AnalyzerCore(){
     }
     MapBTagSF.clear();
   }
+  
 
   for(map<TString, HNTriLeptonPlots*>::iterator it = mapCLhistHNTriLep.begin(); it != mapCLhistHNTriLep.end(); it++){
     delete it->second;
@@ -2426,6 +2427,7 @@ AnalyzerCore::~AnalyzerCore(){
 
   //// New class functions for databkg+corrections
   if(k_classname == "SKTreeMaker")   delete mcdata_correction;
+  if(k_classname == "SKTreeMakerHNDiLep")   delete mcdata_correction;
   if(!k_classname.Contains("SKTreeMaker")){
     delete mcdata_correction;
   }
@@ -2453,6 +2455,11 @@ void AnalyzerCore::SetupID(){
     return;
     }
   }
+  if(k_classname.Contains("SKTreeMakerHNDiLep")){
+    IDSetup=true;
+    return;
+  }
+
 
   string lqdir =  getenv("LQANALYZER_DIR");
 
@@ -2528,6 +2535,7 @@ void AnalyzerCore::SetupDDBkg(){
   // List of working points                                                                                                                                                                                                                                                  
 
   if(k_classname == "SKTreeMaker")  mcdata_correction = new MCDataCorrections();
+  if(k_classname == "SKTreeMakerHNDiLep")  mcdata_correction = new MCDataCorrections();
 
   if(!k_classname.Contains("SKTreeMaker")){
 
@@ -2709,9 +2717,11 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   if (k_classname == "SKTreeMaker"){
     mcdata_correction->SetPeriod(GetPeriod());
     mcdata_correction->SetIsData(isData);
-    
   }
-  
+  if (k_classname == "SKTreeMakerHNDiLep"){
+    mcdata_correction->SetPeriod(GetPeriod());
+    mcdata_correction->SetIsData(isData);
+  }
   
 
 }
@@ -2747,6 +2757,7 @@ snu::KTruth AnalyzerCore::GetTruthMatchedParticle(snu::KElectron el){
 int AnalyzerCore::AssignnNumberOfTruth(){
   int np = 1000;
   if(k_classname.Contains("SKTreeMaker")) np = 1000;
+  if(k_classname.Contains("SKTreeMakerHNDiLep")) np = 1000;
   if(k_classname.Contains("SKTreeMakerDiLep")) np = 0;
   if(k_classname.Contains("SKTreeMakerTriLep")) np = 1000;
 
@@ -4704,7 +4715,8 @@ void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++){
     //if(k_classname=="SKTreeMaker" && (it->RochPt() >0.)) exit(EXIT_FAILURE);
     if(k_classname!="SKTreeMaker" && k_classname.Contains("SKTreeMaker")){
-      
+      if(k_classname!="SKTreeMakerHNDiLep" && k_classname.Contains("SKTreeMaker")){
+
     if(it->RochPt() < 0.) {
 	cerr << "Roch Pt wrongly set in dilep skim" << endl;
 	exit(EXIT_FAILURE);
@@ -4717,11 +4729,11 @@ void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
 	it->SetRochPt(mcdata_correction->GetCorrectedMuonMomentum(*it, eventbase->GetTruth()));
       }
       else it->SetRochPt(it->Pt());
-    }    
+    }
+   }
   }
-  
 }
-
+ 
 void AnalyzerCore::MakeNtp(TString hname, TString myvar){
 
   mapntp[hname] =  new TNtupleD(hname.Data(),hname.Data(),myvar.Data());

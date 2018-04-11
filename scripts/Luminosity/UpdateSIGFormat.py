@@ -53,7 +53,7 @@ for r in arr_master:
         if "SKHN" in r:
             isnonsig=False
 
-    if "Majorana" in r or "HeavyNeutrino" in r or "HN" in r and not isnonsig  or "TTTo" in rsplit[0] or "CHToCB" in rsplit[0]:
+    if "Majorana" in r or "HeavyNeutrino" in r or "HN" in r and not isnonsig  or "TTTo" in rsplit[0] or "CHToCB" in rsplit[0] or "WR" in rsplit[0]:
         sig=True
         for r2 in arr_sig:
             r2split = r2.split()
@@ -191,3 +191,7 @@ os.system("diff " + mainlist_nonsig + " " + newlist_nonsig)
 
 os.system("cp " + newlist_sig + " " + mainlist_sig)
 os.system("cp " + newlist_nonsig + " " + mainlist_nonsig)
+os.system("rm " + newlist_sig)
+os.system("rm " + newlist_nonsig)
+os.system("chmod 777 " + mainlist_sig)
+os.system("chmod 777 " + mainlist_nonsig)

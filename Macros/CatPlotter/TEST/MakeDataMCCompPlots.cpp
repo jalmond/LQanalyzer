@@ -551,8 +551,8 @@ TLegend* MakeLegend( map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata 
   legendH->SetTextSize(0.02);
   vector<TString> legorder;
 
-legorder.push_back("Top");
-legorder.push_back("DY #rightarrow ll");
+legorder.push_back("Misid. Lepton Background");
+legorder.push_back("Diboson");
   map<double, TString> order_hists;
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
     order_hists[it->second->Integral()] = it->first;
@@ -622,8 +622,8 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
 
-if(sample.Contains("top")){    list.push_back(make_pair("TT_powheg",0.2));
-}if(sample.Contains("DY")){    list.push_back(make_pair("DYJets",0.15));
+if(sample.Contains("DoubleMuon_SKnonprompt")){    list.push_back(make_pair("DoubleMuon_SKnonprompt",0.3));
+}if(sample.Contains("diboson")){    list.push_back(make_pair("MC",0.20));
 }  
 
 
@@ -1264,13 +1264,15 @@ void SetUpMasterConfig(string name){
 void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples, vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples_ss, vector<string>& cut_label){
   
   /// Setup list of samples: grouped into different processes 
-vector<pair<TString,float> >  top = InitSample(" top"); 
-vector<pair<TString,float> >  DY = InitSample(" DY"); 
+/// NP is nonprompt 
+vector<pair<TString,float> > np;
+np.push_back(make_pair("DoubleMuon_SKnonprompt",0.34));
+vector<pair<TString,float> >  diboson = InitSample(" diboson"); 
 
 
   for( unsigned int i = 0; i < listofsamples.size(); i++){
-   if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,kRed),"Top"));
-   if(listofsamples.at(i) =="DY")samples.push_back(make_pair(make_pair(DY,kYellow),"DY #rightarrow ll"));
+   if(listofsamples.at(i) =="DoubleMuon_SKnonprompt")samples.push_back(make_pair(make_pair(np,870),"Misid. Lepton Background"));
+   if(listofsamples.at(i) =="diboson")samples.push_back(make_pair(make_pair(diboson,kGreen),"Diboson"));
 
   }
 
