@@ -23,7 +23,7 @@ ClassImp (SKTreeMakerHNDiLep);
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-SKTreeMakerHNDiLep::SKTreeMakerHNDiLep() :  AnalyzerCore(), out_muons(0), out_electrons(0),out_photons(0), out_jets(0), out_fatjets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
+SKTreeMakerHNDiLep::SKTreeMakerHNDiLep() :  AnalyzerCore(), out_muons(0), out_electrons(0),out_photons(0), out_jets(0), out_fatjets(0),out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
 
   // To have the correct name in the log:                                                                                                                            
   SetLogName("SKTreeMakerHNDiLep");
@@ -36,60 +36,58 @@ SKTreeMakerHNDiLep::SKTreeMakerHNDiLep() :  AnalyzerCore(), out_muons(0), out_el
 void SKTreeMakerHNDiLep::ExecuteEvents()throw( LQError ){
   
 
-  bool _singleEG =(k_channel.Contains("SingleElectron"));
-  bool _singleMuon =(k_channel.Contains("SingleMuon"));
-  bool _doubleEG =(k_channel.Contains("DoubleEG"));
-  bool _doubleMuon =(k_channel.Contains("DoubleMuon"));
-  TString analysis_trigger_eg="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
-  TString analysis_trigger_muon_dz="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
-  TString analysis_trigger_tkmuon_dz="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
-  TString analysis_trigger_muon="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v";
-  TString analysis_trigger_tkmuon="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v";
-
-  if(isData && _singleEG && PassTrigger(analysis_trigger_eg)) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-  if(isData && _singleMuon && (PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-  if(isData && _doubleEG && !PassTrigger(analysis_trigger_eg))  throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-  if(isData && _doubleMuon && !(PassTrigger(analysis_trigger_muon_dz) || PassTrigger(analysis_trigger_tkmuon_dz) || PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-  
-
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
+
+ 
+  bool _SiglEG =isData? k_channel.Contains("SingleElectron"):true;
+  bool _SiglMu =isData? k_channel.Contains("SingleMuon")    :true;
+  bool _DiMu   =isData? k_channel.Contains("DoubleMuon")    :true;
+  bool _MuonEG =isData? k_channel.Contains("MuonEG")        :true;
+
+  bool _PassRefTrig=false;
+  if     (_SiglEG &&  PassTrigger("HLT_Ele27_WPTight_Gsf_v"))                             _PassRefTrig=true;
+  else if(_SiglMu && (PassTrigger("HLT_IsoTkMu24_v")
+                     ||PassTrigger("HLT_IsoMu24_v")))                                     _PassRefTrig=true;
+  else if(_DiMu   && (PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v")
+                     ||PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v")) )             _PassRefTrig=true;
+  else if(_MuonEG && (PassTrigger("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")
+                     ||PassTrigger("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")
+                     ||PassTrigger("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v")) ) _PassRefTrig=true;
+
+  if(!_PassRefTrig) throw LQError( "Remove events not passing reference trigger.", LQError::SkipEvent );
   
+  
+  float LeadLepPtCut = 0.;
+  if     (_SiglEG) LeadLepPtCut = 27.;
+  else if(_SiglMu) LeadLepPtCut = 24.;
+  else if(_DiMu  ) LeadLepPtCut = 17.;
+  else if(_MuonEG) LeadLepPtCut = 23.;
+
+  if(!isData) LeadLepPtCut=17.;
 
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
   std::vector<snu::KMuon> skim_muons;
-  /// Apart from eta/pt muons are required to have a global OR tracker track    && be PF
   eventbase->GetMuonSel()->SetPt(5.); 
   eventbase->GetMuonSel()->SetEta(3.);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
   SetCorrectedMomentum(out_muons);
 
   Message("Skimming Muons", DEBUG);
-  /// Selection for event skim
-  /// Apart from eta/pt muons are required to have a global OR tracker track && be PF
   eventbase->GetMuonSel()->SetPt(5.);
   eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->SkimSelection(skim_muons, false);
-
-  //####### PHOTONS
-  //  std::vector<snu::KElectron> skim_photons;
-  //eventbase->GetPhotonSel()->SetPt(20);
-  //eventbase->GetPhotonSel()->SetEta(3.);
-  //eventbase->GetPhotonSel()->BasicSelection(out_photons);
+  
 
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
-  eventbase->GetJetSel()->SetPt(10);
-  eventbase->GetJetSel()->SetEta(5.);
+  eventbase->GetJetSel()->SetPt(20);
+  eventbase->GetJetSel()->SetEta(2.4);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
-  Message("Selecting fat jets", DEBUG);
-  eventbase->GetFatJetSel()->SetPt(20);
-  eventbase->GetFatJetSel()->SetEta(5.);
-  eventbase->GetFatJetSel()->BasicSelection(out_fatjets);
 
   //###### GenJet Selection ##########
   //if(!k_isdata) eventbase->GetGenJetSel()->BasicSelection(out_genjets);
@@ -97,58 +95,38 @@ void SKTreeMakerHNDiLep::ExecuteEvents()throw( LQError ){
   //###### Electron Selection ########
   Message("Selecting electrons", DEBUG);
   std::vector<snu::KElectron> skim_electrons;
-  eventbase->GetElectronSel()->SetPt(9.); 
-  eventbase->GetElectronSel()->SetEta(5.); 
+  eventbase->GetElectronSel()->SetPt(5.); 
+  eventbase->GetElectronSel()->SetEta(3.); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
-  eventbase->GetElectronSel()->SetPt(9.);
+  eventbase->GetElectronSel()->SetPt(5.);
   eventbase->GetElectronSel()->SetEta(2.5);
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
-  
-  /// select events  with 2 leptons with pt > 15
-  
+
   int nlep = skim_electrons.size() + skim_muons.size();
-
-  /// select events  with 2 leptons with pt > 15                                                                                                                                        
-  if(! ((nlep > 1) )) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-
-  bool pass15gev=false;
-
-  if(skim_electrons.size() > 0) {
-    if(skim_electrons.at(0).Pt() > 10.) pass15gev= true;
+    
+  /// select events  with 2 leptons with pt > 15
+  if(! ((nlep > 1) )) throw LQError( "Not enough leptons",  LQError::SkipEvent );
+  
+  bool PassLeadLepPtCut=false;
+  
+  if(skim_electrons.size() > 0 ) {
+    if(skim_electrons.at(0).Pt() > LeadLepPtCut) PassLeadLepPtCut =true;
   }
   if(skim_muons.size() > 0){
     float mupt=skim_muons.at(0).Pt();
     if(skim_muons.at(0).RochPt() < skim_muons.at(0).Pt()) mupt=skim_muons.at(0).RochPt();
     if(skim_muons.at(0).RochPt() < 0.) mupt=skim_muons.at(0).Pt();
 
-    if(mupt > 10.)  pass15gev= true;
+    if(mupt > LeadLepPtCut)  PassLeadLepPtCut=true;
   }
-  if(!pass15gev) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  if(!PassLeadLepPtCut) throw LQError( "Not passing lead pt cut",  LQError::SkipEvent );
 
 
-  std::vector<snu::KElectron> elColl = GetElectrons("ELECTRON_HN_VETO");
-  std::vector<snu::KMuon> muColl = GetMuons("MUON_HN_VETO");
-
-
-  //if((muColl.size() + elColl.size()) != 2) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-  if(muColl.size()==2) {
-    if(!SameCharge(muColl)) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-  }
-  else if(elColl.size()==2) {
-    if(!SameCharge(elColl)) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-  }
-  else{
-    if(muColl.size()==1 && elColl.size()==1 ) {
-      if(elColl[0].Charge() != muColl[0].Charge()) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-    }
-  }
-
-
-  FillCutFlow("TriLep", 1);
+  FillCutFlow("DiLep", 1);
 
   out_event   = eventbase->GetEvent();
   out_trigger = eventbase->GetTrigger();
-  out_truth   = eventbase->GetTruth();
+  //out_truth   = eventbase->GetTruth();
   
   return;
 }// End of execute event loop
@@ -195,7 +173,7 @@ void SKTreeMakerHNDiLep::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_DoubleEle8");
     AddTriggerToList("HLT_DoubleEle3");
     AddTriggerToList("HLT_Ele8");
-    AddTriggerToList("HLT_Ele1");//// 12-16-18                                                                                                                                                                                                                                                                                                   
+    AddTriggerToList("HLT_Ele1");//// 12-16-18                                                                                                                            
     AddTriggerToList("HLT_Ele2");
     AddTriggerToList("HLT_Ele3");
     AddTriggerToList("HLT_DoublePhoton");
@@ -204,9 +182,10 @@ void SKTreeMakerHNDiLep::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_Photon90_R9Id90");
     AddTriggerToList("HLT_TripleMu");
     AddTriggerToList("HLT_DiMu");
-    
+
   }
   else {
+    AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
     AddTriggerToList("HLT_IsoMu1");
     AddTriggerToList("HLT_IsoMu2");
     AddTriggerToList("HLT_IsoTkMu1");
@@ -220,7 +199,7 @@ void SKTreeMakerHNDiLep::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_DoubleEle8");
     AddTriggerToList("HLT_DoubleEle3");
     AddTriggerToList("HLT_Ele8");
-    AddTriggerToList("HLT_Ele1");//// 12-16-18                                                                                                                                                                                                                                                                                                  
+    AddTriggerToList("HLT_Ele1");//// 12-16-18                                                                                                                            
     AddTriggerToList("HLT_Ele2");
     AddTriggerToList("HLT_Ele3");
     AddTriggerToList("HLT_DoublePhoton");
@@ -231,10 +210,6 @@ void SKTreeMakerHNDiLep::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_DiMu");
 
   }
-
-  
-  
-    
 
   return;
   
@@ -260,7 +235,7 @@ void SKTreeMakerHNDiLep::FillCutFlow(TString cut, float weight){
     GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
     GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
     GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"VertexCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"TriLep");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"DiLep");
   }
 }
 

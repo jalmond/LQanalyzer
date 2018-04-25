@@ -835,11 +835,11 @@ if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
 fi
 if [[ $submit_analyzer_name == "SKTreeMakerHNDiLep" ]];
     then
-    submit_skinput=true
-    job_skim="SKTree_DiLepSkim"
+    submit_skinput=false
+    job_skim="FLATCAT"
     if [[ $is_mc == "true" ]];
     then
-	job_skim="SKTree_LeptonSkim"
+	job_skim="FLATCAT"
     fi
     if [[ $set_sktreemaker_debug == "false" ]];
         then
@@ -1231,7 +1231,13 @@ if [[ $job_skim == "FLATCAT" ]];
 	then
 	echo "LQanalyzer::sktree :: ERROR :: skim set to FLATCAT: Yet you set -sktree <true>"
 	echo "Fix submission"
-	exit 1
+	if [[ $USER == "jalmond" ]];
+        then
+	    submit_skinput=true
+	    echo "Allowed"
+	else
+	    exit 1
+	fi
     fi
     
 elif [[ $job_skim == "SKTree_NoSkim" ]]

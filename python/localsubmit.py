@@ -601,7 +601,7 @@ output_catversion=os.getenv("CATVERSION")
 iversion=0
 
 
-if "HeavyNeutrino" in sample or "Majorana" in sample or "HN" in  sample or "CHT" in sample or "TTToH" in sample:
+if "HeavyNeutrino" in sample or "Majorana" in sample or "HN" in  sample or "CHT" in sample or "TTToH" in sample or "WR" in sample:
     datasetfile="datasets_snu_sig_CAT_mc_"
 else:
     datasetfile="datasets_snu_nonsig_CAT_mc_"

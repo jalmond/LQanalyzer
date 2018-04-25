@@ -3,6 +3,9 @@
 ########################
 ### SAMPLE LIST ########## 
 #######################
+declare -a new_list=('WRToNLep_MuMuJJ_WR1000_N500_LO_MG' 'WRToNLep_MuMuJJ_WR1000_N500_NLO_MG' 'WRToNLep_MuMuJJ_WR2000_N1000_LO_MG' 'WRToNLep_MuMuJJ_WR2000_N1000_NLO_MG' 'WRToNLep_MuMuJJ_WR4000_N2000_LO_MG' 'WRToNLep_MuMuJJ_WR4000_N2000_NLO_MG' 'WRToNuMuToMuMuJJ_MW-1000_MNu-500_TuneCUETP8M1_13TeV-pythia8_Pythia' 'WRToNuMuToMuMuJJ_MW-2000_MNu-1000_TuneCUETP8M1_13TeV-pythia8_Pythia' 'WRToNuMuToMuMuJJ_MW-4000_MNu-2000_TuneCUETP8M1_13TeV-pythia8_Pythia' 'ZprimeToNN_MuMuJJJJ_Zprime2000_N400_WR5000_LO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime2000_N400_WR5000_NLO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime2000_N800_WR5000_LO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime2000_N800_WR5000_NLO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N1600_WR5000_LO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N1600_WR5000_NLO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N400_WR5000_LO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N400_WR5000_NLO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N800_WR5000_LO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N800_WR5000_NLO_MG' )
+
+
 declare -a tchannel_hn=('HNMoriondLL_Tchannel_EpEp_100' 'HNMoriondLL_Tchannel_EpEp_200' 'HNMoriondLL_Tchannel_EpEp_500' 'HNMoriondLL_Tchannel_EpEp_1100' 'HNMoriondLL_Tchannel_MupMup_100' 'HNMoriondLL_Tchannel_MupMup_200' 'HNMoriondLL_Tchannel_MupMup_500' 'HNMoriondLL_Tchannel_MupMup_1100' 'HNMumMum_40' 'HNMumMum_50' 'HNMumMum_200' 'HNMumMum_500' 'HNMumMum_1500'  'HNEmEm_40' 'HNEmEm_50' 'HNEmEm_200' 'HNEmEm_500' 'HNEmEm_1500'  'HNMupMup_40' 'HNMupMup_50' 'HNMupMup_200' 'HNMupMup_500' 'HNMupMup_1500' 'HNMupMup_100' 'HNMupMup_700' 'HNMupMup_1000' )
 declare -a  mc_conv=('ZGto2LG' 'WGtoLNuG' 'TG' 'TTG' 'WZG' 'WWG' )
 
@@ -12,6 +15,8 @@ declare -a trilep_fake_bkg_short=(
 'WZ' 'ZZ' 'WW'
 'ZGto2LG' 'WGtoLNuG'
 )
+
+declare -a  DY=('DYJets' 'DYJets_MG' 'DYtoEE')
 declare -a trilep_fake_bkg_long=('DYJets' 'WJets' 'TT_powheg')
 
 declare -a  qcd_mu_prompt=('QCD_Pt-1000toInf_MuEnriched' 'QCD_Pt-120to170_MuEnriched' 'QCD_Pt-15to20_MuEnriched' 'QCD_Pt-170to300_MuEnriched' 'QCD_Pt-20to30_MuEnriched' 'QCD_Pt-300to470_MuEnriched' 'QCD_Pt-30to50_MuEnriched' 'QCD_Pt-470to600_MuEnriched' 
@@ -98,3 +103,5 @@ declare -a tmp2=(
 'HN_MuMuMu_200'
  )
 declare -a new_list=('DYJets' 'LowStatDYJets' )
+declare -a new_list=('HeavyNeutrinoToEmEm_Tchannel_M1000_v2' 'HeavyNeutrinoToEmEm_Tchannel_M1700_v2' 'HeavyNeutrinoToEmMum_Tchannel_M1000_v2' 'HeavyNeutrinoToEmMum_Tchannel_M1700_v2' 'HeavyNeutrinoToEpEp_Tchannel_M1000_v2' 'HeavyNeutrinoToEpEp_Tchannel_M1700_v2' 'HeavyNeutrinoToEpMup_Tchannel_M1000_v2' 'HeavyNeutrinoToEpMup_Tchannel_M1700_v2' 'HeavyNeutrinoToMumEm_Tchannel_M1000_v2' 'HeavyNeutrinoToMumEm_Tchannel_M1700_v2' 'HeavyNeutrinoToMumMum_Tchannel_M1000_v2' 'HeavyNeutrinoToMumMum_Tchannel_M1700_v2' 'HeavyNeutrinoToMupEp_Tchannel_M1000_v2' 'HeavyNeutrinoToMupEp_Tchannel_M1700_v2' 'HeavyNeutrinoToMupMup_Tchannel_M1000_v2' 'HeavyNeutrinoToMupMup_Tchannel_M1700_v2' )
+declare -a new_list=('WRToNLep_MuMuJJ_WR1000_N500_LO_MG' 'WRToNLep_MuMuJJ_WR1000_N500_NLO_MG' 'WRToNLep_MuMuJJ_WR2000_N1000_LO_MG' 'WRToNLep_MuMuJJ_WR2000_N1000_NLO_MG' 'WRToNLep_MuMuJJ_WR4000_N2000_LO_MG' 'WRToNLep_MuMuJJ_WR4000_N2000_NLO_MG' 'WRToNuMuToMuMuJJ_MW-1000_MNu-500_TuneCUETP8M1_13TeV-pythia8_Pythia' 'WRToNuMuToMuMuJJ_MW-2000_MNu-1000_TuneCUETP8M1_13TeV-pythia8_Pythia' 'WRToNuMuToMuMuJJ_MW-4000_MNu-2000_TuneCUETP8M1_13TeV-pythia8_Pythia' 'ZprimeToNN_MuMuJJJJ_Zprime2000_N400_WR5000_LO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime2000_N400_WR5000_NLO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime2000_N800_WR5000_LO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime2000_N800_WR5000_NLO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N1600_WR5000_LO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N1600_WR5000_NLO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N400_WR5000_LO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N400_WR5000_NLO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N800_WR5000_LO_MG' 'ZprimeToNN_MuMuJJJJ_Zprime4000_N800_WR5000_NLO_MG' )

@@ -94,12 +94,6 @@ export LQANALYZER_DIR=${PWD}
 
 
 
-if [[ $USER == "jalmond" ]]; then
-    python python/setupAN.py
-fi
-
-
-
 if [[ $1 == *"v7"* ]]; then
     echo "Setting up tag "$1
     export CHECKTAGFILE=/data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
