@@ -142,7 +142,7 @@ void ElectronPlots::Fill(Double_t weight, std::vector<snu::KElectron> electrons)
     Fill("h_pf_absiso_04",elit->PFAbsIso(0.3) ,  weight);
     Fill("h_dxy", elit->dxy(), weight); 
     Fill("h_dz", elit->dz(), weight); 
-    Fill("h_dxysig", elit->dxySig(), weight); 
+    Fill("h_dxysig", elit->dxySig2D(), weight); 
     Fill("h_trkvx", elit->TrkVx(), weight); 
     Fill("h_trkvy", elit->TrkVy(), weight); 
     Fill("h_trkvz", elit->TrkVz(), weight); 

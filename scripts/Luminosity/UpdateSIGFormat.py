@@ -14,9 +14,9 @@ list_nonsig=options.z
 
 
 if list_master=="":
-    list_master ="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_v8-0-7.txt"
-    list_sig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_sig_CAT_mc_v8-0-7.txt"
-    list_nonsig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_nonsig_CAT_mc_v8-0-7.txt"
+    list_master ="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_v8-0-8.txt"
+    list_sig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_sig_CAT_mc_v8-0-8.txt"
+    list_nonsig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_nonsig_CAT_mc_v8-0-8.txt"
 
 arr_master=[]
 arr_sig=[]
@@ -77,8 +77,8 @@ for r in arr_master:
 
 
 
-newlist_sig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_sig_CAT_mc_v8-0-7new.txt"
-newlist_nonsig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_nonsig_CAT_mc_v8-0-7new.txt"
+newlist_sig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_sig_CAT_mc_v8-0-8new.txt"
+newlist_nonsig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_nonsig_CAT_mc_v8-0-8new.txt"
 
 r_newlist_sig=open(newlist_sig,"w")
 r_newlist_nonsig=open(newlist_nonsig,"w")
@@ -180,8 +180,8 @@ for s in arrns_flat:
     print s
 
 
-mainlist_sig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_sig_CAT_mc_v8-0-7.txt"
-mainlist_nonsig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_nonsig_CAT_mc_v8-0-7.txt"
+mainlist_sig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_sig_CAT_mc_v8-0-8.txt"
+mainlist_nonsig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_nonsig_CAT_mc_v8-0-8.txt"
 
 print "Change in " + mainlist_sig +":"
 os.system("diff " + mainlist_sig + " " + newlist_sig)

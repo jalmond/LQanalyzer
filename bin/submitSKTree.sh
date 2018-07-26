@@ -7,7 +7,7 @@ cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
 
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim"  "SKTree_HNDiLepSkim" "SKTree_HNFakeSkim" "SKTree_HNFatJetSkim"  "SKTree_TriLepSkim" "SKTree_SSLepSkim" "NoCut" "Lepton" "DiLep")
-declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton" "DoubleMuon_CF")
+declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton" "JetHT")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
 
 #declare -a queueoptions=("allq" "fastq" "longq" "node1" "node2" "node3" "node4" "node5" "node6" "None")
@@ -105,9 +105,10 @@ is_mc=""
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
 ### setup list of samples and other useful functions
 TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_nonsig_"
+OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
 source submit_setup.sh
 
-OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
+
 
 
 if [[ $submit_sampletag  == "" ]];
@@ -649,8 +650,9 @@ if [[ $submit_file_list  != ""  ]];
 		ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
 	    fi
 
-	    
+
 	    eval test_single_file=(\${$ARG_SINGLE_FILE[@]})
+
 	    file_tag_exists=false
 	    for all_files in ${test_single_file[@]};
 	      do

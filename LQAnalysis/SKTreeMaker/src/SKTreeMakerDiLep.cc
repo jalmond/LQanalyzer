@@ -45,15 +45,13 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   TString analysis_trigger_eg="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   TString analysis_trigger_muon="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
   TString analysis_trigger_tkmuon="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
-  if(isData && _singleEG && PassTrigger(analysis_trigger_eg)) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-  if(isData && _singleMuon && (PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon) )) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
 
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
   std::vector<snu::KMuon> skim_muons;
   /// Apart from eta/pt muons are required to have a global OR tracker track    && be PF
   eventbase->GetMuonSel()->SetPt(5.); 
-  eventbase->GetMuonSel()->SetEta(3.);
+  eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
   SetCorrectedMomentum(out_muons);
 
@@ -164,6 +162,7 @@ void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_Mu2");
     AddTriggerToList("HLT_Mu3");
     AddTriggerToList("HLT_Mu5");
+    AddTriggerToList("HLT_TkMu5");
     AddTriggerToList("HLT_DoubleEle2");
     AddTriggerToList("HLT_DoubleEle8");
     AddTriggerToList("HLT_DoubleEle3");
@@ -190,6 +189,7 @@ void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_Mu2");
     AddTriggerToList("HLT_Mu3");
     AddTriggerToList("HLT_Mu5");
+    AddTriggerToList("HLT_TkMu5");
     AddTriggerToList("HLT_DoubleEle2");
     AddTriggerToList("HLT_DoubleEle8");
     AddTriggerToList("HLT_DoubleEle3");

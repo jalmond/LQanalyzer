@@ -47,7 +47,7 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> skim_muons;
   /// Apart from eta/pt muons are required to have a global OR tracker track    && be PF
   eventbase->GetMuonSel()->SetPt(5.); 
-  eventbase->GetMuonSel()->SetEta(3.);
+  eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
   SetCorrectedMomentum(out_muons);
 

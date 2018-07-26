@@ -19,6 +19,8 @@ bool CheckMaps(TString listpath);
 bool IsSignal(TString samplename){
   
   if(samplename.Contains("HN")) return true;
+  if(samplename.Contains("WR")) return true;
+  if(samplename.Contains("Majorana")) return true;
   if(samplename.Contains("CH")) return true;
   if(samplename.Contains("TTToHc")) return true;
   return false;

@@ -40,7 +40,8 @@ namespace snu {
     virtual std::string Type() const;
     
     void SetRelIso(double cone, double reliso);
-    void SetRelMiniIso( double relminiiso);
+    void SetRelMiniIsoBeta( double relminiiso);
+    void SetRelMiniIsoRho( double relminiiso);
     void SetMiniAODRelIso (double cone, double reliso);
     void SetMiniAODPt(double maodpt);
 
@@ -55,7 +56,8 @@ namespace snu {
     void SetRochE(double e);
     void Setdz(double dz);
     void Setdxy(double dxy);
-    void Setdxy_sig(double dxysig);
+    void Setdxy_sig2D(double dxysig2);
+    void Setdxy_sig3D(double dxysig3);
     void SetGlobalchi2(double glob_chi2);
     void SetValidHits(int validhits);
     void SetPixelValidHits(int valid_pix_hits);
@@ -105,10 +107,15 @@ namespace snu {
     inline Bool_t IsPromptFlag() const {return k_isprompt;}
     inline Double_t dZ() const {return k_dz;}
     inline Double_t dXY() const {return k_dxy;}
-    inline Double_t dXYSig() const {return k_dxy_sig;}
+    inline Double_t dXYSig() const {return k_dxy_sig2D;}
+    inline Double_t dXYSig2D() const {return k_dxy_sig2D;}
+    inline Double_t dXYSig3D() const {return k_dxy_sig3D;}
     inline Double_t  dxy() const {return  k_dxy;}
-    inline Double_t  dxySig() const {return  k_dxy_sig;}
+    inline Double_t  dxySig() const {return  k_dxy_sig2D;}
+    inline Double_t  dxySig2D() const {return  k_dxy_sig2D;}
+    inline Double_t  dxySig3D() const {return  k_dxy_sig3D;}
     inline Double_t  dz() const {return  k_dz;}
+
 
 
     inline Double_t GlobalChi2() const {return k_globmuon_chi2;}
@@ -149,8 +156,8 @@ namespace snu {
     inline Double_t RelMiniAODIso03()  const {return k_muon_maod_reliso03;}
     inline Double_t RelMiniAODIso04()  const {return k_muon_maod_reliso04;}
 
-    inline Double_t RelMiniIso()  const {return k_muon_relminiiso;}
-    inline Double_t PFRelMiniIso() const { return k_muon_relminiiso; }
+    inline Double_t PFRelMiniIsoBeta() const { return k_muon_relminiisoBeta; }
+    inline Double_t PFRelMiniIsoRho() const { return k_muon_relminiisoRho; }
 
 
     inline Double_t MiniAODPt() const {return muon_maod_pt;}
@@ -190,11 +197,11 @@ namespace snu {
   private:
     /// decalre private functions
   
-    Double_t k_dz, k_dxy ,k_dxy_sig,k_globmuon_chi2, k_muonVtx, k_muonVty, k_muonVtz;
+    Double_t k_dz, k_dxy ,k_dxy_sig2D,k_dxy_sig3D,k_globmuon_chi2, k_muonVtx, k_muonVty, k_muonVtz;
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
     Bool_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
 
-    Double_t muon_pt_up, muon_pt_down,muon_maod_pt,  k_muon_reliso03, k_muon_reliso04,k_muon_relminiiso,k_muon_maod_reliso03, k_muon_maod_reliso04;
+    Double_t muon_pt_up, muon_pt_down,muon_maod_pt,  k_muon_reliso03, k_muon_reliso04,k_muon_relminiisoBeta, k_muon_relminiisoRho ,k_muon_maod_reliso03, k_muon_maod_reliso04;
 
     Double_t k_roch_pt,k_roch_phi,k_roch_eta,k_roch_m,k_roch_e;
 
@@ -206,7 +213,7 @@ namespace snu {
     
     Int_t k_mctype;
     Bool_t k_isprompt;
-    ClassDef(KMuon,23)
+    ClassDef(KMuon,24)
   };   
 }//namespace snu
 

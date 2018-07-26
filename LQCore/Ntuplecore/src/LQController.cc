@@ -208,6 +208,7 @@ void LQController::SetChannel(TString ch){
   else if     (ch == "SingleMuon")      channel = "SingleMuon";
   else if     (ch == "SingleElectron")  channel = "SingleElectron";
   else if     (ch == "SinglePhoton")  channel = "SinglePhoton";
+  else if     (ch == "JetHT")  channel = "JetHT";
   else throw LQError( "No channel set. Not names have changed in v76X+",LQError::SkipCycle);
   
 }

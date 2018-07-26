@@ -150,6 +150,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_Mu2");
     AddTriggerToList("HLT_Mu3");
     AddTriggerToList("HLT_Mu5");
+    AddTriggerToList("HLT_TkMu5");
     AddTriggerToList("HLT_DoubleEle2");
     AddTriggerToList("HLT_DoubleEle8");
     AddTriggerToList("HLT_DoubleEle3");
@@ -158,9 +159,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_Ele2");
     AddTriggerToList("HLT_Ele3");
     AddTriggerToList("HLT_DoublePhoton");
-    AddTriggerToList("HLT_Photon36_R9Id90");
-    AddTriggerToList("HLT_Photon50_R9Id90");
-    AddTriggerToList("HLT_Photon90_R9Id90");
+    AddTriggerToList("HLT_Photon");
     AddTriggerToList("HLT_TripleMu");
     AddTriggerToList("HLT_DiMu");
 
@@ -177,6 +176,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_Mu2");
     AddTriggerToList("HLT_Mu3");
     AddTriggerToList("HLT_Mu5");
+    AddTriggerToList("HLT_TkMu5");
     AddTriggerToList("HLT_DoubleEle2");
     AddTriggerToList("HLT_DoubleEle8");
     AddTriggerToList("HLT_DoubleEle3");
@@ -185,9 +185,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_Ele2");
     AddTriggerToList("HLT_Ele3");
     AddTriggerToList("HLT_DoublePhoton");
-    AddTriggerToList("HLT_Photon36_R9Id90");
-    AddTriggerToList("HLT_Photon50_R9Id90");
-    AddTriggerToList("HLT_Photon90_R9Id90");
+    AddTriggerToList("HLT_Photon");
     AddTriggerToList("HLT_TripleMu");
     AddTriggerToList("HLT_DiMu");
 
