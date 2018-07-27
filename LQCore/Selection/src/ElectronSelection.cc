@@ -381,9 +381,9 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el, vector<pair<TS
   bool checkUseMiniIso=false;
   if(id.Contains("miniiso")) checkUseMiniIso=true;
   if(checkUseMiniIso){
-    LeptonRelIso = el.PFRelMiniIsoBeta();
+    LeptonRelIso = el.PFRelMiniIso(false);
   }
-
+  
   for(unsigned int idel =0; idel < vidf.size(); idel++){
     if(!Check(vidf[idel].second)) continue;
     if(vidf[idel].first == "isomax03_b") {
@@ -475,7 +475,7 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   if(id.Contains("miniiso")) checkUseMiniIso=true;
 
   if(checkUseMiniIso){
-    LeptonRelIso = el.PFRelMiniIsoBeta();
+    LeptonRelIso = el.PFRelMiniIso(false);
   }
   bool pass_selection=true;
 
@@ -642,7 +642,7 @@ bool ElectronSelection::PassUserID(snu::KElectron el, TString id, TString el_id,
   LeptonRelIso = el.PFRelIso(0.3);
   
   if(id.Contains("miniaod")){
-    LeptonRelIso = el.PFRelMiniIsoBeta();
+    LeptonRelIso = el.PFRelMiniIso(false);
   }
   
   
