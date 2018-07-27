@@ -618,7 +618,7 @@ bool ElectronSelection::PassUserID(snu::KElectron el, TString id, TString el_id,
   LeptonRelIso = el.PFRelIso(0.3);
   
   if(id.Contains("miniaod")){
-    LeptonRelIso = el.PFRelMiniIsoBeta();
+    LeptonRelIso = el.PFRelMiniIso(false);
   }
   
   
