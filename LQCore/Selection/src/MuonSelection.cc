@@ -277,7 +277,7 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu, vector<pair<TString, T
   if(debug) cout << "PassUserID(TString id, snu::KMuon mu, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf" << endl;
   LeptonRelIso = (mu.RelIso04());
   float LeptonRelIso03 = (mu.RelIso03());
-  if(id.Contains("miniiso")) LeptonRelIso= mu.PFRelMiniIsoBeta();
+  if(id.Contains("miniiso")) LeptonRelIso= mu.PFRelMiniIsoRho();
   
   for(unsigned int idel =0; idel < vidf.size(); idel++){
     if(!Check( vidf[idel].second)) continue;
@@ -384,7 +384,7 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   //if(id.Contains("VETO")) debug=true;
   LeptonRelIso = (mu.RelIso04());
   float LeptonRelIso03 = (mu.RelIso04());
-  if(id.Contains("miniiso")) LeptonRelIso= mu.PFRelMiniIsoBeta();
+  if(id.Contains("miniiso")) LeptonRelIso= mu.PFRelMiniIsoRho();
 
   bool pass_selection=true;
   if(checkisloose && ! mu.IsLoose ()) { pass_selection = false;if(debug){ cout << "Fail isloose" << endl;}}
