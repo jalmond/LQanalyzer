@@ -47,7 +47,7 @@ KLepton::KLepton(const snu::KMuon& muon) :
   k_dxy_sig2D(muon.dXYSig2D()),
   k_dxy_sig3D(muon.dXYSig3D()),
   k_reliso(muon.RelIso04()),
-  k_minireliso(muon.RelMiniIso()),
+  k_minireliso(muon.PFRelMiniIsoRho()),
   k_leptype(muon.GetType()),
   k_mciscf(muon.MCIsCF()),
   MuonPtr(&muon),
@@ -64,6 +64,7 @@ KLepton::KLepton(const snu::KElectron& electron) :
   k_dxy_sig2D(electron.dxySig2D()),
   k_dxy_sig3D(electron.dxySig3D()),
   k_reliso(electron.PFRelIso(0.3)),
+  k_minireliso(electron.PFRelMiniIso(false)),
   k_leptype(electron.GetType()),
   k_mciscf(electron.MCIsCF()),
   MuonPtr(NULL),
@@ -86,6 +87,7 @@ KLepton& KLepton::operator= (const KLepton& lep){
     k_dxy_sig2D = lep.k_dxy_sig2D;
     k_dxy_sig3D = lep.k_dxy_sig3D;
     k_reliso = lep.k_reliso;
+    k_minireliso = lep.k_minireliso;
     k_leptype = lep.k_leptype;
     k_mciscf = lep.k_mciscf;
     MuonPtr = lep.MuonPtr;
@@ -105,6 +107,7 @@ KLepton& KLepton::operator= (const snu::KMuon& muon){
   k_dxy_sig2D = muon.dXYSig2D();
   k_dxy_sig3D = muon.dXYSig3D();
   k_reliso = muon.RelIso04();
+  k_minireliso = muon.PFRelMiniIsoRho();
   k_leptype = muon.GetType();
   k_mciscf = muon.MCIsCF();
   MuonPtr = &muon;
@@ -123,6 +126,7 @@ KLepton& KLepton::operator= (const snu::KElectron& electron){
   k_dxy_sig2D = electron.dxySig2D();
   k_dxy_sig3D = electron.dxySig3D();
   k_reliso = electron.PFRelIso(0.3);
+  k_minireliso = electron.PFRelMiniIso(false);
   k_leptype = electron.GetType();
   k_mciscf = electron.MCIsCF();
   MuonPtr = NULL;
