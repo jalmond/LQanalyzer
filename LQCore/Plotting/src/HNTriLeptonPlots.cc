@@ -40,7 +40,7 @@ HNTriLeptonPlots::HNTriLeptonPlots(TString name): StdPlots(name){
   map_sig["h_secondLepton_dXY"] = new TH1D("h_secondLepton_dXY_"+name, "secondary lepton dXY", 1000, 0, 0.1);
   map_sig["h_thirdLepton_dXY"] = new TH1D("h_thirdLepton_dXY_"+name, "thirdary lepton dXY", 1000, 0, 0.1);
 
-  map_sig["h_dXYSig"] = new TH1D("h_dXYSig_"+name, "lepton dXYSig", 80, 0., 8.);
+  map_sig["h_dXYSig2D"] = new TH1D("h_dXYSig2D_"+name, "lepton dXYSig", 80, 0., 8.);
   map_sig["h_leadingLepton_dXYSig"] = new TH1D("h_leadingLepton_dXYSig_"+name, "leading lepton dXYSig", 80, 0., 8.);
   map_sig["h_secondLepton_dXYSig"] = new TH1D("h_secondLepton_dXYSig_"+name, "secondary lepton dXYSig", 80, 0., 8.);
   map_sig["h_thirdLepton_dXYSig"] = new TH1D("h_thirdLepton_dXYSig_"+name, "thirdary lepton dXYSig", 80, 0., 8.);
@@ -105,7 +105,7 @@ void HNTriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std:
       Fill("h_LeptonEta",muit->Eta(),weight);
       Fill("h_LeptonRelIso", LeptonRelIso, weight);
       Fill("h_dXY", fabs(muit->dXY()), weight);
-      Fill("h_dXYSig", fabs(muit->dXYSig()), weight);
+      Fill("h_dXYSig2D", fabs(muit->dXYSig2D()), weight);
       Fill("h_dZ", muit->dZ(), weight);
       Fill("h_GlobalChi2", muit->GlobalChi2(), weight);
       if(imu ==0) {
@@ -113,7 +113,7 @@ void HNTriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std:
         Fill("h_leadingLepton_Eta",muit->Eta(),weight);
         Fill("h_leadingLepton_LeptonRelIso", LeptonRelIso, weight);
         Fill("h_leadingLepton_dXY", fabs(muit->dXY()), weight);
-        Fill("h_leadingLepton_dXYSig", fabs(muit->dXYSig()), weight);
+        Fill("h_leadingLepton_dXYSig", fabs(muit->dXYSig2D()), weight);
         Fill("h_leadingLepton_dZ", muit->dZ(), weight);
         Fill("h_leadingLepton_GlobalChi2", muit->GlobalChi2(), weight);
       }
@@ -122,7 +122,7 @@ void HNTriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std:
         Fill("h_secondLepton_Eta",muit->Eta(),weight);
         Fill("h_secondLepton_LeptonRelIso", LeptonRelIso, weight);
         Fill("h_secondLepton_dXY", fabs(muit->dXY()), weight);
-        Fill("h_secondLepton_dXYSig", fabs(muit->dXYSig()), weight);
+        Fill("h_secondLepton_dXYSig", fabs(muit->dXYSig2D()), weight);
         Fill("h_secondLepton_dZ", muit->dZ(), weight);
         Fill("h_secondLepton_GlobalChi2", muit->GlobalChi2(), weight);
       }
@@ -131,7 +131,7 @@ void HNTriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std:
         Fill("h_thirdLepton_Eta",muit->Eta(),weight);
         Fill("h_thirdLepton_LeptonRelIso", LeptonRelIso, weight);
         Fill("h_thirdLepton_dXY", fabs(muit->dXY()), weight);
-        Fill("h_thirdLepton_dXYSig", fabs(muit->dXYSig()), weight);
+        Fill("h_thirdLepton_dXYSig", fabs(muit->dXYSig2D()), weight);
         Fill("h_thirdLepton_dZ", muit->dZ(), weight);
         Fill("h_thirdLepton_GlobalChi2", muit->GlobalChi2(), weight);
       }

@@ -176,6 +176,7 @@ void HNDiLepton::DoCutFlow(float w){
 
 void HNDiLepton::ExecuteEvents()throw( LQError ){
 
+  PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
     
   if(k_running_nonprompt){
     while(!fake_configured){
@@ -255,8 +256,13 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   if(k_running_nonprompt) elid=_e_looseid;
   
   /// Get collection of muons with non-prompt included for MC
-  std::vector<snu::KMuon> muons_fake = GetMuons(muid,true);
-  
+  std::vector<snu::KMuon> muons_fake = GetMuons(muid,false);
+  if(muons_fake.size()==2)    FillHist("Z_mm", 0., 1., 0., 2, 2);
+
+  if(SameCharge(muons_fake))FillHist("Z_ss_mm", 0., 1., 0., 2, 2);
+
+  return;
+
   /*if(SameCharge(muons_fake)){
     cout << muons_fake[0].Pt() << " " << muons_fake[0].Eta() << " " << muons_fake[0].Phi() <<  " " << muons_fake[0].GetType() << endl;
     cout << muons_fake[1].Pt() << " " << muons_fake[1].Eta() << " " << muons_fake[1].Phi() <<  " " << muons_fake[1].GetType() <<endl;

@@ -389,7 +389,7 @@ function print_tag_diff_twotags
 	      NEWTAGS+=(${line})
 	  fi
       fi
-    done < ${CATTAGDIR}/LatestTag80X.txt
+    done < ${CATTAGDIR}/LatestTag808.txt
 
     for ntag in  ${NEWTAGS[@]};
       do
@@ -490,7 +490,7 @@ function print_tag_diff_vs_currenttag
 	  sline=$(echo $line | head -n1 | awk '{print $1}')
 	  latest_tag=$sline
       fi
-    done < $CATTAGDIR/LatestTag80X.txt
+    done < $CATTAGDIR/LatestTag808.txt
     
     if [[ $latest_tag == $CATTAG ]];then
 	
@@ -1388,7 +1388,12 @@ while [ "$1" != "" ]; do
     case $1 in
         -a | --analysis_name )  shift
                                 submit_analyzer_name=$1
-				set_submit_analyzer_name=true
+				set_submit_analyzer_name=true	
+				if [[ $1 == "SKTreeMaker"* ]];
+				    then
+				    TXTPATH=${OLDTXTPATH}
+				fi
+				    
 				;;
         -i | --input )          shift
                                 submit_file_tag=$1
@@ -1709,12 +1714,15 @@ done
 
 #declare -a streams=("")
 declare -a data_periods=("")
-declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon" "DoubleMuon_CF")
+declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon" "JetHT")
 
 
 if [[ $job_data_lumi == "ALL" ]];
     then
 
+    if [[ $CATVERSION == "v8-0-8" ]];then
+        declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
+    fi
     if [[ $CATVERSION == "v8-0-7" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
@@ -1743,6 +1751,9 @@ fi
 
 if [[ $job_data_lumi == $catdatatag  ]];
 then
+    if [[ $CATVERSION == "v8-0-8" ]];then
+        declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
+    fi
     if [[ $CATVERSION == "v8-0-7" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
@@ -1889,7 +1900,7 @@ if [[ $submit_sampletag  == "MC" ]];
 
 fi
 
-declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG"  "SingleElectron" "SingleMuon")
+declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG"  "SingleElectron" "SingleMuon" "JetHT")
 if [[ $submit_sampletag  == "DATA" ]];
     then
     runDATA=true
@@ -1948,6 +1959,14 @@ if [[ $submit_sampletag  == "MuonEG" ]];
     runDATA=true
     
 fi
+
+declare -a JetHT=("JetHT")
+if [[ $submit_sampletag  == "JetHT" ]];
+    then
+    runDATA=true
+
+fi
+
 
 declare -a SinglePhoton=("SinglePhoton")
 if [[ $submit_sampletag  == "SinglePhoton" ]];

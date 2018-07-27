@@ -234,8 +234,8 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, TString Op
     }
 
     //d0 Significance
-    if(apply_dxysigmin && !(fabs(el->dxySig()) >= dxySig_min)) pass_selection = false;
-    if(apply_dxysigmax && !(fabs(el->dxySig()) <  dxySig_max)) pass_selection = false;
+    if(apply_dxysigmin && !(fabs(el->dxySig2D()) >= dxySig_min)) pass_selection = false;
+    if(apply_dxysigmax && !(fabs(el->dxySig2D()) <  dxySig_max)) pass_selection = false;
 
 
     if(apply_BESepCut){
@@ -376,7 +376,7 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el, vector<pair<TS
   bool checkUseMiniIso=false;
   if(id.Contains("miniiso")) checkUseMiniIso=true;
   if(checkUseMiniIso){
-    LeptonRelIso = el.PFRelMiniIso();
+    LeptonRelIso = el.PFRelMiniIsoBeta();
   }
 
   for(unsigned int idel =0; idel < vidf.size(); idel++){
@@ -412,10 +412,10 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el, vector<pair<TS
       }
     }
     if(vidf[idel].first == "|dxysigmin|") {
-      if(fabs(el.dxySig()) < vidf[idel].second) { if(debug){ cout << "Fail dsximin"  << endl;} return false;}
+      if(fabs(el.dxySig2D()) < vidf[idel].second) { if(debug){ cout << "Fail dsximin"  << endl;} return false;}
     }
     if(vidf[idel].first == "|dxysigmax|") {
-      if(fabs(el.dxySig()) >   vidf[idel].second) { if(debug){ cout << "Fail dsigmax"  << endl;} return false;}
+      if(fabs(el.dxySig2D()) >   vidf[idel].second) { if(debug){ cout << "Fail dsigmax"  << endl;} return false;}
     }
   }
   return true;
@@ -455,7 +455,7 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   if(id.Contains("miniiso")) checkUseMiniIso=true;
 
   if(checkUseMiniIso){
-    LeptonRelIso = el.PFRelMiniIso();
+    LeptonRelIso = el.PFRelMiniIsoBeta();
   }
   bool pass_selection=true;
 
@@ -515,8 +515,8 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   if(convveto&& (!el.PassesConvVeto()) ){pass_selection = false;if(debug){ cout << "Fail convveto" << endl;}}
   if(checkchargeconsy &&  !el.GsfCtfScPixChargeConsistency()) {pass_selection = false;if(debug){ cout << "Fail charge" << endl;}}
 
-  if(checkdxysigmin &&(fabs(el.dxySig()) < dxysigmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}
-  if(checkdxysigmax &&(fabs(el.dxySig()) > dxysigmax)) { pass_selection = false;if(debug){ cout << "Fail dsigmax"  << endl;}}
+  if(checkdxysigmin &&(fabs(el.dxySig2D()) < dxysigmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}
+  if(checkdxysigmax &&(fabs(el.dxySig2D()) > dxysigmax)) { pass_selection = false;if(debug){ cout << "Fail dsigmax"  << endl;}}
 
   if(fabs(el.SCEta())<1.479 ){  
 
@@ -618,7 +618,7 @@ bool ElectronSelection::PassUserID(snu::KElectron el, TString id, TString el_id,
   LeptonRelIso = el.PFRelIso(0.3);
   
   if(id.Contains("miniaod")){
-    LeptonRelIso = el.PFRelMiniIso();
+    LeptonRelIso = el.PFRelMiniIsoBeta();
   }
   
   
@@ -645,10 +645,10 @@ bool ElectronSelection::PassUserID(snu::KElectron el, TString id, TString el_id,
     }
   }
   if(Check(dxysigmax)){
-    if((fabs(el.dxySig()) > dxysigmax)) { if(debug){ cout << "Fail dsigmax"  << endl;}return false;}     
+    if((fabs(el.dxySig2D()) > dxysigmax)) { if(debug){ cout << "Fail dsigmax"  << endl;}return false;}     
   }
   if(Check(dxysigmin)){
-    if((fabs(el.dxySig()) < dxysigmin)) { if(debug){ cout << "Fail dsximin"  << endl;}return false;}
+    if((fabs(el.dxySig2D()) < dxysigmin)) { if(debug){ cout << "Fail dsximin"  << endl;}return false;}
   }
 
   return true;

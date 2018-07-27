@@ -209,11 +209,14 @@ public :
    std::vector<double>  *electrons_chIso03;
    std::vector<double>  *electrons_chIso04;
    std::vector<double>  *electrons_dxy;
-   std::vector<double>  *electrons_sigdxy;
+   std::vector<double>  *electrons_ip2D;
+   std::vector<double>  *electrons_ip3D;
    std::vector<double>  *electrons_dz;
    std::vector<double>  *electrons_energy;
    std::vector<double>  *electrons_eta;
    std::vector<double>  *electrons_isGsfCtfScPixChargeConsistent;
+   std::vector<double>  *electrons_isGsfScPixChargeConsistent;
+   std::vector<double>  *electrons_isGsfCtfChargeConsistent;
    std::vector<double>  *electrons_m;
    std::vector<double>  *electrons_nhIso03;
    std::vector<double>  *electrons_nhIso04;
@@ -226,7 +229,8 @@ public :
 
    std::vector<double>  *electrons_relIso03;
    std::vector<double>  *electrons_relIso04;
-   std::vector<double>  *electrons_minirelIso;
+   std::vector<double>  *electrons_minirelIsoBeta;
+   std::vector<double>  *electrons_minirelIsoRho;
    std::vector<double>  *electrons_scEta;
    std::vector<double>  *electrons_shiftedEnDown;
    std::vector<double>  *electrons_shiftedEnUp;
@@ -378,7 +382,8 @@ public :
    std::vector<double>  *metPuppi_pt;
    std::vector<double>  *metPuppi_sumet;
    std::vector<double>  *muon_dxy;
-   std::vector<double>  *muon_sigdxy;
+   std::vector<double>  *muon_ip2D;
+   std::vector<double>  *muon_ip3D;
    std::vector<double>  *muon_dz;
    std::vector<double>  *muon_energy;
    std::vector<double>  *muon_eta;
@@ -388,7 +393,8 @@ public :
    std::vector<double>  *muon_pt;
    std::vector<double>  *muon_relIso03;
    std::vector<double>  *muon_relIso04;
-   std::vector<double>  *muon_minirelIso;
+   std::vector<double>  *muon_minirelIsoBeta;
+   std::vector<double>  *muon_minirelIsoRho;
    std::vector<double>  *muon_shiftedEdown;
    std::vector<double>  *muon_shiftedEup;
    std::vector<double>  *muon_x;
@@ -566,11 +572,14 @@ public :
    TBranch        *b_electrons_chIso03;   //!                                                                                                                                                                                                                                
    TBranch        *b_electrons_chIso04;   //!                                                                                                                                                                                                                                
    TBranch        *b_electrons_dxy;   //!                                                                                                                                                                                                                                    
-   TBranch        *b_electrons_sigdxy;   //!                                                                                                                                                                                                                                    
+   TBranch        *b_electrons_ip2D;   //!                                                                                                                                                                                                                                    
+   TBranch        *b_electrons_ip3D;   //!                                                                                                                                                                                                                                    
    TBranch        *b_electrons_dz;   //!                                                                                                                                                                                                                                     
    TBranch        *b_electrons_energy;   //!                                                                                                                                                                                                                                 
    TBranch        *b_electrons_eta;   //!                                                                                                                                                                                                                                    
    TBranch        *b_electrons_isGsfCtfScPixChargeConsistent;   //!                                                                                                                                                                                                          
+   TBranch        *b_electrons_isGsfScPixChargeConsistent;   //!                                                                                                                                                                                                         
+   TBranch        *b_electrons_isGsfCtfChargeConsistent;   //!                                                                                                                                                                                                          
    TBranch        *b_electrons_m;   //!                                                                                                                                                                                                                                      
    TBranch        *b_electrons_nhIso03;   //!                                                                                                                                                                                                                                
    TBranch        *b_electrons_nhIso04;   //!                                                                                                                                                                                                                                
@@ -585,7 +594,8 @@ public :
          
    TBranch        *b_electrons_relIso03;   //!                                                                                                                                                                                                                               
    TBranch        *b_electrons_relIso04;   //!                                                                                                                                                                                                                               
-   TBranch        *b_electrons_minirelIso;   //!                                                                                                                                                                                                                               
+   TBranch        *b_electrons_minirelIsoBeta;   //!                                                                                                                                                                                                                               
+   TBranch        *b_electrons_minirelIsoRho;   //!                                                                                                                                                                                                                               
    TBranch        *b_electrons_scEta;   //!                                                                                                                                                                                                                                  
    TBranch        *b_electrons_shiftedEnDown;   //!                                                                                                                                                                                                                          
    TBranch        *b_electrons_shiftedEnUp;   //!                                                                                                                                                                                                                            
@@ -734,7 +744,8 @@ public :
    TBranch        *b_met_jetRes_SumEt_down;   //!
 
    TBranch        *b_muon_dxy;   //!                                                                                                                                                                                                                                         
-   TBranch        *b_muon_sigdxy;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_muon_ip2D;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_muon_ip3D;   //!                                                                                                                                                                                                                                         
    TBranch        *b_muon_dz;   //!                                                                                                                                                                                                                                          
    TBranch        *b_muon_energy;   //!                                                                                                                                                                                                                                      
    TBranch        *b_muon_eta;   //!                                                                                                                                                                                                                                         
@@ -745,7 +756,8 @@ public :
    TBranch        *b_muon_q;   //!                                                                                                                                                                                                                                           
    TBranch        *b_muon_relIso03;   //!                                                                                                                                                                                                                                    
    TBranch        *b_muon_relIso04;   //!                                                                                                                                                                                                                                    
-   TBranch        *b_muon_minirelIso;   //!                                                                                                                                                                                                                                    
+   TBranch        *b_muon_minirelIsoBeta;   //!                                                                                                                                                                                                                                    
+   TBranch        *b_muon_minirelIsoRho;   //!                                                                                                                                                                                                                                    
    TBranch        *b_muon_shiftedEdown;   //!                                                                                                                                                                                                                                
    TBranch        *b_muon_shiftedEup;   //!                                                                                                                                                                                                                                  
 

@@ -66,7 +66,8 @@ namespace snu {
     //// set   vertex variables
     void SetType(int eltype);
     void Setdxy(Double_t d_xy);
-    void Setdxy_sig(Double_t d_xysig);
+    void Setdxy_sig2D(Double_t d_xysig);
+    void Setdxy_sig3D(Double_t d_xysig);
     void Setdz(Double_t d_z);
     
     void SetSNUID(int id);
@@ -102,12 +103,15 @@ namespace snu {
 
     
     void SetPFRelIso(Double_t cone, Double_t pf_rel);
-    void SetPFRelMiniIso( Double_t pf_rel);
+    void SetPFRelMiniIsoBeta( Double_t pf_rel);
+    void SetPFRelMiniIsoRho( Double_t pf_rel);
     void SetPFAbsIso(Double_t cone, Double_t pf_abs);
 
     
     // set charge variables
     void SetGsfCtfScPixCharge(bool gsfctfscpix_ch);
+    void SetGsfScPixCharge(bool gsfscpix_ch);
+    void SetGsfCtfCharge(bool gsfctf_ch);
 
     /// set conversion variables
     void SetIsMCExternalConversion(Bool_t isconv);
@@ -213,6 +217,8 @@ namespace snu {
     // charge variables
     
     inline Bool_t GsfCtfScPixChargeConsistency()  const {return k_gsf_ctscpix_charge;}
+    inline Bool_t GsfScPixChargeConsistency()  const {return k_gsf_scpix_charge;}
+    inline Bool_t GsfCtfChargeConsistency()  const {return k_gsf_ct_charge;}
     
     // Conversion variables
     inline Bool_t PassesConvVeto() const {return k_hasmatchconvphot;}
@@ -254,7 +260,12 @@ namespace snu {
       else return -999.;
     }
 
-    inline Double_t PFRelMiniIso() const { return k_rel_miniiso; }
+    inline Double_t PFRelMiniIso(bool beta) const { 
+      if(beta==true) return k_electrons_minirelIsoBeta;
+      else return k_electrons_minirelIsoRho;}
+
+    inline Double_t PFRelMiniIsoBeta() const { return PFRelMiniIso(true);}
+    inline Double_t PFRelMiniIsoRho() const { return PFRelMiniIso(false);}
 
 
     inline Double_t PFAbsIso(double cone) const {
@@ -265,7 +276,9 @@ namespace snu {
 
     /// VtxDist with vertex chosen to be primary   
     inline Double_t  dxy() const {return  k_dxy;}
-    inline Double_t  dxySig() const {return  k_dxy_sig;}
+    inline Double_t  dxySig() const {return  k_dxy_sig2D;}
+    inline Double_t  dxySig2D() const {return  k_dxy_sig2D;}
+    inline Double_t  dxySig3D() const {return  k_dxy_sig3D;}
     inline Double_t  dz() const {return  k_dz;}
     
 
@@ -282,12 +295,12 @@ namespace snu {
   private:
     /// decalre private functions
 
-    Double_t k_pf_chargedhad_iso03, k_pf_photon_iso03, k_pf_neutral_iso03, k_pf_chargedhad_iso04, k_pf_photon_iso04, k_pf_neutral_iso04, k_rel_iso03, k_rel_iso04, k_rel_miniiso;
+    Double_t k_pf_chargedhad_iso03, k_pf_photon_iso03, k_pf_neutral_iso03, k_pf_chargedhad_iso04, k_pf_photon_iso04, k_pf_neutral_iso04, k_rel_iso03, k_rel_iso04, k_electrons_minirelIsoBeta,k_electrons_minirelIsoRho;
     Double_t k_abs_iso03, k_abs_iso04;
-    Double_t k_dxy,k_dxy_sig, k_dz,k_trkvx,  k_trkvy,  k_trkvz;
+    Double_t k_dxy,k_dxy_sig2D,k_dxy_sig3D, k_dz,k_trkvx,  k_trkvy,  k_trkvz;
     Double_t k_sceta;
     
-    Bool_t k_gsf_ctscpix_charge,pass_hltid,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched,  k_is_cf,k_is_conv, k_is_fromtau,k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight, pass_notrigmva_zz, k_istrigmvavalid ;
+    Bool_t k_gsf_ctscpix_charge, k_gsf_scpix_charge, k_gsf_ct_charge,pass_hltid,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched,  k_is_cf,k_is_conv, k_is_fromtau,k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight, pass_notrigmva_zz, k_istrigmvavalid ;
     
     Double_t k_pt_shifted_up, k_pt_shifted_down;
     Int_t snu_id,k_mother_pdgid, k_mc_pdgid,k_mother_index, k_mc_index;
@@ -301,7 +314,7 @@ namespace snu {
     Bool_t k_isprompt;
 
 
-    ClassDef(KElectron,31);
+    ClassDef(KElectron,32);
   }; 
   
 }//namespace snu

@@ -139,11 +139,11 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool applyrochest
       if(apply_dxycut && !(fabs(muit->dXY())< dxy_cut )) pass_selection = false;
       if(DebugPrint && apply_dxycut && !(fabs(muit->dXY())< dxy_cut ))cout << "Fails Selection::dxy cut " << endl;
 
-      if(apply_dxysigmin && !(fabs(muit->dXYSig()) >= dxySig_min )) pass_selection = false;
-      if(DebugPrint && apply_dxysigmin && !(fabs(muit->dXYSig()) >= dxySig_min ))cout << "Fails Selection::dxySigMin cut " << endl;
+      if(apply_dxysigmin && !(fabs(muit->dXYSig2D()) >= dxySig_min )) pass_selection = false;
+      if(DebugPrint && apply_dxysigmin && !(fabs(muit->dXYSig2D()) >= dxySig_min ))cout << "Fails Selection::dxySigMin cut " << endl;
 
-      if(apply_dxysigmax && !(fabs(muit->dXYSig()) < dxySig_max )) pass_selection = false;
-      if(DebugPrint && apply_dxysigmax && !(fabs(muit->dXYSig()) < dxySig_max ))cout << "Fails Selection::dxySigMin cut " << endl;
+      if(apply_dxysigmax && !(fabs(muit->dXYSig2D()) < dxySig_max )) pass_selection = false;
+      if(DebugPrint && apply_dxysigmax && !(fabs(muit->dXYSig2D()) < dxySig_max ))cout << "Fails Selection::dxySigMin cut " << endl;
 
       
       if(apply_chi2cut && !( muit->GlobalChi2() < chiNdof_cut && muit->GlobalChi2() >= chiNdofMIN_cut )) pass_selection = false;
@@ -277,7 +277,7 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu, vector<pair<TString, T
   if(debug) cout << "PassUserID(TString id, snu::KMuon mu, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf" << endl;
   LeptonRelIso = (mu.RelIso04());
   float LeptonRelIso03 = (mu.RelIso03());
-  if(id.Contains("miniiso")) LeptonRelIso= mu.RelMiniIso();
+  if(id.Contains("miniiso")) LeptonRelIso= mu.PFRelMiniIsoBeta();
   
   for(unsigned int idel =0; idel < vidf.size(); idel++){
     if(!Check( vidf[idel].second)) continue;
@@ -308,10 +308,10 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu, vector<pair<TString, T
       dxymax=vidf[idel].second;
     }
     if(vidf[idel].first == "|dxysigmax|") {
-      if(fabs(mu.dXYSig()) > vidf[idel].second) {if(debug){ cout << "Fail dsigmax"  << endl;} return false;}
+      if(fabs(mu.dXYSig2D()) > vidf[idel].second) {if(debug){ cout << "Fail dsigmax"  << endl;} return false;}
     }
     if(vidf[idel].first == "|dxysigmin|") {
-      if(fabs(mu.dXYSig()) < vidf[idel].second) {if(debug){ cout << "Fail dsigmin"  << endl;} return false;}
+      if(fabs(mu.dXYSig2D()) < vidf[idel].second) {if(debug){ cout << "Fail dsigmin"  << endl;} return false;}
     }
     if(vidf[idel].first == "chi2max") {
       checkchi2max=true;
@@ -384,7 +384,7 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   //if(id.Contains("VETO")) debug=true;
   LeptonRelIso = (mu.RelIso04());
   float LeptonRelIso03 = (mu.RelIso04());
-  if(id.Contains("miniiso")) LeptonRelIso= mu.RelMiniIso();
+  if(id.Contains("miniiso")) LeptonRelIso= mu.PFRelMiniIsoBeta();
 
   bool pass_selection=true;
   if(checkisloose && ! mu.IsLoose ()) { pass_selection = false;if(debug){ cout << "Fail isloose" << endl;}}
@@ -423,8 +423,8 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
     }
   }
 
-  if(checkdxysigmin &&(fabs(mu.dXYSig()) < dxysigmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}
-  if(checkdxysigmax &&(fabs(mu.dXYSig()) > dxysigmax)) { pass_selection = false;if(debug){ cout << "Fail dsigmax"  << endl;}}
+  if(checkdxysigmin &&(fabs(mu.dXYSig2D()) < dxysigmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}
+  if(checkdxysigmax &&(fabs(mu.dXYSig2D()) > dxysigmax)) { pass_selection = false;if(debug){ cout << "Fail dsigmax"  << endl;}}
 
   
   vector<pair<TString, TString> > vids =GetStringList(id);

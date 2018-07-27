@@ -492,9 +492,10 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.SetMVA(electrons_mva->at(iel) );
       el.SetZZMVA(electrons_zzmva->at(iel) );
     }
-    if(electrons_sigdxy){
-      if(electrons_sigdxy->size() > 0 )el.Setdxy_sig(electrons_sigdxy->at(iel) );
-    }
+
+    if(electrons_ip2D)el.Setdxy_sig2D(electrons_ip2D->at(iel) );
+    if(electrons_ip3D)el.Setdxy_sig3D(electrons_ip3D->at(iel) );
+
     el.SetPFChargedHadronIso(0.3, electrons_puChIso03->at(iel));
     el.SetPFPhotonIso(0.3,electrons_phIso03->at(iel));
     el.SetPFNeutralHadronIso(0.3,electrons_nhIso03->at(iel));
@@ -503,7 +504,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
 
     m_logger << DEBUG << "Filling electron_minirelIso " << LQLogger::endmsg;
-    if(electrons_minirelIso) el.SetPFRelMiniIso(electrons_minirelIso->at(iel));
+    if(electrons_minirelIsoBeta) el.SetPFRelMiniIsoBeta(electrons_minirelIsoBeta->at(iel));
+    if(electrons_minirelIsoRho) el.SetPFRelMiniIsoRho(electrons_minirelIsoRho->at(iel));
     
     m_logger << DEBUG << "Filling electron Info 2" << LQLogger::endmsg;
     
@@ -519,6 +521,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     /// set Charge variables
     el.SetCharge(electrons_q->at(iel));
     el.SetGsfCtfScPixCharge(electrons_isGsfCtfScPixChargeConsistent->at(iel));
+    if(electrons_isGsfScPixChargeConsistent)el.SetGsfScPixCharge(electrons_isGsfScPixChargeConsistent->at(iel));
+    if(electrons_isGsfCtfChargeConsistent)el.SetGsfCtfCharge(electrons_isGsfCtfChargeConsistent->at(iel));
     
     m_logger << DEBUG << "Filling electron Info 3" << LQLogger::endmsg;
     /// set conversion variables
@@ -1375,7 +1379,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
  
     muon.SetRelIso(0.3,muon_relIso03->at(ilep));
     muon.SetRelIso(0.4,muon_relIso04->at(ilep));
-    if(muon_minirelIso)muon.SetRelMiniIso(muon_minirelIso->at(ilep));
+    if(muon_minirelIsoBeta)muon.SetRelMiniIsoBeta(muon_minirelIsoBeta->at(ilep));
+    if(muon_minirelIsoRho)muon.SetRelMiniIsoRho(muon_minirelIsoRho->at(ilep));
 
     if(k_cat_version  > 7){
       muon.SetMiniAODPt(muon_pt->at(ilep));
@@ -1385,7 +1390,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     }
     muon.Setdz(muon_dz->at(ilep));
     muon.Setdxy(muon_dxy->at(ilep));
-    if(muon_sigdxy)muon.Setdxy_sig(muon_sigdxy->at(ilep));
+    if(muon_ip2D)muon.Setdxy_sig2D(muon_ip2D->at(ilep));
+    if(muon_ip3D)muon.Setdxy_sig3D(muon_ip3D->at(ilep));
     //// chi2
     muon.SetGlobalchi2( muon_normchi->at(ilep));
         

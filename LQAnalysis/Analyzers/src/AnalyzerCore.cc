@@ -4716,10 +4716,12 @@ void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
     //if(k_classname=="SKTreeMaker" && (it->RochPt() >0.)) exit(EXIT_FAILURE);
     if(k_classname!="SKTreeMaker" && k_classname.Contains("SKTreeMaker")){
       if(k_classname!="SKTreeMakerHNDiLep" && k_classname.Contains("SKTreeMaker")){
-
-    if(it->RochPt() < 0.) {
-	cerr << "Roch Pt wrongly set in dilep skim" << endl;
-	exit(EXIT_FAILURE);
+	
+	
+	if(it->RochPt() < 0.) {
+	  cerr << "Roch Pt wrongly set in dilep skim: " << it->RochPt() << endl;
+	  exit(EXIT_FAILURE);
+	}
       }
     }
     
@@ -4730,8 +4732,8 @@ void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
       }
       else it->SetRochPt(it->Pt());
     }
-   }
   }
+  
 }
  
 void AnalyzerCore::MakeNtp(TString hname, TString myvar){

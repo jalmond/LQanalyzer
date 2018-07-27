@@ -2,6 +2,8 @@ import os,sys, filecmp
 
 tmpcatversion=str(os.getenv("CATVERSION"))
 
+print "CATVERSION = " + str(tmpcatversion)
+
 newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+tmpcatversion+"new.txt"
 if(os.path.exists(newsamplelist)):
     os.system("chmod 777 " + newsamplelist)
@@ -614,6 +616,8 @@ else:
     
     os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
 
+    os.system("cp " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_v8-0-X.txt " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt")
+    os.system("cp " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_v8-0-X.txt " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")
     os.system("python UpdateSIGFormat.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")        
 
     

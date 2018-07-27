@@ -11,7 +11,8 @@ KMuon::KMuon() :
   KParticle(),
   k_dz(-999.),
   k_dxy(-999.),
-  k_dxy_sig(-999.),
+  k_dxy_sig2D(-999.),
+  k_dxy_sig3D(-999.),
   k_globmuon_chi2(-999.),
   k_muonVtx(-999.),
   k_muonVty(-999.),
@@ -30,7 +31,8 @@ KMuon::KMuon() :
   muon_maod_pt(-999.),
   k_muon_reliso03(-999.),
   k_muon_reliso04(-999.),
-  k_muon_relminiiso(-999.),
+  k_muon_relminiisoBeta(-999.),
+  k_muon_relminiisoRho(-999.),
   k_muon_maod_reliso03(-999.),
   k_muon_maod_reliso04(-999.),
 
@@ -71,7 +73,8 @@ KMuon::KMuon(const KMuon& muon) :
   KParticle(muon),
   k_dz(muon.k_dz),
   k_dxy(muon.k_dxy),
-  k_dxy_sig(muon.k_dxy_sig),
+  k_dxy_sig2D(muon.k_dxy_sig2D),
+  k_dxy_sig3D(muon.k_dxy_sig3D),
   k_globmuon_chi2(muon.k_globmuon_chi2),
   k_muonVtx(muon.k_muonVtx),
   k_muonVty(muon.k_muonVty),
@@ -91,7 +94,8 @@ KMuon::KMuon(const KMuon& muon) :
   muon_maod_pt(muon.muon_maod_pt),
   k_muon_reliso03(muon.k_muon_reliso03),
   k_muon_reliso04(muon.k_muon_reliso04),
-  k_muon_relminiiso(muon.k_muon_relminiiso),
+  k_muon_relminiisoBeta(muon.k_muon_relminiisoBeta),
+  k_muon_relminiisoRho(muon.k_muon_relminiisoRho),
   k_muon_maod_reliso03(muon.k_muon_maod_reliso03),
   k_muon_maod_reliso04(muon.k_muon_maod_reliso04),
 
@@ -134,7 +138,8 @@ void KMuon::Reset()
   KParticle::Reset();
   k_dz=-999.;
   k_dxy=-999.;
-  k_dxy_sig=-999.;
+  k_dxy_sig2D=-999.;
+  k_dxy_sig3D=-999.;
   k_globmuon_chi2=-999;
   k_muonVtx=-999.;
   k_muonVty=-999.;
@@ -155,7 +160,8 @@ void KMuon::Reset()
   muon_maod_pt=0.;
   k_muon_reliso03=-999.;
   k_muon_reliso04=-999.;
-  k_muon_relminiiso=-999.;
+  k_muon_relminiisoBeta=-999.;
+  k_muon_relminiisoRho=-999.;
   k_muon_maod_reliso03=-999.;
   k_muon_maod_reliso04=-999.;
   k_roch_pt=-999.;
@@ -197,7 +203,8 @@ KMuon& KMuon::operator= (const KMuon& p)
 	k_muon_istracker = p.IsTracker();
 	k_dz=p.dZ();
 	k_dxy=p.dXY();
-	k_dxy_sig=p.dXYSig();
+	k_dxy_sig2D=p.dXYSig2D();
+	k_dxy_sig3D=p.dXYSig3D();
 	k_globmuon_chi2=p.GlobalChi2();
 	k_muon_valid_hits=p.validHits();
 	k_muon_valid_pixhits=p.validPixHits();
@@ -224,7 +231,8 @@ KMuon& KMuon::operator= (const KMuon& p)
 
 	k_muon_reliso03 = p.RelIso03();
 	k_muon_reliso04 = p.RelIso04();
-	k_muon_relminiiso = p.RelMiniIso();
+	k_muon_relminiisoBeta = p.PFRelMiniIsoBeta();
+	k_muon_relminiisoRho = p.PFRelMiniIsoRho();
 	
 	k_muon_maod_reliso03 = p.RelMiniAODIso03();
         k_muon_maod_reliso04 = p.RelMiniAODIso04();
@@ -345,10 +353,17 @@ void KMuon::Setdxy(double dxy){
   k_dxy = dxy;
 }
 
-void KMuon::Setdxy_sig(double dxysig){
+void KMuon::Setdxy_sig2D(double dxysig2D){
 
-  k_dxy_sig = dxysig;
+  k_dxy_sig2D = dxysig2D;
 }
+
+void KMuon::Setdxy_sig3D(double dxysig3D){
+  
+  k_dxy_sig3D = dxysig3D;
+}
+
+
 
 
 void KMuon::SetTrackVx(double vtx){
@@ -444,8 +459,12 @@ void KMuon::SetRelIso(double cone, double iso){
 
 }
 
-void KMuon::SetRelMiniIso( double iso){
-  k_muon_relminiiso = iso;
+void KMuon::SetRelMiniIsoBeta( double iso){
+  k_muon_relminiisoBeta = iso;
+}
+
+void KMuon::SetRelMiniIsoRho( double iso){
+  k_muon_relminiisoRho = iso;
 }
 
 

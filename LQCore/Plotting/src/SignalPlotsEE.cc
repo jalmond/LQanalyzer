@@ -911,12 +911,12 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
       else   Fill("h_LeptonDXY_pt3_B", elit->dxy(),weight);
     }
     Fill("h_LeptonDXY", elit->dxy(),weight);
-    Fill("h_LeptonDXYSig", elit->dxySig() ,weight);
+    Fill("h_LeptonDXYSig", elit->dxySig2D() ,weight);
 
      
     float el_reliso_03 =  elit->PFRelIso(0.3);
     float el_iso_03 = elit->PFAbsIso(0.3);
-    float el_minireliso = elit->PFRelMiniIso();
+    float el_minireliso = elit->PFRelMiniIso(true);
     
     Fill("h_LeptonIso", el_iso_03,weight);
     Fill("h_LeptonRelIso", el_reliso_03,weight);

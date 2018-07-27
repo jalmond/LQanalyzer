@@ -16,9 +16,12 @@ KParticle()
 {
   k_sceta=-999;
   k_dxy=-999;
-  k_dxy_sig=-999;
+  k_dxy_sig2D=-999;
+  k_dxy_sig3D=-999;
   k_dz=-999;
   k_gsf_ctscpix_charge=false;
+  k_gsf_scpix_charge=false; 
+  k_gsf_ct_charge=false;
   k_hasmatchconvphot=false; 
   k_pf_chargedhad_iso03=-999;
   k_pf_photon_iso03=-999;
@@ -28,7 +31,8 @@ KParticle()
   k_pf_neutral_iso04=-999;
   k_rel_iso03=-999;
   k_rel_iso04=-999;
-  k_rel_miniiso=-999;
+  k_electrons_minirelIsoBeta= -999.;
+  k_electrons_minirelIsoRho= -999.;
   k_abs_iso03=-999;
   k_abs_iso04=-999;
   k_pt_shifted_up=-999;
@@ -59,6 +63,8 @@ KParticle()
   k_trkvy=-999;
   k_trkvz=-999;
   k_gsf_ctscpix_charge=false;
+  k_gsf_scpix_charge=false;
+  k_gsf_ct_charge=false;
   k_trig_match="";
   k_eltype=-999;
   k_mva=-999;
@@ -79,9 +85,12 @@ KElectron::KElectron(const KElectron& el) :
   
   k_sceta= el.SCEta();
   k_dxy= el.dxy();
-  k_dxy_sig= el.dxySig();
+  k_dxy_sig2D= el.dxySig2D();
+  k_dxy_sig3D= el.dxySig3D();
   k_dz= el.dz();
   k_gsf_ctscpix_charge= el.GsfCtfScPixChargeConsistency();
+  k_gsf_scpix_charge= el.GsfScPixChargeConsistency();
+  k_gsf_ct_charge= el.GsfCtfChargeConsistency();
   k_hasmatchconvphot= el.PassesConvVeto();
   k_pf_chargedhad_iso03= el.PFChargedHadronIso(0.3);
   k_pf_photon_iso03 = el.PFPhotonIso(0.3);
@@ -91,7 +100,8 @@ KElectron::KElectron(const KElectron& el) :
   k_pf_neutral_iso04= el.PFNeutralHadronIso(0.4);
   k_rel_iso03=el.PFRelIso(0.3);
   k_rel_iso04=el.PFRelIso(0.4);
-  k_rel_miniiso=el.PFRelMiniIso();
+  k_electrons_minirelIsoBeta=el.PFRelMiniIso(true);
+  k_electrons_minirelIsoRho= el.PFRelMiniIso(false);
   k_abs_iso03=el.PFAbsIso(0.3);
   k_abs_iso04=el.PFAbsIso(0.4);
   k_pt_shifted_up=el.PtShiftedUp();
@@ -121,7 +131,10 @@ KElectron::KElectron(const KElectron& el) :
   k_trkvx= el.TrkVx();
   k_trkvy= el.TrkVy();
   k_trkvz= el.TrkVz();
+
   k_gsf_ctscpix_charge= el.GsfCtfScPixChargeConsistency();
+  k_gsf_scpix_charge= el.GsfScPixChargeConsistency();
+  k_gsf_ct_charge= el.GsfCtfChargeConsistency();
   k_trig_match= el.TrigMatch();
   k_eltype=el.GetType();
   k_mva=el.MVA();
@@ -144,9 +157,12 @@ void KElectron::Reset()
   KParticle::Reset();
   k_sceta=-999;
   k_dxy=-999;
-  k_dxy_sig=-999;
+  k_dxy_sig2D=-999;
+  k_dxy_sig3D=-999;
   k_dz=0;
   k_gsf_ctscpix_charge=false;
+  k_gsf_scpix_charge=false;
+  k_gsf_ct_charge=false;
   k_hasmatchconvphot=false;
   k_pf_chargedhad_iso03=-999;
   k_pf_photon_iso03=-999;
@@ -185,7 +201,6 @@ void KElectron::Reset()
   k_trkvz=-999;
   k_abs_iso03=-999;
   k_abs_iso04=-999;
-  k_gsf_ctscpix_charge=false;
   k_trig_match="";
   k_eltype=-999;
   k_mva=-999;
@@ -205,7 +220,9 @@ KElectron& KElectron::operator= (const KElectron& p)
     KParticle::operator=(p);
     k_sceta= p.SCEta();
     k_dxy= p.dxy();
-    k_dxy_sig= p.dxySig();
+    k_dxy_sig2D= p.dxySig2D();
+    k_dxy_sig3D= p.dxySig3D();
+
     k_dz= p.dz();
     k_gsf_ctscpix_charge= p.GsfCtfScPixChargeConsistency();
     k_hasmatchconvphot= p.PassesConvVeto();
@@ -217,7 +234,8 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_pf_neutral_iso04= p.PFNeutralHadronIso(0.4);
     k_rel_iso03=p.PFRelIso(0.3);
     k_rel_iso04=p.PFRelIso(0.4);
-    k_rel_miniiso=p.PFRelMiniIso();
+    k_electrons_minirelIsoBeta=p.PFRelMiniIso(true);
+    k_electrons_minirelIsoRho= p.PFRelMiniIso(false);
     k_pt_shifted_up=p.PtShiftedUp();
     k_pt_shifted_down=p.PtShiftedDown();
     pass_veto=p.PassVeto();
@@ -671,8 +689,11 @@ void KElectron::Setdz(double d_z){
 void KElectron::Setdxy(double d_xy){ 
   k_dxy = d_xy;
 }
-void KElectron::Setdxy_sig(double d_xysig){
-  k_dxy_sig = d_xysig;
+void KElectron::Setdxy_sig2D(double d_xysig2D){
+  k_dxy_sig2D = d_xysig2D;
+}
+void KElectron::Setdxy_sig3D(double d_xysig3D){
+  k_dxy_sig3D = d_xysig3D;
 }
 
  
@@ -698,8 +719,15 @@ void KElectron::SetPFRelIso(Double_t cone,Double_t reliso){
   else  if(cone == 0.4) k_rel_iso04=reliso;
 }
 
-void KElectron::SetPFRelMiniIso(Double_t reliso){
-  k_rel_miniiso=reliso;
+void KElectron::SetPFRelMiniIsoBeta(Double_t reliso){
+  k_electrons_minirelIsoBeta = reliso;
+
+}
+
+
+void KElectron::SetPFRelMiniIsoRho(Double_t reliso){
+  k_electrons_minirelIsoRho = reliso;
+
 }
 
 void KElectron::SetPFAbsIso(Double_t cone,Double_t absiso){
@@ -712,6 +740,14 @@ void KElectron::SetPFAbsIso(Double_t cone,Double_t absiso){
 
 void KElectron::SetGsfCtfScPixCharge(bool gsfctfscpix_ch){
   k_gsf_ctscpix_charge = gsfctfscpix_ch;
+}
+
+void KElectron::SetGsfScPixCharge(bool gsfscpix_ch){
+  k_gsf_scpix_charge = gsfscpix_ch;
+}
+
+void KElectron::SetGsfCtfCharge(bool gsfctf_ch){
+  k_gsf_ct_charge = gsfctf_ch;
 }
 
 

@@ -820,7 +820,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonPhi",muit->Phi(),weight);
     Fill("h_LeptonEta",muit->Eta(),weight);
     Fill("h_LeptonDXY", muit->dXY(),weight);
-    Fill("h_LeptonDXYSig", muit->dXYSig() ,weight);
+    Fill("h_LeptonDXYSig", muit->dXYSig2D() ,weight);
 
 
     if(fabs(muit->Eta()) > 1.5) {
@@ -833,7 +833,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     }
    
     float mu_reliso_04 =  muit->RelIso04();
-    float mu_minireliso = muit->RelMiniIso();
+    float mu_minireliso = muit->PFRelMiniIsoBeta();
     
     Fill("h_LeptonIso", muit->RelIso04(),weight);
 

@@ -23,7 +23,7 @@ void MuonPlots::Fill(Double_t weight, std::vector<snu::KMuon> muons){
     Fill("h_muonvtz",muit->muonVtz() ,  weight);
     Fill("h_dz",muit->dZ() ,  weight);
     Fill("h_dxy",muit->dXY() ,  weight);
-    Fill("h_sigdxy",muit->dXYSig() ,  weight);
+    Fill("h_sigdxy",muit->dXYSig2D() ,  weight);
     Fill("h_chi2",muit->GlobalChi2() ,  weight);
     Fill("h_isloose",muit->IsLoose() ,  weight);
     Fill("h_ismedium",muit->IsMedium() ,  weight);

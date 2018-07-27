@@ -35,7 +35,7 @@ do
 	sline=$(echo $line | head -n1 | awk '{print $1}')
 	latest_tag=$sline
     fi
-done < $tagpath/LatestTag80X.txt
+done < $tagpath/LatestTag808.txt
 
 
 if [[ $latest_tag == $CATTAG ]];then
@@ -64,7 +64,7 @@ else
 	    fi
 	    NEWTAGS+=(${line})
 	fi
-    done < $tagpath/LatestTag80X.txt
+    done < $tagpath/LatestTag808.txt
 
 
     for ntag in  ${NEWTAGS[@]};
