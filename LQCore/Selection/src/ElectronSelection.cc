@@ -70,7 +70,7 @@ bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, double ptc
 }
 
 
-bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, TString el_id, bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut, double etacut){
+bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, TString el_id, bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin, double ip3dmax, double ip3dmin, double ptcut, double etacut){
 
   //// This is not used by any code but can be used by user IF they prefer
   /// This is Ferdinando style
@@ -78,7 +78,7 @@ bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, TString el
   bool pass_selection = true;
   if ( fabs(el.SCEta())>1.4442 && fabs(el.SCEta())<1.566 ) return false;;
 
-  ElectronID = PassUserID(el ,elid, el_id, check_cc,check_cv, isomax_b,isomax03_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin);
+  ElectronID = PassUserID(el ,elid, el_id, check_cc,check_cv, isomax_b,isomax03_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin, ip3dmax, ip3dmin);
   if(!ElectronID)  pass_selection = false;
 
   if(!(fabs(el.SCEta()) < etacut)) pass_selection = false;
@@ -129,16 +129,16 @@ bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, vector<pai
 
 
 
-void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID elid,TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut, double etacut){
-  return SelectElectrons(leptonColl,GetString(elid),  el_id,check_cc,check_cv, isomax_b,isomax03_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin, ptcut,etacut);
+void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID elid,TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin, double ip3dmax, double ip3dmin , double ptcut, double etacut){
+  return SelectElectrons(leptonColl,GetString(elid),  el_id,check_cc,check_cv, isomax_b,isomax03_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin, ip3dmax,ip3dmin, ptcut,etacut);
 }
   
-void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TString elid, TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut, double etacut){
+void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TString elid, TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut,   double ip3dmax, double ip3dmin, double etacut){
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
-    if(ElectronPass(*el, elid, el_id,check_cc,check_cv, isomax_b,isomax03_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin, ptcut,etacut) ) leptonColl.push_back(*el);
+    if(ElectronPass(*el, elid, el_id,check_cc,check_cv, isomax_b,isomax03_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin, ip3dmax,ip3dmin, ptcut,etacut) ) leptonColl.push_back(*el);
 
 
   }// end of el loop
@@ -188,7 +188,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, TString Op
       if     (GetString(k_id).Contains("POG"))             ElectronID = PassID(*el, k_id);
       else if(GetString(k_id).Contains("HctoWA"))          ElectronID = PassID(*el, k_id);
       else if(GetString(k_id).Contains("ELECTRON_HN_MVA")) ElectronID = PassID(*el, k_id);
-      else ElectronID = PassUserID( *el,GetString(k_id) , GetString(k_id), apply_chargeconst, apply_convcut,relIsoBarrel_max,relIsoEndcap_max,dxyBarrel_max,dxyEndcap_max,dzBarrel_max,dzEndcap_max, 999.,999.);
+      else ElectronID = PassUserID( *el,GetString(k_id) , GetString(k_id), apply_chargeconst, apply_convcut,relIsoBarrel_max,relIsoEndcap_max,dxyBarrel_max,dxyEndcap_max,dzBarrel_max,dzEndcap_max, 0., 0.,999.,999.);
 
       if(!ElectronID) {
         pass_selection = false;
@@ -237,6 +237,10 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, TString Op
     if(apply_dxysigmin && !(fabs(el->dxySig2D()) >= dxySig_min)) pass_selection = false;
     if(apply_dxysigmax && !(fabs(el->dxySig2D()) <  dxySig_max)) pass_selection = false;
 
+    if(apply_IP3Dmin && !(fabs(el->dxySig3D()) >= IP3D_min)) pass_selection = false;
+    if(apply_IP3Dmax && !(fabs(el->dxySig3D()) <  IP3D_max)) pass_selection = false;
+
+
 
     if(apply_BESepCut){
       if(fabs(el->SCEta())<1.479){
@@ -264,6 +268,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, TString Op
         if(DebugPrint) cout << "Selection: Fail dxy Cut" << endl;
       }
     }
+    
 
 
     if(pass_selection){
@@ -417,6 +422,12 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el, vector<pair<TS
     if(vidf[idel].first == "|dxysigmax|") {
       if(fabs(el.dxySig2D()) >   vidf[idel].second) { if(debug){ cout << "Fail dsigmax"  << endl;} return false;}
     }
+    if(vidf[idel].first == "|IP3Dmin|") {
+      if(fabs(el.dxySig3D()) < vidf[idel].second) { if(debug){ cout << "Fail dsximin"  << endl;} return false;}
+    }
+    if(vidf[idel].first == "|IP3Dmax|") {
+      if(fabs(el.dxySig3D()) >   vidf[idel].second) { if(debug){ cout << "Fail dsigmax"  << endl;} return false;}
+    }
   }
   return true;
 }
@@ -434,6 +445,10 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
 
   float dxysigmax = AccessFloatMap("|dxysigmax|",id);
   float dxysigmin = AccessFloatMap("|dxysigmin|",id);
+  
+  float IP3Dmax = AccessFloatMap("|IP3Dmax|",id);
+  float IP3Dmin = AccessFloatMap("|IP3Dmin|",id);
+
 
   bool checkisloose= (CheckCutString("IsLoose(POG)",id));
   bool checkisveto = (CheckCutString("IsVeto(POG)",id));
@@ -449,7 +464,12 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   bool convveto = (CheckCutString("convveto",id));
   bool checkdxysigmin  = CheckCutFloat("|dxysigmin|",id);
   bool checkdxysigmax  = CheckCutFloat("|dxysigmax|",id);
-  
+
+  bool checkIP3Dmin  = CheckCutFloat("|IP3Dmin|",id);
+  bool checkIP3Dmax  = CheckCutFloat("|IP3Dmax|",id);
+
+
+
   LeptonRelIso = el.PFRelIso(0.3);
   bool checkUseMiniIso=false;
   if(id.Contains("miniiso")) checkUseMiniIso=true;
@@ -518,6 +538,10 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   if(checkdxysigmin &&(fabs(el.dxySig2D()) < dxysigmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}
   if(checkdxysigmax &&(fabs(el.dxySig2D()) > dxysigmax)) { pass_selection = false;if(debug){ cout << "Fail dsigmax"  << endl;}}
 
+  if(checkIP3Dmin &&(fabs(el.dxySig3D()) < IP3Dmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}
+  if(checkIP3Dmax &&(fabs(el.dxySig3D()) > IP3Dmax)) { pass_selection = false;if(debug){ cout << "Fail dsigmax"  << endl;}}
+
+
   if(fabs(el.SCEta())<1.479 ){  
 
     if((LeptonRelIso > isomax_b))  {pass_selection = false;if(debug){ cout << "Fail iso: " << LeptonRelIso << " " << isomax_b << endl;}}
@@ -542,7 +566,7 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   return pass_selection;
 }
 
-bool ElectronSelection::PassUserID(snu::KElectron el, TString id, TString el_id, bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b, double dzmax_e, double dxysigmax,double dxysigmin){
+bool ElectronSelection::PassUserID(snu::KElectron el, TString id, TString el_id, bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b, double dzmax_e, double dxysigmax,double dxysigmin, double IP3Dmax, double IP3Dmin){
 
   int snuid = el.SNUID();
   bool pass_veto_noiso = false;
@@ -649,6 +673,12 @@ bool ElectronSelection::PassUserID(snu::KElectron el, TString id, TString el_id,
   }
   if(Check(dxysigmin)){
     if((fabs(el.dxySig2D()) < dxysigmin)) { if(debug){ cout << "Fail dsximin"  << endl;}return false;}
+  }
+  if(Check(IP3Dmax)){
+    if((fabs(el.dxySig3D()) > IP3Dmax)) { if(debug){ cout << "Fail dsigmax"  << endl;}return false;}
+  }
+  if(Check(IP3Dmin)){
+    if((fabs(el.dxySig3D()) < IP3Dmin)) { if(debug){ cout << "Fail dsximin"  << endl;}return false;}
   }
 
   return true;

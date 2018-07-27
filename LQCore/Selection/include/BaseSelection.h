@@ -86,7 +86,7 @@ class BaseSelection {
            jpt_cut_min, jpt_cut_max, jeta_cut_min, jeta_cut,
            relIso_cut, relIsoMIN_cut, chiNdof_cut, chiNdofMIN_cut, 
            dxy_cut, dxyMIN_cut, dz_cut,
-           dxySig_min, dxySig_max;
+    dxySig_min, dxySig_max, IP3D_min, IP3D_max;
   Double_t relIsoBarrel_max, relIsoBarrel_min, dxyBarrel_max, dzBarrel_max,
            relIsoEndcap_max, relIsoEndcap_min, dxyEndcap_max, dzEndcap_max;
 
@@ -128,7 +128,7 @@ class BaseSelection {
   /// bools to tell selector to apply cuts
   Bool_t apply_ptcut,apply_etacut, apply_jptcut,apply_jetacut, apply_relisocut, apply_chi2cut, apply_dxycut, apply_dzcut, apply_general, apply_deposit;
   Bool_t apply_ID, apply_convcut, apply_chargeconst, apply_HLTSafeCut, applypileuptool;
-  Bool_t apply_dxysigmin, apply_dxysigmax;
+  Bool_t apply_dxysigmin, apply_dxysigmax, apply_IP3Dmin, apply_IP3Dmax;
   Bool_t apply_BESepCut, apply_BETrRegIncl;
 
   
@@ -164,6 +164,8 @@ class BaseSelection {
   void SetRelIsoType(TString type);
   void SetdxySigMin(Double_t dxySigMin);
   void SetdxySigMax(Double_t dxySigMax);
+  void SetIP3DMin(Double_t IP3DMin);
+  void SetIP3DMax(Double_t IP3DMax);
 
 };
 

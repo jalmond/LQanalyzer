@@ -2148,6 +2148,9 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
       
       float dxysigmax(-999.);
       float dxysigmin(-999.);
+      float IP3Dmin(-999.);
+      float IP3Dmax(-999.);
+
       
       for(unsigned int iv=0; iv < v_float.size(); iv++){
 	if(!Check(v_float[iv].second)) continue;
@@ -2165,10 +2168,14 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 	if(v_float[iv].first == "|dzmax_e|") dzmax_e=v_float[iv].second;
 	if(v_float[iv].first == "|dxysigmax|") dxysigmax=v_float[iv].second;
 	if(v_float[iv].first == "|dxysigmin|") dxysigmin=v_float[iv].second;
+	if(v_float[iv].first == "|IP3Dmin|") IP3Dmin =v_float[iv].second;
+        if(v_float[iv].first == "|IP3Dmax|") IP3Dmax=v_float[iv].second;
+
+	IP3Dmin
       }
       
       
-      eventbase->GetElectronSel()->SelectElectrons(electronColl,elid, el_id,check_cc,check_cv, isomax_b,isomax_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin, ptcut, etacut);
+      eventbase->GetElectronSel()->SelectElectrons(electronColl,elid, el_id,check_cc,check_cv, isomax_b,isomax_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin, ptcut, etacut, IP3Dmax, IP3Dmin);
     }
   }
   

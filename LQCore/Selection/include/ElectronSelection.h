@@ -27,11 +27,11 @@ class ElectronSelection : public BaseSelection {
   void PogID(std::vector<snu::KElectron>& leptonColl, ID elid);
 
 
-  void SelectElectrons(std::vector<snu::KElectron>& leptonColl, ID id,  TString elid, bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut=-999., double etacut=-999.);
-  void SelectElectrons(std::vector<snu::KElectron>& leptonColl, TString elid, TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut=-999., double etacut=-999.);
+  void SelectElectrons(std::vector<snu::KElectron>& leptonColl, ID id,  TString elid, bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin, double IP3Dmax, double IP3Dmin, double ptcut=-999., double etacut=-999.);
+  void SelectElectrons(std::vector<snu::KElectron>& leptonColl, TString elid, TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,  double IP3Dmax, double IP3Dmin, double ptcut=-999., double etacut=-999.);
   void SelectElectrons(std::vector<snu::KElectron>& leptonColl,TString elid, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf, double ptcut=-999., double etacut=-999.);
   
-  bool ElectronPass(snu::KElectron el, TString elid, TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut=-999., double etacut=-999.);
+  bool ElectronPass(snu::KElectron el, TString elid, TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double IP3Dmax, double IP3Dmin, double ptcut=-999., double etacut=-999.);
   bool ElectronPass(snu::KElectron el, TString elid, double ptcut=-999., double etacut=-999.);
   bool ElectronPass(snu::KElectron el, TString elid,vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf, double ptcut=-999., double etacut=-999.);
   
@@ -40,7 +40,7 @@ class ElectronSelection : public BaseSelection {
   bool PassUserID(TString id,snu::KElectron el);
   bool PassUserID(TString id,snu::KElectron el, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf);
   
-  bool PassUserID(snu::KElectron el,TString id, TString el_id, bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b, double dzmax_e, double dxysigmax,double dxysigmin);
+  bool PassUserID(snu::KElectron el,TString id, TString el_id, bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b, double dzmax_e, double dxysigmax,double dxysigmin, double IP3Dmax, double IP3Dmin);
 
   bool PassID(snu::KElectron el, ID id);
     

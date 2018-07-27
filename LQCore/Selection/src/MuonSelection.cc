@@ -146,6 +146,11 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool applyrochest
       if(DebugPrint && apply_dxysigmax && !(fabs(muit->dXYSig2D()) < dxySig_max ))cout << "Fails Selection::dxySigMin cut " << endl;
 
       
+      if(apply_IP3Dmin && !(fabs(muit->dXYSig3D()) >= IP3D_min )) pass_selection = false;
+
+      if(apply_IP3Dmax && !(fabs(muit->dXYSig3D()) < IP3D_max )) pass_selection = false;
+
+
       if(apply_chi2cut && !( muit->GlobalChi2() < chiNdof_cut && muit->GlobalChi2() >= chiNdofMIN_cut )) pass_selection = false;
       if(DebugPrint && apply_chi2cut && !( muit->GlobalChi2() <chiNdof_cut && muit->GlobalChi2()  >=chiNdofMIN_cut)) cout << "Fails chi2 cut " << endl;
 
@@ -313,6 +318,13 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu, vector<pair<TString, T
     if(vidf[idel].first == "|dxysigmin|") {
       if(fabs(mu.dXYSig2D()) < vidf[idel].second) {if(debug){ cout << "Fail dsigmin"  << endl;} return false;}
     }
+    if(vidf[idel].first == "|IP3Dmax|") {
+      if(fabs(mu.dXYSig3D()) > vidf[idel].second) {if(debug){ cout << "Fail dsigmax"  << endl;} return false;}
+    }
+    if(vidf[idel].first == "|IP3Dmin|") {
+      if(fabs(mu.dXYSig3D()) < vidf[idel].second) {if(debug){ cout << "Fail dsigmin"  << endl;} return false;}
+    }
+
     if(vidf[idel].first == "chi2max") {
       checkchi2max=true;
       chi2max=vidf[idel].second;
@@ -362,6 +374,10 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   float dxymax = AccessFloatMap("|dxymax|",id);
   float dxysigmax = AccessFloatMap("|dxysigmax|",id);
   float dxysigmin = AccessFloatMap("|dxysigmin|",id);
+  
+
+  float IP3Dmax = AccessFloatMap("|IP3Dmax|",id);
+  float IP3Dmin = AccessFloatMap("|IP3Dmin|",id);
 
   float dzmax_b = AccessFloatMap("|dzmax_b|",id);
   float dzmax_ec = AccessFloatMap("|dzmax_ec|",id);
@@ -374,6 +390,9 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   bool checkdzmax_ec      = CheckCutFloat("|dzmax_ec|",id);
   bool checkdxysigmin  = CheckCutFloat("|dxysigmin|",id);
   bool checkdxysigmax  = CheckCutFloat("|dxysigmax|",id);
+  bool checkIP3Dmin  = CheckCutFloat("|IP3Dmin|",id);
+  bool checkIP3Dmax  = CheckCutFloat("|IP3Dmax|",id);
+
   bool checkchi2max     = CheckCutFloat("chi2max",id);
   bool checkisloose  = (CheckCutString("IsLoose(POG)",id));
   bool checkismedium = (CheckCutString("IsMedium(POG)",id));
@@ -425,6 +444,9 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
 
   if(checkdxysigmin &&(fabs(mu.dXYSig2D()) < dxysigmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}
   if(checkdxysigmax &&(fabs(mu.dXYSig2D()) > dxysigmax)) { pass_selection = false;if(debug){ cout << "Fail dsigmax"  << endl;}}
+  
+  if(checkIP3Dmin &&(fabs(mu.dXYSig3D()) < IP3Dmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}
+  if(checkIP3Dmax &&(fabs(mu.dXYSig3D()) > IP3Dmax)) { pass_selection = false;if(debug){ cout << "Fail dsigmax"  << endl;}}
 
   
   vector<pair<TString, TString> > vids =GetStringList(id);
