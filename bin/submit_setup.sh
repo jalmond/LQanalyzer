@@ -1900,7 +1900,7 @@ if [[ $submit_sampletag  == "MC" ]];
 
 fi
 
-declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG"  "SingleElectron" "SingleMuon" "JetHT")
+declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG"  "SingleElectron" "SingleMuon" "JetHT" "SinglePhoton")
 if [[ $submit_sampletag  == "DATA" ]];
     then
     runDATA=true
@@ -1920,13 +1920,13 @@ if [[ $submit_sampletag  == "DATAHNDILEP" ]];
 fi
 
 
-declare -a  DATAHNFAKE=("DoubleMuon" "DoubleEG" "SingleElectron" "SingleMuon")
+declare -a  DATAHNFAKE=("DoubleMuon" "DoubleEG" "SingleElectron" "SingleMuon" "SinglePhoton")
 if [[ $submit_sampletag  == "DATAHNFAKE" ]];
     then
     runDATA=true
 fi
 
-declare -a  DATAHNFATJET=("DoubleMuon" "DoubleEG" "SingleElectron" "SingleMuon")
+declare -a  DATAHNFATJET=("DoubleMuon" "DoubleEG" "SingleElectron" "SingleMuon" "SinglePhoton")
 if [[ $submit_sampletag  == "DATAHNFATJET" ]];
     then
     runDATA=true

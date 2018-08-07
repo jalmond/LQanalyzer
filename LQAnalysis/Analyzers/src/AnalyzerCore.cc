@@ -2171,7 +2171,6 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 	if(v_float[iv].first == "|IP3Dmin|") IP3Dmin =v_float[iv].second;
         if(v_float[iv].first == "|IP3Dmax|") IP3Dmax=v_float[iv].second;
 
-	IP3Dmin
       }
       
       

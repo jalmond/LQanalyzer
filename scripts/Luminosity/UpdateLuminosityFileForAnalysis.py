@@ -284,7 +284,7 @@ if os.path.exists(path_full_sample_list):
     check_file = open(path_full_sample_list,"r")
     correct_file_format=False
     for line in check_file:
-        if "DY" in line:
+        if "DY" in line or "SingleTbar" in line:
             correct_file_format=True
     check_file.close()
     if not correct_file_format:
@@ -301,7 +301,8 @@ if os.path.exists(path_full_sample_list):
         sys.exit()
     else:
         
-        
+        print "List of files in /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/datasets_"+catversion + " is diff"
+
         #### check all samples that are in previous sample list are in new sample list
         #### the only reason they will not be is if a dataset file was removed or wrongly modified
         file_fulllist = open(path_full_sample_list,"r")
@@ -344,7 +345,7 @@ if os.path.exists(path_full_sample_list):
         xsec_2=0.
         sample1=""
         sample2=""
-        ### loop over maste list
+        ### loop over master list
         for line in file_fulllist:
             splitline=line.split()
             if len(splitline) == 1:
@@ -377,6 +378,8 @@ if os.path.exists(path_full_sample_list):
         sample1=""
         sample2=""
         for line in file_user:
+            print "USER "+ line
+
             line_exists=False
             splitline=line.split()
             if len(splitline) == 1:
@@ -443,6 +446,7 @@ if os.path.exists(path_full_sample_list):
         if os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt"):
             os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
         print "\n"
+                    
         os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh " + path_newfile + " new ")
         print "source " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh " + path_newfile + " new "
         print "\n"
@@ -453,9 +457,15 @@ if os.path.exists(path_full_sample_list):
             print "This file does not exists: exiting...."
             sys.exit()
         else:     
+
+            
             ### update lumifile:
             isnewsample= len(newsample_list) > 0
-            
+            if isnewsample:
+
+                print "new sample"
+            else:
+                print "not new sample"
              
             UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt", catversion, newsample_list)
 
@@ -589,6 +599,8 @@ else:
     #path_full_sample_list_user=os.getenv("LQANALYZER_DATASET_DIR")+"/"+ os.getenv("USER")  +"/cattuplist_"+catversion+ os.getenv("USER")+".txt"
     
     
+    print path_full_sample_list
+
     print "NEW SAMPLES"
     
     os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
