@@ -203,117 +203,25 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
 
   std::vector<snu::KElectron> electrons_fake = GetElectrons(true, true, elid);
-  std::vector<snu::KElectron> electrons_cf = GetElectrons(true, false, elid);
-
-  for(unsigned int im=0; im< electrons_cf.size(); im++){
-    if(ISCF(electrons_cf[im]) || MCIsCF(electrons_cf[im]) ){
-      if(fabs(electrons_cf[im].Eta())< 0.8){
-
-	std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
-
-	cout  <<  "CF el in barrel : " << MCIsCF(electrons_cf[im]) << " : "<<ISCF(electrons_cf[im]) << " " <<  electrons_cf[im].Pt()  << " " << electrons_cf[im].Eta() << electrons_cf[im].Phi() << "" << electrons_cf[im].Charge()<< " : " << electrons_cf[im].GetType() << " : JH " << GetLeptonType(electrons_cf[im], truthColl ) <<endl;
-	TruthPrintOut();
-	if(ISCF(electrons_cf[im]))FillHist("num_CF_B_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
-	FillHist("den_CF_B_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
-	
-      }
-      else{
-	if(ISCF(electrons_cf[im]))FillHist("num_CF_E_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
-        FillHist("den_CF_E_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
-
-      }
-    }
-  }
-
-  if(SameCharge(electrons_cf)){
-    if(GetDiLepMass(electrons_cf) < 101 && GetDiLepMass(electrons_cf) > 81.){
-      
-      if(ISCF(electrons_cf[0]))FillHist("SSZ_num_CF_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
-      if(ISCF(electrons_cf[1]))FillHist("SSl_num_CF_pt", electrons_cf.at(1).Pt(), weight, 0., 200., 50);
-
-      FillHist("SSZ_Den_CF_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
-      FillHist("SSZ_Den_CF_pt", electrons_cf.at(1).Pt(), weight, 0., 200., 50);
-
-      for(unsigned int im=0; im< electrons_cf.size(); im++){
-	if(fabs(electrons_cf[im].Eta())< 0.8){
-	  if(ISCF(electrons_cf[im]))FillHist("SSZ_num_CF_B_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
-	  FillHist("SSZ_den_CF_B_pt", electrons_cf.at(0).Pt(), weight, 0., 200., 50);
-	}
-      }
-
-
-      FillHist("SSEl_All", 1.,1., 0., 2., 2);
-      FillHist("SSEl_All_tyoe", electrons_cf.at(0).GetType(), 1., 0., 50., 50);
-      FillHist("SSEl_All_tyoe", electrons_cf.at(1).GetType(), 1., 0., 50., 50);
-      
-      std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
-      
-      FillHist("SSEl_All_type",GetLeptonType(electrons_cf[0], truthColl ), 1., -6., 16. , 12);
-      FillHist("SSEl_All_type",GetLeptonType(electrons_cf[1], truthColl ), 1., -6., 16. , 12);
-      if(electrons_cf[0].PassesConvVeto() ){
-	FillHist("SSEl_ConVeto", 1., 1., 0., 2., 2);
-	FillHist("SSEl_ConVeto_tyoe", electrons_cf.at(0).GetType(), 1., 0., 50., 50);
-	FillHist("SSEl_All_type",GetLeptonType(electrons_cf[0], truthColl ), 1., -6., 16. , 12);
-      }
-      if(electrons_cf[1].PassesConvVeto()){
-	FillHist("SSEl_ConVeto", 1., 1., 0., 2., 2);
-	FillHist("SSEl_ConVeto_tyoe", electrons_cf.at(1).GetType(), 1., 0., 50., 50);
-	FillHist("SSEl_ConvVeto_type",GetLeptonType(electrons_cf[1], truthColl ), 1., -6., 16. , 12);
-	
-      }
-      if(electrons_cf[0].PassesConvVeto()  && electrons_cf[1].PassesConvVeto()){
-	FillHist("SSDiEl_ConVeto", 1., 1., 0., 2., 2);
-      }
-    }
-  }
-
-
-  std::vector<snu::KMuon> muons_veto = GetMuons("MUON_HN_VETO",true);
-  std::vector<snu::KElectron> electrons_veto = GetElectrons(true, true, "ELECTRON_HN_VETO");
-
-  for(unsigned int im=0; im< electrons_cf.size(); im++){
-    std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
-    if(electrons_cf[im].MCTruthIndex() < 0) continue;
-
-    if(fabs(electrons_cf[im].Eta())< 0.8){
-      FillHist("CF_IB_Den", 1/electrons_cf[im].Pt(),1.,0. , 0.05, 100, "IB 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_IB_Num", 1/electrons_cf[im].Pt(),1.,0. , 0.05, 100, "IB 1/p_{T} GeV^{-1}");
-      FillHist("CF_IBw_Den",  1/electrons_cf[im].Pt(), weight, 0. , 0.05, 100, "IB 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_IBw_Num",  1/electrons_cf[im].Pt(), weight, 0. , 0.05, 100, "IB 1/p_{T} GeV^{-1}");
-
-      FillHist("CF_IB_truth_Den", 1/truthColl.at(electrons_cf[im].MCTruthIndex()).Pt(),1.,0. , 0.05, 100, "IB 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_IB_truth_Num", 1/truthColl.at(electrons_cf[im].MCTruthIndex()).Pt(),1.,0. , 0.05, 100, "IB 1/p_{T} GeV^{-1}");
-      FillHist("CF_IB_truthw_Den",  1/truthColl.at(electrons_cf[im].MCTruthIndex()).Pt(), weight, 0. , 0.05, 100, "IB 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_IBw_truth_Num",  1/truthColl.at(electrons_cf[im].MCTruthIndex()).Pt(), weight, 0. , 0.05, 100, "IB 1/p_{T} GeV^{-1}");
-
-
-
-    }
-    else      if(fabs(electrons_cf[im].Eta())< 1.5){
-      FillHist("CF_OB_Den",  1/electrons_cf[im].Pt(),  1., 0. , 0.05, 100, "OB 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_OB_Num",  1/electrons_cf[im].Pt(),  1.,0. , 0.05, 100, "OB 1/p_{T} GeV^{-1}");
-      FillHist("CF_OBw_Den",1/electrons_cf[im].Pt(),weight,0. , 0.05, 100, "OB 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_OBw_Num",  1/electrons_cf[im].Pt(),weight,0. , 0.05, 100, "OB 1/p_{T} GeV^{-1}");
-
-      FillHist("CF_OB_truth_Den",  1/(truthColl.at(electrons_cf[im].MCTruthIndex()).Pt()),  1., 0. , 0.05, 100, "OB 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_OB_truth_Num",  1/(truthColl.at(electrons_cf[im].MCTruthIndex()).Pt()),  1.,0. , 0.05, 100, "OB 1/p_{T} GeV^{-1}");
-      FillHist("CF_OBw_truth_Den",1/(truthColl.at(electrons_cf[im].MCTruthIndex()).Pt()),weight,0. , 0.05, 100, "OB 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_OBw_truth_Num",  1/(truthColl.at(electrons_cf[im].MCTruthIndex()).Pt()),weight,0. , 0.05, 100, "OB 1/p_{T} GeV^{-1}");
-
-    }
-    else{
-      FillHist("CF_EC_Den", 1/electrons_cf[im].Pt(),1.,0. , 0.05, 100, "EC 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_EC_Num",  1/electrons_cf[im].Pt(),1.,0. , 0.05, 100, "EC 1/p_{T} GeV^{-1}");
-      FillHist("CF_ECw_Den", 1/electrons_cf[im].Pt(),weight,0. , 0.05, 100, "EC 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_ECw_Num",  1/electrons_cf[im].Pt(),weight,0. , 0.05, 100, "EC 1/p_{T} GeV^{-1}");
-      
-      FillHist("CF_EC_truth_Den", 1/(truthColl.at(electrons_cf[im].MCTruthIndex()).Pt()),1.,0. , 0.05, 100, "EC 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_EC_truth_Num",  1/(truthColl.at(electrons_cf[im].MCTruthIndex()).Pt()),1.,0. , 0.05, 100, "EC 1/p_{T} GeV^{-1}");
-      FillHist("CF_ECw_truth_Den", 1/(truthColl.at(electrons_cf[im].MCTruthIndex()).Pt()),weight,0. , 0.05, 100, "EC 1/p_{T} GeV^{-1}");
-      if(MCIsCF(electrons_cf[im]))      FillHist("CF_ECw_truth_Num",  1/(truthColl.at(electrons_cf[im].MCTruthIndex()).Pt()),weight,0. , 0.05, 100, "EC 1/p_{T} GeV^{-1}");
+  if(electrons_fake.size() == 2){
+    if(electrons_fake[1].Pt() > 15){
+      if(PassTrigger("HLT_Photon22_v") && electrons_fake[0].Pt() > 25 )          FillHist("HLT_Photon22_v_elpt",  electrons_fake.at(1).Pt(), weight*WeightByTrigger("HLT_Photon22_v",TargetLumi), 0., 100., 100, "pt");
+      if(PassTrigger("HLT_Photon30_v") && electrons_fake[0].Pt() > 35 )          FillHist("HLT_Photon30_v_elpt",  electrons_fake.at(1).Pt(), weight*WeightByTrigger("HLT_Photon30_v",TargetLumi), 0., 100., 100, "pt");
+      if(PassTrigger("HLT_Photon36_v") && electrons_fake[0].Pt() > 40 )          FillHist("HLT_Photon36_v_elpt",  electrons_fake.at(1).Pt(), weight*WeightByTrigger("HLT_Photon36_v",TargetLumi), 0., 100., 100, "pt");
+      if(PassTrigger("HLT_Photon50_v") && electrons_fake[0].Pt() > 55 )          FillHist("HLT_Photon50_v_elpt",  electrons_fake.at(1).Pt(), weight*WeightByTrigger("HLT_Photon50_v",TargetLumi), 0., 100., 100, "pt");
+      if(PassTrigger("HLT_Photon75_v") && electrons_fake[0].Pt() > 80 )          FillHist("HLT_Photon75_v_elpt",  electrons_fake.at(1).Pt(), weight*WeightByTrigger("HLT_Photon75_v",TargetLumi), 0., 100., 100, "pt");
+      if(PassTrigger("HLT_Photon90_v") && electrons_fake[0].Pt() > 95 )          FillHist("HLT_Photon90_v_elpt",  electrons_fake.at(1).Pt(), weight*WeightByTrigger("HLT_Photon90_v",TargetLumi), 0., 100., 100, "pt");
+      if(PassTrigger("HLT_Photon120_v") && electrons_fake[0].Pt() > 125 )          FillHist("HLT_Photo1202_v_elpt",  electrons_fake.at(1).Pt(), weight*WeightByTrigger("HLT_Photon120_v",TargetLumi), 0., 100., 100, "pt");
+      if(PassTrigger("HLT_Photon175_v") && electrons_fake[0].Pt() > 185 )          FillHist("HLT_Photon175_v_elpt",  electrons_fake.at(1).Pt(), weight*WeightByTrigger("HLT_Photon175_v",TargetLumi), 0., 100., 100, "pt");
     }
     
+    
   }
+  
+
+
+
+  
   return;
   
   std::vector<snu::KElectron> electrons;
@@ -339,6 +247,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   else electrons = GetElectrons(false,false,elid);
 
   
+   std::vector<snu::KMuon> muons_veto = GetMuons("MUON_HN_VETO",true);
+   std::vector<snu::KElectron> electrons_veto = GetElectrons(true, true, "ELECTRON_HN_VETO");
 
   if(isData&& !k_running_nonprompt){
     if(SameCharge(electrons_veto)){

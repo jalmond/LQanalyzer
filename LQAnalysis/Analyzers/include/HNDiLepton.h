@@ -47,6 +47,10 @@ class HNDiLepton : public AnalyzerCore {
 
   void RunMM(int mode,TString label, std::vector<snu::KMuon> muons, std::vector<snu::KMuon> muons_veto,std::vector<snu::KElectron> el, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets,float mm_weight ,std::vector<TString> mm_trig, float pt1, float pt2);
   void RunLL(int mode,TString channel, TString label, std::vector<snu::KMuon> muons, std::vector<snu::KMuon> muons_veto,std::vector<snu::KElectron> el, std::vector<snu::KElectron> el_veto, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets,float ll_weight ,std::vector<TString> ll_trig, float pt1, float pt2);
+
+  double  GetCFWeight(KLepton lep1, KLepton lep2);
+  double GetCF(KLepton lep, bool geterr);
+
 	
   void FillLowMass(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets, int nbjet_m, float ll_weight, std::vector<TString> trig , float pt1, float pt2);		 
 

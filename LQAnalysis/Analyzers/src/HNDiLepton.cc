@@ -178,6 +178,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
   PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
     
+
   if(k_running_nonprompt){
     while(!fake_configured){
       /// SET UP OWN FAKES HISTS --> KEY ////                                                                                                                                                                                                                                    
@@ -218,6 +219,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   }
   
   
+
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
@@ -227,6 +229,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     weight*= MCweight;
 
   }
+
   if(!isData)weight*= GetKFactor();
   if(!isData)weight*= MC_CR_Correction(0);
   
@@ -261,19 +264,105 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
   if(SameCharge(muons_fake))FillHist("Z_ss_mm", 0., 1., 0., 2, 2);
 
-  return;
-
-  /*if(SameCharge(muons_fake)){
-    cout << muons_fake[0].Pt() << " " << muons_fake[0].Eta() << " " << muons_fake[0].Phi() <<  " " << muons_fake[0].GetType() << endl;
-    cout << muons_fake[1].Pt() << " " << muons_fake[1].Eta() << " " << muons_fake[1].Phi() <<  " " << muons_fake[1].GetType() <<endl;
-
-    TruthPrintOut();                                                                                                                                                                                    
-    }*/
-
-
   std::vector<snu::KMuon> muons_loose = GetMuons(_m_looseid,true);
   std::vector<snu::KElectron> electrons_loose = GetElectrons(true, true,_e_looseid);
 
+  std::vector<snu::KElectron> electrons_tight= GetElectrons("ELECTRON_HN_TIGHTv4");
+
+
+  std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+
+  
+  if(SameCharge(electrons_tight)){
+
+    if(electrons_tight[0].MCIsCF() || electrons_tight[1].MCIsCF()){
+      FillHist("CF_Zpeak", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+      if(electrons_tight[0].MCIsCF()){
+	if(electrons_tight[0].Pt() < 50)       FillHist("CF_Zpeak_pt0_50", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+	else if(electrons_tight[0].Pt() < 200)       FillHist("CF_Zpeak_pt50_200", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+	else   FillHist("CF_Zpeak_pt200_inf", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+	if(fabs(electrons_tight[0].Eta()) < 1.5)       FillHist("CF_Zpeak_barrel", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+	else FillHist("CF_Zpeak_endcap", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+      }
+      if(electrons_tight[1].MCIsCF()){
+	if(electrons_tight[1].Pt() < 50)       FillHist("CF_Zpeak_pt0_50", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+	else if(electrons_tight[1].Pt() < 200)       FillHist("CF_Zpeak_pt50_200", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+	else   FillHist("CF_Zpeak_pt200_inf", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+	if(fabs(electrons_tight[1].Eta()) < 1.5)       FillHist("CF_Zpeak_barrel", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+        else FillHist("CF_Zpeak_endcap", GetDiLepMass(electrons_tight), weight, 0., 200., 200);
+      }
+    }
+	 
+    //    cout << "SS" << endl;
+    for(unsigned int i=0; i < electrons_tight.size(); i++){
+      //cout << GetLeptonType(electrons_tight[i], truthColl) <<  " " << electrons_tight[i].MCIsCF()<< endl;
+      if(electrons_tight[i].MCIsCF()){
+	
+	int pindex = electrons_tight[i].MCTruthIndex();
+	int mindex = truthColl.at(pindex).IndexMother();
+cout << truthColl.at(mindex).PdgId()   << endl;
+	while(truthColl.at(mindex).PdgId()  != 23){
+	  pindex = mindex;
+	  mindex = truthColl.at(mindex).IndexMother();
+	  cout << "pindex = " << pindex << " mindex = " << mindex << endl;
+	  if(mindex < 0) return;
+	}
+	
+	if( (truthColl.at(pindex).Pt() - electrons_tight[i].Pt())/truthColl.at(pindex).Pt() < -0.4) {
+	  cout << (truthColl.at(pindex).Pt() - electrons_tight[i].Pt())/truthColl.at(pindex).Pt() << endl;
+	  cout << electrons_tight[i].Pt() << " " << electrons_tight[i].Eta() << " " << electrons_tight[i].Phi() << " index " << electrons_tight[i].MCTruthIndex() << " pindex = " << pindex << endl;
+	  TruthPrintOut();	  
+	}
+
+	FillHist("CF_reco_truthpt", truthColl.at(pindex).Pt(), (truthColl.at(pindex).Pt() - electrons_tight[i].Pt())/truthColl.at(pindex).Pt() , weight, 0., 200., 50., -1., 1., 100);
+	if(fabs(electrons_tight[i].Eta()) < 1.5 ) FillHist("CF_reco_truthpt_barrel", truthColl.at(pindex).Pt(), (truthColl.at(pindex).Pt() - electrons_tight[i].Pt())/truthColl.at(pindex).Pt() , weight, 0., 200., 50., -1., 1., 100);
+	else FillHist("CF_reco_truthpt_endcap", truthColl.at(pindex).Pt(), (truthColl.at(pindex).Pt() - electrons_tight[i].Pt())/truthColl.at(pindex).Pt() , weight, 0., 200., 50., -1., 1., 100);
+	
+      }
+      else{
+	
+	if(electrons_tight[i].MCTruthIndex() > 0)
+	  FillHist("NoCF_reco_truthpt", truthColl.at(electrons_tight[i].MCTruthIndex()).Pt(), (truthColl.at(electrons_tight[i].MCTruthIndex()).Pt() - electrons_tight[i].Pt())/truthColl.at(electrons_tight[i].MCTruthIndex()).Pt() , weight, 0., 200., 50., -1., 1., 100);
+	
+      }
+    }
+
+  }
+  else{
+    if(electrons_tight.size()==2){
+      double cfweight = weight * GetCFWeight(electrons_tight.at(0), electrons_tight.at(1));
+      
+      FillHist("NoCF_Zpeak", GetDiLepMass(electrons_tight), cfweight, 0., 200.,200);
+      
+      
+      for(unsigned int ishift = 0; ishift< 100; ishift++){
+	double shift = -0.05 + double(ishift)*0.001;
+	double shift1_ = 1- shift;
+	
+	std::vector< snu::KElectron > electrons_shift_X;
+	
+	for(unsigned int j=0; j<electrons_tight.size(); j++){
+	  
+	  snu::KElectron tmp_el1 = electrons_tight.at(j);
+	  
+          tmp_el1.SetPtEtaPhiM(shift1_*tmp_el1.Pt(), tmp_el1.Eta(), tmp_el1.Phi(), tmp_el1.M());
+	  
+	  electrons_shift_X.push_back(tmp_el1);
+        }
+
+	std::ostringstream strs;
+	strs << shift;
+	std::string str = strs.str();
+	
+	FillHist("NoCF_Zpeak_shift"+str, GetDiLepMass(electrons_shift_X), cfweight, 70., 110.,40);
+      }
+      
+      
+    }
+  }
+  
+  return;
+  
   std::vector<snu::KMuon> muons;
   if(k_running_nonprompt){
     std::vector<snu::KMuon> muons_tmp = GetMuons(muid,false);
@@ -296,6 +385,9 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   }
   else muons = GetMuons(muid,true);
 
+  std::vector<snu::KMuon> muonsall = GetMuons("MUON_NOCUT");
+
+
   std::vector<snu::KMuon> muons_veto = GetMuons("MUON_HN_VETO",true);
   TString id_8tev= "MUON_HN_TIGHT_8TeV";
   if(k_running_nonprompt) id_8tev="MUON_HN_LOOSE_8TeV";
@@ -303,7 +395,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   
   if(k_running_nonprompt){
     std::vector<snu::KMuon> muons_tmp = GetMuons(id_8tev,false);
-
+    
     std::vector<snu::KMuon> muons_tmp_nosort;
     for(unsigned int im=0; im< muons_tmp.size(); im++){
       snu::KMuon mu = muons_tmp[im];
@@ -324,16 +416,6 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   else  muons8TeV = GetMuons(id_8tev,false);
 
   
-  TString id_pogt= "MUON_POG_TIGHT";
-  if(k_running_nonprompt) id_pogt= "MUON_POG_FAKETIGHT";
-
-  TString id_pogm= "MUON_POG_MEDIUM";
-  if(k_running_nonprompt) id_pogm= "MUON_POG_FAKEMEDIUM";
-
-
-  std::vector<snu::KMuon> muons_pogt = GetMuons(id_pogt,false);
-  std::vector<snu::KMuon> muons_pogm = GetMuons(id_pogm,false);
-  
   CorrectedMETRochester(muons);
 
   /// Set up electrons                                                                                                                                        
@@ -343,7 +425,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 10., 2.7);
   if(SameCharge(muons_fake))FillJets("All",alljets, muons_fake,weight);
-
+  
   std::vector<snu::KJet>  jets_20 = GetJetsWFT("JET_HN", "FATJET_HN_tau06",20., 2.5);
   std::vector<snu::KJet>  jets_all20 =  GetJets("JET_HN", 20., 2.7);
   std::vector<snu::KJet>  jets_all20_pu =  GetJetsWFT("JET_HN_PU", "FATJET_HN_tau06",20., 2.7);
@@ -365,7 +447,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     }
   }
   
-  
+
   
   /// correct L1 JEC and apply JMR
 
@@ -403,6 +485,46 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
     triggerlist_DiMuon_singleLep.push_back("HLT_IsoMu24_v");
     triggerlist_DiMuon_singleLep.push_back("HLT_IsoTkMu24_v");
+
+    std::vector<TString> triggerlist_DiMuon_singleLep1;
+    std::vector<TString> triggerlist_DiMuon_singleLep2;
+    std::vector<TString> triggerlist_DiMuon_singleLep3;
+    triggerlist_DiMuon_singleLep1.push_back("HLT_Mu20_v");
+    triggerlist_DiMuon_singleLep2.push_back("HLT_Mu20_v");
+    triggerlist_DiMuon_singleLep3.push_back("HLT_Mu50_v");
+     
+
+    if(muons.size()==2){ 
+      if(  muons[0].Pt() > 30){
+	if(  muons[1].Pt() > 20){
+	  histtype llhist = sighist_mm;
+	  FillCLHist(llhist, "SSL_Preselection", eventbase->GetEvent(), muons, electrons,jets_20, alljets, fatjetcoll_updated, mm_weight*WeightByTrigger("HLT_IsoMu24_v", TargetLumi));
+	  if(PassTriggerOR(triggerlist_DiMuon_singleLep)){
+	    FillCLHist(llhist, "SSL_Trigger_Preselection", eventbase->GetEvent(), muons, electrons,jets_20, alljets, fatjetcoll_updated, mm_weight*WeightByTrigger("HLT_IsoMu24_v", TargetLumi));
+	    
+	  }
+	  //cout << "PassTriggerOR(triggerlist_DiMuon_singleLep1) = " << PassTriggerOR(triggerlist_DiMuon_singleLep1) << endl;
+	  //m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+	    
+
+	  if(PassTriggerOR(triggerlist_DiMuon_singleLep1)){
+	    //m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+
+	    //cout << "Trigger Match " << muons[0].TriggerMatched("HLT_Mu20_v") << " " << muons[1].TriggerMatched("HLT_Mu20_v")  << endl;
+	    FillCLHist(llhist, "SSL_Trigger_HLT_Mu20_v_Preselection", eventbase->GetEvent(), muons, electrons,jets_20, alljets, fatjetcoll_updated, mm_weight*WeightByTrigger("HLT_Mu20_v", TargetLumi));
+	  }
+	  if(PassTriggerOR(triggerlist_DiMuon_singleLep2)){
+            FillCLHist(llhist, "SSL_Trigger_HLT_Mu27_v_Preselection", eventbase->GetEvent(), muons, electrons,jets_20, alljets, fatjetcoll_updated, mm_weight*WeightByTrigger("HLT_Mu20_v", TargetLumi));
+          }
+	  if(PassTriggerOR(triggerlist_DiMuon_singleLep3)){
+	    if(  muons[0].Pt() > 55){
+	      FillCLHist(llhist, "SSL_Trigger_HLT_Mu50_v_Preselection", eventbase->GetEvent(), muons, electrons,jets_20, alljets, fatjetcoll_updated, mm_weight*WeightByTrigger("HLT_Mu50_v", TargetLumi));
+	    }
+	  }
+	}
+      }
+    }
+    return;
 
     
 
@@ -449,7 +571,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 	}
       }
     }
-
+    
 
     FillEfficiency("DiMuon_inclusive", jets_all20_pu, fatjetcoll_updated , PreselWeight(mm_weight,muons, _m_tightid,PassTriggerOR(triggerlist_DiMuon)));
     
@@ -484,11 +606,12 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
       FillJets("ALL_nvtx30+",alljets, electrons_loose,weight*WeightByTrigger("HLT_IsoMu24_v",TargetLumi));
 
     }
+  }  
+   
+  return;
     
-    return;
     
- 
-  }
+  
 }
 
 void HNDiLepton::FillEventCutFlowByID(TString label, TString tightID,std::vector<snu::KMuon> muons, std::vector<snu::KMuon> muons_veto,std::vector<snu::KElectron> el, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets,float mm_weight ,std::vector<TString> ll_trig, float pt1, float pt2, int nbjet_m){
@@ -526,6 +649,8 @@ void HNDiLepton::FillEventCutFlowByID(TString label, TString tightID,std::vector
   
   bool cut1_dilep =  (muons.size()==2 && (muons[1].Pt() > pt2 && muons[0].Pt() > pt1 ));
   ///if(k_running_nonprompt)cut1_dilep =  (muons.size()==2 && (muons[1].PTCone(0.4,0.07) > pt2 && muons[0].PTCone(0.4,0.07) > pt1 ));
+
+  histtype llhist = sighist_mm;
 
   if(!cut1_dilep) return;
   FillEventCutFlow(4,"DiLep", ef_weight ,label );
@@ -698,6 +823,57 @@ float HNDiLepton::EEWeight(std::vector<snu::KElectron> electrons,TString id){
   
   return mc_weight;
 }
+double HNDiLepton::GetCFWeight(KLepton lep1, KLepton lep2){
+
+  //==== Okay, now lep1 and lep2 are OS
+
+  double cf1 = GetCF(lep1, false);
+  double cf2 = GetCF(lep2, false);
+  double cf1_err = GetCF(lep1, true);
+  double cf2_err = GetCF(lep2, true);
+
+  return cf1/(1.-cf1) + cf2/(1.-cf2);
+  
+
+}
+
+double HNDiLepton::GetCF(KLepton lep, bool geterr){
+
+  double el_eta = fabs(lep.GetElectronPtr()->SCEta());
+  if(el_eta > 1.4442 && el_eta < 1.556) return 0.;
+
+  double invPt = 1./lep.Pt();
+  double a = 999., b= 999.;
+  if(el_eta < 0.9){
+    if(invPt< 0.023){a=(-0.001381); b=(4.334e-05);}
+    else{a=(0.001010); b=(-1.146e-05);}
+  }
+  else if(el_eta < 1.4442){
+    if(invPt< 0.015){a=(-0.04296); b=(0.0008670);}
+    else if(invPt< 0.023){a=(-0.01529); b=(0.0004522);}
+    else{a=(-0.001546); b=(0.0001272);}
+  }
+  else{
+    if(invPt< 0.012){a=(-0.4238); b=(0.006366);}
+    else if(invPt< 0.020){a=(-0.1040); b=(0.002550);}
+    else{a=(-0.01603); b=(0.0007672);}
+  }
+
+  double sf(1.);
+  if(el_eta < 1.4442) sf = 0.693589;
+  else sf = 0.684761;
+
+  double sys=0.;
+  double rate = (a)*invPt + (b);
+  if(rate < 0) rate = 0.;
+
+  rate *= sf;
+
+  if(!geterr) return rate;
+  else return 0.;
+
+}
+
 
 float HNDiLepton::EMWeight(std::vector<snu::KElectron> electrons,std::vector<snu::KMuon> muons,TString idel, TString idmu){
   
@@ -715,6 +891,7 @@ float HNDiLepton::EMWeight(std::vector<snu::KElectron> electrons,std::vector<snu
 
 
 float HNDiLepton::PreselWeight(float mcw, std::vector<snu::KMuon> muons, TString id, bool passtrig){
+
   if(muons.size() != 2) return mcw;
 
   if(k_running_nonprompt){
@@ -901,6 +1078,8 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
   
   std::vector<snu::KElectron> electrons_tight= GetElectrons("ELECTRON_HN_TIGHTv4");
   
+
+
   if(cut1_dilep){
 
     /// weight CF events 
@@ -984,7 +1163,7 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
 
     vector<int> ijets;  
     
-    histtype llhist = sighist_mm;
+
 
     bool  cut4_ss = (SameCharge(muons));
 
@@ -1031,7 +1210,8 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
 
 	if(cut6_lepveto) return;
 
-	
+	histtype llhist = sighist_mm;
+
 	if(FillAll){
 	  cout  << ll_weight << endl;
 	  FillCLHist(llhist, label+"SSLL_Preselection", eventbase->GetEvent(), muons, electrons,jets, alljets, fatjets,  ll_weight);
