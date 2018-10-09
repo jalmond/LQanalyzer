@@ -260,13 +260,24 @@ namespace snu {
       else return -999.;
     }
 
+    inline Double_t PFRelMiniIso() const {
+      return k_rel_miniiso;
+    }
+
     inline Double_t PFRelMiniIso(bool beta) const { 
       if(beta==true) return k_electrons_minirelIsoBeta;
       else return k_electrons_minirelIsoRho;}
 
-    inline Double_t PFRelMiniIsoBeta() const { return PFRelMiniIso(true);}
-    inline Double_t PFRelMiniIsoRho() const { return PFRelMiniIso(false);}
+    inline Double_t PFRelMiniIsoBeta() const { 
+      if(k_rel_miniiso == -999) return PFRelMiniIso(true);
+      else return k_rel_miniiso;
+    }
 
+    inline Double_t PFRelMiniIsoRho() const {
+      if(k_rel_miniiso == -999)return PFRelMiniIso(false);
+      else return k_rel_miniiso;
+
+    }
 
     inline Double_t PFAbsIso(double cone) const {
       if(cone == 0.3)   return k_abs_iso03;
@@ -276,8 +287,14 @@ namespace snu {
 
     /// VtxDist with vertex chosen to be primary   
     inline Double_t  dxy() const {return  k_dxy;}
-    inline Double_t  dxySig() const {return  k_dxy_sig2D;}
-    inline Double_t  dxySig2D() const {return  k_dxy_sig2D;}
+    inline Double_t  dxySig() const {
+      if(k_dxy_sig == -999) return k_dxy_sig2D;
+      else return k_dxy_sig;
+    }
+    inline Double_t  dxySig2D() const {
+      if(k_dxy_sig == -999) return k_dxy_sig2D;
+      else return k_dxy_sig;
+    }
     inline Double_t  dxySig3D() const {return  k_dxy_sig3D;}
     inline Double_t  dz() const {return  k_dz;}
     
@@ -295,9 +312,9 @@ namespace snu {
   private:
     /// decalre private functions
 
-    Double_t k_pf_chargedhad_iso03, k_pf_photon_iso03, k_pf_neutral_iso03, k_pf_chargedhad_iso04, k_pf_photon_iso04, k_pf_neutral_iso04, k_rel_iso03, k_rel_iso04, k_electrons_minirelIsoBeta,k_electrons_minirelIsoRho;
+    Double_t k_pf_chargedhad_iso03, k_pf_photon_iso03, k_pf_neutral_iso03, k_pf_chargedhad_iso04, k_pf_photon_iso04, k_pf_neutral_iso04, k_rel_iso03, k_rel_iso04,k_rel_miniiso, k_electrons_minirelIsoBeta,k_electrons_minirelIsoRho;
     Double_t k_abs_iso03, k_abs_iso04;
-    Double_t k_dxy,k_dxy_sig2D,k_dxy_sig3D, k_dz,k_trkvx,  k_trkvy,  k_trkvz;
+    Double_t k_dxy,k_dxy_sig,k_dxy_sig2D,k_dxy_sig3D, k_dz,k_trkvx,  k_trkvy,  k_trkvz;
     Double_t k_sceta;
     
     Bool_t k_gsf_ctscpix_charge, k_gsf_scpix_charge, k_gsf_ct_charge,pass_hltid,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched,  k_is_cf,k_is_conv, k_is_fromtau,k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight, pass_notrigmva_zz, k_istrigmvavalid ;

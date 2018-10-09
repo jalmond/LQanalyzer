@@ -272,12 +272,14 @@ void Data::Reset(){
   muon_roch_energy = 0;
 
   muon_dxy = 0;
+  muon_sigdxy = 0;
   muon_ip2D = 0;
   muon_ip3D = 0;
   muon_dz = 0;
   muon_normchi = 0;
   muon_relIso03 = 0;
   muon_relIso04 = 0;
+  muon_minirelIso = 0;
   muon_minirelIsoBeta = 0;
   muon_minirelIsoRho = 0;
   muon_shiftedEdown = 0;
@@ -292,6 +294,7 @@ void Data::Reset(){
   electrons_energy = 0;
   electrons_relIso03 = 0;
   electrons_relIso04 = 0;
+  electrons_minirelIso = 0;
   electrons_minirelIsoBeta = 0;
   electrons_minirelIsoRho = 0;
   electrons_shiftedEnDown = 0;
@@ -306,6 +309,7 @@ void Data::Reset(){
   electrons_phIso04 = 0;
   electrons_scEta = 0;
   electrons_dxy = 0;
+  electrons_sigdxy = 0;
   electrons_ip2D = 0;
   electrons_ip3D = 0;
   electrons_dz = 0;
@@ -679,6 +683,7 @@ void Data::ConnectMuons(){
   }
  
   ConnectVariable("muon_dxy",muon_dxy , b_muon_dxy);
+  ConnectVariable("muon_sigdxy",muon_sigdxy , b_muon_sigdxy);
   ConnectVariable("muon_ip2D",muon_ip2D , b_muon_ip2D);
   ConnectVariable("muon_ip3D",muon_ip3D , b_muon_ip3D);
   ConnectVariable("muon_dz",muon_dz , b_muon_dz);
@@ -696,6 +701,7 @@ void Data::ConnectMuons(){
   ConnectVariable("muon_q",muon_q , b_muon_q);
   ConnectVariable("muon_relIso03", muon_relIso03, b_muon_relIso03);
   ConnectVariable("muon_relIso04", muon_relIso04, b_muon_relIso04);
+  ConnectVariable("muon_minirelIso", muon_minirelIso, b_muon_minirelIso);
   ConnectVariable("muon_minirelIsoBeta", muon_minirelIsoBeta, b_muon_minirelIsoBeta);
   ConnectVariable("muon_minirelIsoRho", muon_minirelIsoRho, b_muon_minirelIsoRho);
   ConnectVariable("muon_shiftedEdown", muon_shiftedEdown, b_muon_shiftedEdown);
@@ -752,6 +758,7 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_chIso03", electrons_chIso03, b_electrons_chIso03);
   ConnectVariable("electrons_chIso04", electrons_chIso04, b_electrons_chIso04);
   ConnectVariable("electrons_dxy", electrons_dxy, b_electrons_dxy);
+  ConnectVariable("electrons_sigdxy", electrons_sigdxy, b_electrons_sigdxy);
   ConnectVariable("electrons_ip2D", electrons_ip2D, b_electrons_ip2D);
   ConnectVariable("electrons_ip3D", electrons_ip3D, b_electrons_ip3D);
   ConnectVariable("electrons_dz", electrons_dz, b_electrons_dz);
@@ -789,6 +796,7 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_missinghits", electrons_missinghits, b_electrons_missinghits);
   ConnectVariable("electrons_relIso03", electrons_relIso03, b_electrons_relIso03);
   ConnectVariable("electrons_relIso04", electrons_relIso04, b_electrons_relIso04);
+  ConnectVariable("electrons_minirelIso", electrons_minirelIso, b_electrons_minirelIso);
   ConnectVariable("electrons_minirelIsoBeta", electrons_minirelIsoBeta, b_electrons_minirelIsoBeta);
   ConnectVariable("electrons_minirelIsoRho", electrons_minirelIsoRho, b_electrons_minirelIsoRho);
   ConnectVariable("electrons_scEta", electrons_scEta, b_electrons_scEta);

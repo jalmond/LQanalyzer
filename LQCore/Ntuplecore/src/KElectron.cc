@@ -16,6 +16,7 @@ KParticle()
 {
   k_sceta=-999;
   k_dxy=-999;
+  k_dxy_sig=-999;
   k_dxy_sig2D=-999;
   k_dxy_sig3D=-999;
   k_dz=-999;
@@ -31,6 +32,7 @@ KParticle()
   k_pf_neutral_iso04=-999;
   k_rel_iso03=-999;
   k_rel_iso04=-999;
+  k_rel_miniiso=-999;
   k_electrons_minirelIsoBeta= -999.;
   k_electrons_minirelIsoRho= -999.;
   k_abs_iso03=-999;
@@ -85,6 +87,7 @@ KElectron::KElectron(const KElectron& el) :
   
   k_sceta= el.SCEta();
   k_dxy= el.dxy();
+  k_dxy_sig= el.dxySig();
   k_dxy_sig2D= el.dxySig2D();
   k_dxy_sig3D= el.dxySig3D();
   k_dz= el.dz();
@@ -100,6 +103,7 @@ KElectron::KElectron(const KElectron& el) :
   k_pf_neutral_iso04= el.PFNeutralHadronIso(0.4);
   k_rel_iso03=el.PFRelIso(0.3);
   k_rel_iso04=el.PFRelIso(0.4);
+  k_rel_miniiso=el.PFRelMiniIso();
   k_electrons_minirelIsoBeta=el.PFRelMiniIso(true);
   k_electrons_minirelIsoRho= el.PFRelMiniIso(false);
   k_abs_iso03=el.PFAbsIso(0.3);
@@ -157,6 +161,7 @@ void KElectron::Reset()
   KParticle::Reset();
   k_sceta=-999;
   k_dxy=-999;
+  k_dxy_sig=-999;
   k_dxy_sig2D=-999;
   k_dxy_sig3D=-999;
   k_dz=0;
@@ -220,6 +225,7 @@ KElectron& KElectron::operator= (const KElectron& p)
     KParticle::operator=(p);
     k_sceta= p.SCEta();
     k_dxy= p.dxy();
+    k_dxy_sig= p.dxySig();
     k_dxy_sig2D= p.dxySig2D();
     k_dxy_sig3D= p.dxySig3D();
 
@@ -234,6 +240,7 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_pf_neutral_iso04= p.PFNeutralHadronIso(0.4);
     k_rel_iso03=p.PFRelIso(0.3);
     k_rel_iso04=p.PFRelIso(0.4);
+    k_rel_miniiso=p.PFRelMiniIso();
     k_electrons_minirelIsoBeta=p.PFRelMiniIso(true);
     k_electrons_minirelIsoRho= p.PFRelMiniIso(false);
     k_pt_shifted_up=p.PtShiftedUp();
