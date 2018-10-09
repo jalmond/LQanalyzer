@@ -688,9 +688,22 @@ if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
 
 InputDir = inDS    
 
+listOfFile = os.listdir(inDS)
+
+InputDirList =[]
+
+for entry in listOfFile:
+    if ".root" in entry:
+        InputDirList.append(inDS)
+        break
+    InputDirList.append(inDS+"/"+entry)
+
+
 
 ##################################################################################################################
-print "Input directory= " + inDS    ## now have defined what dur contains input files
+for x in InputDirList:
+    print "Input directory= " + x    ## now have defined what dur contains input files
+
 ##################################################################################################################                    
 
 ############################################################
@@ -699,14 +712,26 @@ print "Input directory= " + inDS    ## now have defined what dur contains input 
 ############################################################
 ############################################################
 
-os.system("ls " + InputDir + "/*.root > " + local_sub_dir + "/inputlist.txt")
+listx=0
+for x in InputDirList:
+    if listx==0:
+        os.system("ls " + x + "/*.root > " + local_sub_dir + "/inputlist.txt")
+        listx=listx+1
+    else:
+        os.system("ls " + x + "/*.root >> " + local_sub_dir + "/inputlist.txt")
+
+ 
+
 
 ############################################################
 ## Get number of files in Input directory
 ############################################################
 isfile = os.path.isfile
 join = os.path.join
-number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
+number_of_files = 0
+for x in InputDirList:    
+    number_of_files = number_of_files+ sum(1 for item in os.listdir(x) if isfile(join(x, item)))
+
 
 print "number_of_files = " + str(number_of_files)
 if number_of_files == 1 and not setnumber_of_cores:
