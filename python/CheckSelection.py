@@ -4,6 +4,10 @@ an_jonpre="/data2/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     an_jonpre="/data4/"
 
+
+if  "ui" in str(os.getenv("HOSTNAME")):
+    an_jonpre="/cms/scratch/SNU/CATAnalyzer/"
+
 files_check = ["electrons.sel","muons.sel","jets.sel", "user_electrons.sel","user_muons.sel","user_jets.sel"]
 
 if os.path.exists(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER") + "/GoodSelection/"):

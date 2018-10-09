@@ -15,7 +15,9 @@ an_jonpre="/data2/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     an_jonpre="/data4/"
 
-
+if "ui" in str(os.getenv("HOSTNAME")):
+    path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
+    an_jonpre="/cms/scratch/SNU/CATAnalyzer/"
 
 
 large_memory_check=800
@@ -1768,7 +1770,8 @@ for nsample in range(0, len(sample)):
     if s == "H_v2" or s == "H_v3":
         isMC= False
     if not isMC:
-        an_jonpre="/data7/DATA/"
+        if not "ui" in str(os.getenv("HOSTNAME")):
+            an_jonpre="/data7/DATA/"
 
 #### make working directorr
 if not os.path.exists(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):

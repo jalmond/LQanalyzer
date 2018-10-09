@@ -68,10 +68,16 @@ if not os.path.exists(tag_dir):
         os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH"))
 
     if not os.path.exists("/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
-        os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
+        if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+            os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
     if not os.path.exists("/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
-        os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
-        
+        if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+            os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
+            
+    if  not os.path.exists("/cms/scratch/SNU/CATAnalyzer/" + os.getenv("USER")):
+        if not  "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+            os.system("mkdir " + "/cms/scratch/SNU/CATAnalyzer/" + os.getenv("USER"))
+
     print "Copying all latest rootfiles for use in analysis"
 
     if not os.path.exists(os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/80X/") or not os.path.exists(os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/76X/"):
@@ -117,17 +123,25 @@ if not os.path.exists(tag_dir):
     if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
         mount_name="/data4"
 
+    if  "ui10.sdfarm.kr" in str(os.getenv("HOSTNAME")):
+        mount_name="/cms/scratch/SNU/CATAnalyzer"
+
+
+
     new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")
     print "cleaning up home directory"
+    print new_out
     if not os.path.exists(new_out):
         os.system("mkdir " + new_out)
 
     if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
         if not os.path.exists("/data7/DATA/CAT_SKTreeOutput/"+os.getenv("USER")):
-            os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
+            if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
         if not os.path.exists("/data8/DATA/CAT_SKTreeOutput/"+os.getenv("USER")):
-            os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
-
+            if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
+        
 
     new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/"
     if not os.path.exists(new_out):
@@ -138,32 +152,7 @@ if not os.path.exists(tag_dir):
         os.system("mkdir " + new_out)
         new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/output/CAT/"
         os.system("mkdir " + new_out)
-        os.system("mv "+ old_out + "/* " + new_out)
-        print "Moving output to " + new_out
-        if os.path.exists(old_out):
-            os.system("rm -r " + os.getenv("LQANALYZER_DIR")+"/data/output/")
-            
         
-    if os.path.exists(old_lib_slc5):
-        os.system("rm -r " + old_lib_slc5)
-    if os.path.exists(old_lib_slc6):
-        os.system("rm -r " + old_lib_slc6)
-    
-    if os.path.exists(old_lib_machine_1):
-        os.system("rm -r " + old_lib_machine_1)
-    if os.path.exists(old_lib_machine_2):
-        os.system("rm -r " + old_lib_machine_2)
-    if os.path.exists(old_lib_machine_3):
-        os.system("rm -r " + old_lib_machine_3)
-    if os.path.exists(old_lib_machine_4):
-        os.system("rm -r " + old_lib_machine_4)
-    if os.path.exists(old_lib_machine_5):
-        os.system("rm -r " + old_lib_machine_5)
-    if os.path.exists(old_lib_machine_6):
-        os.system("rm -r " + old_lib_machine_6)
-
-    if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"):
-        os.system("mkdir /data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/ " + os.getenv("USER"))
 
     print "using branch for first time: All codes are being recompiled"
     os.system("source bin/Make/make_clean_newbranch.sh")

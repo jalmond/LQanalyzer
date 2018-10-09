@@ -121,6 +121,10 @@ original_channel = new_channel
 path_jobpre="/data1/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     path_jobpre="/data2/"
+
+if  "ui" in str(os.getenv("HOSTNAME")):
+    path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
+
     
     
     
@@ -323,6 +327,7 @@ if not cycle == "SKTreeMaker":
 output_mounted="/data2"
 workoutput_mounted="/data2"
 merge_mounted="/data8/DATA"
+sktreeoutput="/xrootd/store/user/jalmond/" 
 if len(sample)>1:
     if  sample == "H_v2" or sample == "H_v3":
         workoutput_mounted="/data7/DATA"
@@ -330,6 +335,8 @@ if len(sample)>1:
 else:
     workoutput_mounted="/data7/DATA"
 
+if  "ui" in str(os.getenv("HOSTNAME")):
+    workoutput_mounted="/cms/scratch/SNU/CATAnalyzer/"
 
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     output_mounted="/data5"
@@ -344,8 +351,10 @@ mergetmpwork = merge_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
 
-if not (os.path.exists(mergetmpwork)):
-    os.system("mkdir " + mergetmpwork)
+
+if not  "ui" in str(os.getenv("HOSTNAME")):
+    if not (os.path.exists(mergetmpwork)):
+        os.system("mkdir " + mergetmpwork)
 
 
 
@@ -601,10 +610,15 @@ output_catversion=os.getenv("CATVERSION")
 iversion=0
 
 
+ktag=''
+if  "ui" in str(os.getenv("HOSTNAME")):
+    ktag='_kisti'
+
 if "HeavyNeutrino" in sample or "Majorana" in sample or "HN" in  sample or "CHT" in sample or "TTToH" in sample or "WR" in sample:
-    datasetfile="datasets_snu_sig_CAT_mc_"
+    datasetfile="datasets_snu_sig_CAT"+ktag+"_mc_"
 else:
-    datasetfile="datasets_snu_nonsig_CAT_mc_"
+    datasetfile="datasets_snu_nonsig_CAT"+ktag+"_mc_"
+
 
 while inDS == "":
     if platform.system() == "Linux":
@@ -621,7 +635,7 @@ while inDS == "":
             filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/'+datasetfile +sample_catversion +  '.txt'
 
         else:
-            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
+            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT'+ktag+'_data_'  +sample_catversion +'.txt'
     else:
         filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
              
@@ -1387,15 +1401,18 @@ else:
         if DEBUG == "True":
             print line
 
-    SKTreeOutput_pre = workoutput_mounted+"/CatNtuples/" + sample_catversion
+    if not "ui" in str(os.getenv("HOSTNAME")):
+        sktreeoutput=workoutput_mounted
+ 
+    SKTreeOutput_pre = sktreeoutput+"/CatNtuples/" + sample_catversion
     if not os.path.exists(SKTreeOutput_pre):
         os.system("mkdir " + SKTreeOutput_pre)
 
-    SKTreeOutput_pre2 = workoutput_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"
+    SKTreeOutput_pre2 = sktreeoutput+"/CatNtuples/" + sample_catversion + "/SKTrees/"
     if not os.path.exists(SKTreeOutput_pre2):
         os.system("mkdir " + SKTreeOutput_pre2)
                     
-    SKTreeOutput = workoutput_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"        
+    SKTreeOutput = sktreeoutput+"/CatNtuples/" + sample_catversion + "/SKTrees/"        
     
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":

@@ -1,7 +1,13 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-source    /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${CATVERSION}.sh
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    source    /cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${CATVERSION}.sh
+else
+    source    /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${CATVERSION}.sh
+fi
+
 cp $LQANALYZER_DATASETFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
 cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
@@ -14,10 +20,19 @@ declare -a  oldcat=("v7-4-4" "v7-4-5")
 declare -a queueoptions=("allq" "fastq" "longq"  "None")  
 
 python $LQANALYZER_DIR/python/CheckSelection.py
-if [[ ! -d  /data2/CAT_SKTreeOutput/${USER}/GoodSelection/ ]]; then
+export workpath="/data2/"
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    echo TEST
+    export workpath="/cms/scratch/SNU/CATAnalyzer/"
+    
+fi
+
+if [[ ! -d  $workpath/CAT_SKTreeOutput/${USER}/GoodSelection/ ]]; then
     echo "Fix selection file and rerun"
     exit 1
 fi
+
 
 ##### New for sktreemaker only
 logger=""
@@ -99,13 +114,26 @@ then
     SKTREE_MC="/data4/LocalNtuples/SKTrees13TeV/"
 fi
 
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_kisti_"
+    FLATCAT_MC="/xrootd/store/user/jalmond/flatcat/"
+    SKTREE_MC="/xrootd/store/user/jalmond/CatNtuples/"
+fi
+
 is_mc=""
 
 ### Get predefined lists
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
 ### setup list of samples and other useful functions
-TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_nonsig_"
-OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_kisti_nonsig_"
+    OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_kisti_"
+else
+    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_nonsig_"
+    OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
+fi
 source submit_setup.sh
 
 
@@ -468,7 +496,7 @@ if [[ $submit_file_tag  != ""  ]];
 	      do
 	      while read oline
 		do
-		if [[ $oline == *"/data2/DATA/cattoflat/MC/"* ]];
+		if [[ $oline == *$FLATCAT_MC* ]];
 		    then
 		    osline=$(echo $oline | head -n1 | awk '{print $1}')
 		    
@@ -960,9 +988,9 @@ if [[ $submit_analyzer_name == "SKTreeMakerSS" ]];
 fi
 
 
-outdir="/data2/CAT_SKTreeOutput/JobOutPut/"$USER"/LQanalyzer/"
+outdir=$workpath"/CAT_SKTreeOutput/JobOutPut/"$USER"/LQanalyzer/"
 if [[ ! -d "${outdir}" ]]; then
-    mkdir "/data2/CAT_SKTreeOutput/JobOutPut/"$USER
+    mkdir $workpath"/CAT_SKTreeOutput/JobOutPut/"$USER
     mkdir ${outdir}
 fi
 
@@ -1086,7 +1114,7 @@ if [[ $runDATA == "true" ]];
    
 fi
 
-workdirtag="/data2/"
+workdirtag=$workpath
 if [[ $job_output_dir == "" ]]
     then
     if [[ $runDATA  == "true" ]];

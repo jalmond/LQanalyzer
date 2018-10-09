@@ -2,6 +2,9 @@ catagpath=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/
 if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
 then
     tagpath=/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATTag/
+elif [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    tagpath=/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATTag/
 else
     tagpath=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/
 fi

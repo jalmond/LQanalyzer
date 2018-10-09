@@ -39,8 +39,6 @@ if [[ $USER == "jalmond" ]]; then
     alias cat_path_analysis_ls='ll -rth /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/ '
     if [ $LQANALYZER_DIR ]; then
 	echo "Running on batch"
-    else
-	source python/jalmondsetup.sh
     fi
     function cat_path_analysis_ls {
         ll -rth  /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/${1}
@@ -81,9 +79,20 @@ fi
 ## variables that are specific to your machine: Change if noy listed
 if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
     source /share/apps/root_v5-34-32/root/bin/thisroot.sh 
-elif [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+elif [ $HOSTNAME == "ui10.sdfarm.kr" ];
 then
-    source /share/apps/root_v5_34_32/root/bin/thisroot.sh
+    export LQANALYZER_DIR=${PWD}
+
+    export CMS_PATH=/cvmfs/cms.cern.ch
+    source $CMS_PATH/cmsset_default.sh
+    export SCRAM_ARCH=slc6_amd64_gcc630
+    cd /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/src/
+    eval `scramv1 runtime -sh`
+    cd -
+    source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/external/slc6_amd64_gcc630/bin/thisroot.sh
+    cd $LQANALYZER_DIR
+
+
 else
     source /share/apps/root_v5-34-32/root/bin/thisroot.sh
 fi    
@@ -101,6 +110,10 @@ if [[ $1 == *"v7"* ]]; then
     then
 	export CHECKTAGFILE=/data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
     fi
+    if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+    then
+        export CHECKTAGFILE=/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+    fi
 
     if [[ ! -f $CHECKTAGFILE ]]; then 
 	export LQANALYZER_DIR=""
@@ -110,7 +123,15 @@ if [[ $1 == *"v7"* ]]; then
 	if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 	then
 	    source /data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	    elif [ $HOSTNAME == "ui10.sdfarm.kr" ];
+	then
+	    source /cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	    else:
+            source /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	    
 	fi
+	
+
 	for ic in  ${list_of_catversions[@]};
         do
             echo $ic
@@ -118,6 +139,7 @@ if [[ $1 == *"v7"* ]]; then
 	return 1
     
     fi
+
     export LQANALYZER_MOD="/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD2015/"
     if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
         then
@@ -141,6 +163,12 @@ then
     export LQANALYZER_MOD="/data2/LQAnalyzer_rootfiles_for_analysis/CATMOD/"
 
 fi
+
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    export LQANALYZER_MOD="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATMOD/"
+fi
+
 python ${LQANALYZER_DIR}/scripts/CheckEmailIsSetup.py
 cat_email="NULL"
 while read line
@@ -170,7 +198,10 @@ if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
     buglist=/data2/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
 fi
-
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    buglist=/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
+fi
 while read line
 do
     if [[ $line == $CATTAG* ]];
@@ -188,6 +219,10 @@ if [[ $1 != "" ]];then
     then
 	export CHECKTAGFILE=/data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
     fi
+    if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+    then
+	export CHECKTAGFILE=/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+    fi
     if [[ ! -f $CHECKTAGFILE ]]; then
 	export LQANALYZER_DIR=""
         echo $1 "is not allowed input. Use one of:"
@@ -195,6 +230,9 @@ if [[ $1 != "" ]];then
 	if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 	then
             source /data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	elif [ $HOSTNAME == "ui10.sdfarm.kr" ];
+	then
+	    source /cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
 	else
 	    source /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
 
@@ -237,6 +275,15 @@ then
     export LQANALYZER_SKTreeLOG_DIR="/data2/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
     export CATTAGDIR="/data2/LQAnalyzer_rootfiles_for_analysis/CATTag/"
 fi
+if  [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    export LQANALYZER_FILE_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/"
+    export LQANALYZER_DATASETFILE_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
+    export LQANALYZER_DATASET_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/DataSetLists/"
+    export LQANALYZER_SKTreeLOG_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
+    export CATTAGDIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATTag/"
+fi
+
 
 export running2015=False
 
@@ -273,6 +320,12 @@ then
     export OBJ=obj/cms1
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms1/
 
+elif [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    export OBJ=obj/kisti$LIBTAG
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/kisti$LIBTAG/
+    export LQANALYZER_BATCHLIB_PATH=${LQANALYZER_DIR}/LQLib/batch/
+	    
 else
     export OBJ=obj/cms2
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms2/
@@ -325,10 +378,18 @@ export LQANALYZER_OUTPUT_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyz
 export LQANALYZER_LOG_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
 export LQANALYZER_LOG_8TeV_PATH=${LQANALYZER_DIR}/data/logfiles/
 
+
+
 if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
     export LQANALYZER_OUTPUT_PATH=/data4/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
     export LQANALYZER_LOG_PATH=/data4/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
+fi
+
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    export LQANALYZER_OUTPUT_PATH=/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
+    export LQANALYZER_LOG_PATH=/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
 fi
 
 python ${LQANALYZER_DIR}/python/SetUpWorkSpace.py

@@ -13,6 +13,8 @@ if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     path_jobpre="/data2/"
 
 
+if  "ui" in str(os.getenv("HOSTNAME")):
+    path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
 
 
 #Import parser to get options                                                                                                                                                  
@@ -172,6 +174,8 @@ if not cycle == "SKTreeMaker":
 
 
 output_mounted="/data2"
+sktreeoutput="/xrootd/store/user/jalmond/"
+
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     output_mounted="/data4"
 mc = len(sample)>1
@@ -179,6 +183,10 @@ if sample == "H_v2" or sample == "H_v3":
     mc= False
 if not mc:
     output_mounted="/data7/DATA"
+
+if  "ui" in str(os.getenv("HOSTNAME")):
+    output_mounted="/cms/scratch/SNU/CATAnalyzer/"    
+
 
 ##########################################################                                                                                                                     
 ### Make tmp directory for job                                                                                                                                                 

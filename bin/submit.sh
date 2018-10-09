@@ -78,6 +78,11 @@ if [[ $runcommand  == "" ]];
 then
     tagger=$1
     statdir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
+    if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+    then
+	statdir="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
+    fi
+
     if [[ ! -d "${statdir}" ]]; then
         mkdir ${statdir}
     fi
@@ -87,11 +92,22 @@ else
     do
         tagger=$1
         statdir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
+	if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+	then
+            statdir="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
+	fi
         if [[ ! -d "${statdir}" ]]; then
             mkdir ${statdir}
         fi
-	mkdir /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger/
         logfile=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger/statlog_$i$tagger.txt
+	if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+	then
+            logfile=/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger/statlog_$i$tagger.txt
+	    mkdir /cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger
+	else
+	    mkdir /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger/
+	fi
+	    
         echo "user "$USER >> $logfile
         echo $cycle >> $logfile
         echo $catversion >> $logfile

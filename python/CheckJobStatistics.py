@@ -4,6 +4,12 @@ path_jobpre="/data1/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     path_jobpre="/data2/"
 
+
+
+if  "ui" in str(os.getenv("HOSTNAME")):
+    path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
+
+
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-x", "--x", dest="x", default="123",help="tag")

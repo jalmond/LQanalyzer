@@ -5,6 +5,9 @@ path_jobpre="/data1/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     path_jobpre="/data2/"
 
+if  "ui10.sdfarm.kr"  in str(os.getenv("HOSTNAME")):
+    path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
+
 LQANALYZER_DIR= str(os.getenv("LQANALYZER_DIR"))
 LQANALYZER_LOG= str(os.getenv("LQANALYZER_LOG_PATH"))
 
@@ -52,6 +55,7 @@ if not LQANALYZER_DIR == "None" :
             CleanUpLogs(EightTeVdataOne)
             CleanUpLogs(EightTeVdataTwo)
         else:
+            ## setup kisti clean
             CleanUpLogs("/data4/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
         localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 	datasetfiledir = os.getenv("LQANALYZER_DATASETFILE_DIR")
