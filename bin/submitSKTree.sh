@@ -23,7 +23,6 @@ python $LQANALYZER_DIR/python/CheckSelection.py
 export workpath="/data2/"
 if [ $HOSTNAME == "ui10.sdfarm.kr" ];
 then
-    echo TEST
     export workpath="/cms/scratch/SNU/CATAnalyzer/"
     
 fi
@@ -322,10 +321,7 @@ function mergeoutput
 
 	    echo "MERGED DATA: "
 	    echo "Command:"
-            #echo "source hadd.sh "${outputdir_data}" "${job_cycle}"_data_cat_"${submit_version_tag}".root "${outputdir_data}${job_cycle}"'*'"$output_file_skim_tag"'*'"
-            #echo "############################################################################################################################################################"
-	    #echo ""
-            #source hadd.sh ${outputdir_data} ${job_cycle}_data_cat_${submit_version_tag}.root ${outputdir_data}${job_cycle}'*'${output_file_skim_tag}'*'
+
 	    echo ""
             echo "merged output sent to -----> "${outputdir_data}${job_cycle}"_data_cat_"${submit_version_tag}".root "
 	    
@@ -399,7 +395,7 @@ function mergefake
 
             fi
 
-	    #echo hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
+
 	    if [[ $job_data_lumi  == "ALL" ]];
 	    then
 		#source hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'

@@ -1,8 +1,14 @@
 import os,sys,getpass
 
-path_jobpre="/data1/"
-if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+path_jobpre="/data2/"
+
+isKisti = ("ui" in str(os.getenv("HOSTNAME")))
+
+if not isKisti:
     path_jobpre="/data2/"
+else:
+    path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
+
 
 if not os.path.exists(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()):
     os.system("mkdir  " + path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
@@ -20,9 +26,14 @@ ssample=options.s
 path_job=path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + ssample+filetag + ".txt"
 path_log=path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + ssample+filetag + ".log"
 
-os.system("qstat -u '*' > " + path_log)
+if not  isKisti:
+    os.system("qstat -u '*' > " + path_log)
+else:
+    os.system("condor_q " +str(os.getenv("USER")) + " > " + path_log)
+
 
 file_job=open(path_job,"w")
+
 file_log=open(path_log,"r")
 
 njobs=0

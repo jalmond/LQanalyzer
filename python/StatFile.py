@@ -1,6 +1,8 @@
 import os,sys,getpass
 
 
+isKisti = ("ui" in str(os.getenv("HOSTNAME")))
+
 def RoundMemory(mem):
     string_length= len(mem)
     float_only_mem= mem[:-2]
@@ -18,6 +20,11 @@ path_jobpre="/data1/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     path_jobpre="/data2/"
 
+
+if  isKisti:
+    path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
+
+    
 
 
 path_master=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION") +".txt"

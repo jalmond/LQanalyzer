@@ -2,8 +2,6 @@ import os,getpass,filecmp
 from CleanUp import *
 
 path_jobpre="/data1/"
-if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    path_jobpre="/data2/"
 
 if  "ui10.sdfarm.kr"  in str(os.getenv("HOSTNAME")):
     path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
@@ -35,8 +33,6 @@ if not LQANALYZER_DIR == "None" :
 		print "Making data/output directory in $LQANALYZER_DIR"
 
 
-	EightTeVdataOne=path_jobpre+"" + getpass.getuser() + "/LQ_SKTreeOutput/"
-	EightTeVdataTwo="/data2/" + getpass.getuser() + "/LQ_SKTreeOutput/"
 	 
 	if os.path.exists(os.getenv("LQANALYZER_DIR")+ "/nohup.out"):
 		os.system("rm " +os.getenv("LQANALYZER_DIR")+ "/nohup.out")
@@ -52,11 +48,11 @@ if not LQANALYZER_DIR == "None" :
             CleanUpLogs("/data8/DATA/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs("/data7/DATA/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs(os.getenv("LQANALYZER_BATCHLIB_PATH"))
-            CleanUpLogs(EightTeVdataOne)
-            CleanUpLogs(EightTeVdataTwo)
         else:
             ## setup kisti clean
-            CleanUpLogs("/data4/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs(path_jobpre+"CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs(os.getenv("LQANALYZER_BATCHLIB_PATH"))
+
         localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 	datasetfiledir = os.getenv("LQANALYZER_DATASETFILE_DIR")
 	txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"

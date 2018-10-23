@@ -422,46 +422,66 @@ while inDS == "":
             sys.exit()
 
 
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    inDS=inDS.replace("/data2/","/data4")
+    inDS = "/data7/DATA/"+inDS
+else:
+    inDS = "/xrootd_user/jalmond/xrootd/"+inDS
+
 InputDir = inDS
 
-if  not os.path.exists(InputDir):
-    print "No directory " + InputDir
-    sys.exit()
+listOfFile = os.listdir(inDS)
+InputDirList =[]
+
+for entry in listOfFile:
+    if ".root" in entry:
+        InputDirList.append(inDS)
+        break
+    InputDirList.append(inDS+"/"+entry)
+
 
 
 isfile = os.path.isfile
 join = os.path.join
-number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
+number_of_files = 0
+for x in InputDirList:    
+    number_of_files = number_of_files+ sum(1 for item in os.listdir(x) if isfile(join(x, item)))
+
 
 path_log=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+original_sample + tagger + ".log"
 
 time.sleep(5.)
-os.system("qstat -u '*' > " + path_log)
-file_log=open(path_log,"r")
 
-njobs=0
+if not  "ui" in str(os.getenv("HOSTNAME")):
+    os.system("qstat -u '*' > " + path_log)
+    file_log=open(path_log,"r")
 
-for line in file_log:
-    splitline  = line.split()
-    if len(splitline) < 6:
-        continue
-    if not "prior" in line:
-        njobs=njobs+1
-file_log.close()
+    njobs=0
 
-if os.path.exists(path_log):
-    os.system("rm " + path_log)
+    for line in file_log:
+        splitline  = line.split()
+        if len(splitline) < 6:
+            continue
+        if not "prior" in line:
+            njobs=njobs+1
+    file_log.close()
 
-if printToScreen:
-    print "number_of_files = " + str(number_of_files) + " njobs running in batch = " + str(njobs)
+    if os.path.exists(path_log):
+        os.system("rm " + path_log)
 
-njobs_max_allowed = 10750
-if queuename == "long":
-    njobs_max_allowed = 2750
-
-if number_of_files < (njobs_max_allowed- njobs):
     if printToScreen:
-        print "Job is running in background............"
+        print "number_of_files = " + str(number_of_files) + " njobs running in batch = " + str(njobs)
+
+    njobs_max_allowed = 10750
+    if queuename == "long":
+        njobs_max_allowed = 2750
+
+    if number_of_files < (njobs_max_allowed- njobs):
+        if printToScreen:
+            print "Job is running in background............"
+        os.system("mkdir " + tmpwork + "/" + tagger)
+
+if  "ui" in str(os.getenv("HOSTNAME")):
     os.system("mkdir " + tmpwork + "/" + tagger)
 
 

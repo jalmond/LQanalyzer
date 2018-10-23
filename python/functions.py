@@ -1,5 +1,34 @@
 import os
 
+def   GetMonth(imonth):
+    if imonth == 1:
+        return "Jan"
+    if imonth == 2:
+        return "Feb"
+    if imonth == 3:
+        return "Mar"
+    if imonth == 4:
+        return "Apr"
+    if imonth == 5:
+        return "May"
+    if imonth == 6:
+        return "June"
+    if imonth == 7:
+        return "July"
+    if imonth == 8:
+        return "Aug"
+    if imonth == 9:
+        return "Sep"
+    if imonth == 10:
+        return "Oct"
+    if imonth == 11:
+        return "Nov"
+    if imonth == 12:
+        return "Dec"
+    else:
+        return "Dec"
+
+
 def CheckPathInFile(channel,sample,mc):
     CopySKTrees(channel, sample, mc , "False")
     
@@ -85,6 +114,86 @@ def CopySKTrees(channel,sample,mc,docopy):
             f.closed()  
 
 
+
+def make_kistibatch_script(commandsfilename):
+
+    run_commands = open(commandsfilename,'w')
+
+    print>>run_commands,'''#!/bin/bash
+SECTION=`printf %03d $1`
+WORKDIR=`pwd`
+echo "#### Extracting run files ####"
+tar -zxvf runFile.tar.gz
+echo "#### cmsenv ####"
+export CMS_PATH=/cvmfs/cms.cern.ch
+source $CMS_PATH/cmsset_default.sh
+export SCRAM_ARCH=slc6_amd64_gcc630
+cd /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/src/
+eval `scramv1 runtime -sh`
+cd -
+echo "#### setup root ####"
+source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/external/slc6_amd64_gcc630/bin/thisroot.sh
+NoAuthError=999
+Trial=0
+while [ "$NoAuthError" -ne 0 ]; do
+  if [ "$Trial" -gt 9999 ]; then
+    break
+  fi
+  echo "#### running ####"
+  echo "root -l -b -q runJob_${SECTION}.C"
+  root -l -b -q runJob_${SECTION}.C 2> err.log
+  NoAuthError=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
+  if [ "$NoAuthError" -ne 0 ]; then
+    echo "NoAuthError="$NoAuthError
+    echo "AUTH error occured.. running again in 30 seconds.."
+    Trial=$((Trial+=1))
+    sleep 30
+  fi
+done
+cat err.log >&2
+'''
+    run_commands.close()
+
+#    config='#!/bin/sh'
+#    config+="SECTION=`printf %03d $1`\n"
+#    config+="WORKDIR=`pwd'\n"
+#    #config+='echo "#### Extracting libraries ####"'
+#    #config+="tar -zxvf lib.tar.#gz"
+#    config+='echo "#### Extracting run files ####"\n'
+ #   config+="tar -zxvf runFile.tar.gz\n"
+    #tar -zxvf data.tar.gz
+ #   config+='echo "#### cmsenv ####"\n'
+ #   config+="export CMS_PATH=/cvmfs/cms.cern.ch\n"
+ #   config+="source $CMS_PATH/cmsset_default.sh\n"
+ #   config+="export SCRAM_ARCH=slc6_amd64_gcc630\n"
+ #   config+="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/src/\n"
+ #   config+="eval `scramv1 runtime -sh`\n"
+ #   config+="cd -\n"
+ #   config+='echo "#### setup root ####"\n'
+ #   config+="'source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/external/slc6_amd64_gcc630/bin/thisroot.sh'\n"
+ #   config+="\n"
+ #   config+="NoAuthError=999\n"
+ #   config+="Trial=0\n"
+ #   config+='while [ "$NoAuthError" -ne 0 ]; do"\n'
+ #   config+='if [ "$Trial" -gt 9999 ]; then\n'
+ #   config+="break\n"
+ #   config+="fi\n"
+  #  config+='echo "#### running ####"\n'
+  #  config+='echo "root -l -b -q run_${SECTION}.C"\n'
+  #  config+="root -l -b -q runJob_${SECTION}.C 2> err.log\n"
+  #  config+="NoAuthError=`grep 'Error in <TNetXNGFile::Open>' err.log -R | wc -l`\n"
+  #  config+='if [ "$NoAuthError" -ne 0 ]; then\n'
+  #  config+='echo "NoAuthError="$NoAuthError\n'
+  #  config+='echo "AUTH error occured.. running again in 30 seconds.."\n'
+   # config+='Trial=$((Trial+=1))\n'
+   # config+='sleep 30\n'
+#    config+="fi\n"
+#    config+="done\n"
+ #   config+="cat err.log >&2\n"
+
+  #  return config
+
+
 def make_batch_script(workdir, jname, lqdir, macroname, cluster):
 
     config='#!/bin/sh'
@@ -114,36 +223,39 @@ def make_batch_script(workdir, jname, lqdir, macroname, cluster):
     return config
 
 
-def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf, runtau, skflag,tmplibdir, nskim):
+
+def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf, runtau, skflag,tmplibdir, nskim, njob):
 
     if not os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir):
         os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir)
         os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.so  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
         os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.rootmap  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
         
-    config='{\n'
-    config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
-
-    config+='   //### Load Libraries\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTree.so");\n'
-    config+='   gSystem->Load("libHist.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalysisCore.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libNtuplecore.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor2016");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTagSFUtil.so");\n'
+    config='   //### Load Libraries\n'
+    config+='   R__LOAD_LIBRARY(libPhysics.so);\n'
+    config+='   R__LOAD_LIBRARY(libTree.so);\n'
+    config+='   R__LOAD_LIBRARY(libHist.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libNtuplecore.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor2016.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTagSFUtil.so);\n'
     for lib in libraries:
-        config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/' + lib + ' + .so");\n'
+        config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/' + lib + ' + .so);\n'
         
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalyzerTools.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libLQAnalysis.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTreeMaker.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libValidation.so");\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalyzerTools.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libLQAnalysis.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTreeMaker.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libValidation.so);\n'
     
-    config+='   gSystem->Load("libPyROOT.so");\n'
+    config+='   R__LOAD_LIBRARY(libPyROOT.so);\n'
+
+    
+    config+='void runJob_'+njob+'(){\n'
+
     config+='   \n'
+    config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
     config+='   TString filename = "' + input + '";\n'
     config+='   LQController analysis;\n'
     if useSKinput == "True":        

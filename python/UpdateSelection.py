@@ -23,12 +23,17 @@ def SendEmail(localsummary, mastersummary):
     email_user=email_user[:-1]
 
 
-    path_file_email="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.sh"
+    hist_pre =  "/data2/CAT_SKTreeOutput/"
+    isKisti = ("ui" in str(os.getenv("HOSTNAME")))
+    if isKisti:
+        hist_pre ="/cms/scratch/SNU/CATAnalyzer/"
+
+    path_file_email=hist_pre + os.getenv("USER")  + "/email.sh"
     file_email=open(path_file_email,"w")
-    file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/email.txt | mail -s  "Update in selection file for 2016 Analysis:" '+str(email_user)+'') 
+    file_email.write('cat '+hist_pre  + os.getenv("USER")  + '/email.txt | mail -s  "Update in selection file for 2016 Analysis:" '+str(email_user)+'') 
     file_email.close()
 
-    filejobsummary = open("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.txt","w")
+    filejobsummary = open(hist_pre + os.getenv("USER")  + "/email.txt","w")
 
     titleline=""
     for line in localsummary:

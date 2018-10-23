@@ -1,1630 +1,35 @@
 ############################################################    
 ### configure submisstion of CATANALYZER Jobs                                                                                                        #################################################################    
-import os, getpass, sys,ROOT,time,curses,datetime,math
+import os, getpass, sys,ROOT,time,curses,math
+
 from functions import *
-from datetime import timedelta
 from optparse import OptionParser
 from QuickHistCheck import *
+from functions_submit import *
+from functions_config import *
 
+path_jobpre="/data2/"  ###  pre-path for input files for job runnig
+an_jobpre="/data2/"   ####  pre-path for job output
 
-path_jobpre="/data1/"
-if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    path_jobpre="/data2/"
-
-an_jonpre="/data2/"
-if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    an_jonpre="/data4/"
-
-if "ui" in str(os.getenv("HOSTNAME")):
+isKisti = ("ui" in str(os.getenv("HOSTNAME")))
+    
+if isKisti:
     path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
     an_jonpre="/cms/scratch/SNU/CATAnalyzer/"
 
-
-large_memory_check=800
-large_file_size=100
-file_increase_warning=2.
-time_increase_warning=2.
-######## set 10 process time for which email is sent
-email_time_limit=600.
-
-def   GetMonth(imonth):
-    if imonth == 1:
-        return "Jan"
-    if imonth == 2:
-        return "Feb"
-    if imonth == 3:
-        return "Mar"
-    if imonth == 4:
-        return "Apr"
-    if imonth == 5:
-        return "May"
-    if imonth == 6:
-        return "June"
-    if imonth == 7:
-        return "July"
-    if imonth == 8:
-        return "Aug"
-    if imonth == 9:
-        return "Sep"
-    if imonth == 10:
-        return "Oct"
-    if imonth == 11:
-        return "Nov"
-    if imonth == 12:
-        return "Dec"
-    else:
-        return "Dec"
-
-def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversion, defuseskim, defcycle, defchannel, deftmp_filename,deftagger,skflag):
-    
-    defoutput_file_skim_tag=defchannel
-    if defuseskim == "FLATCAT":
-        defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
-    if defuseskim == "SKTree_LeptonSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
-    if defuseskim == "SKTree_DiLepSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
-    if defuseskim == "SKTree_HNDiLepSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
-    if defuseskim == "SKTree_HNFakeSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
-    if defuseskim == "SKTree_HNFatJetSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
-
-
-    if defuseskim == "SKTree_TriLepSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
-    if defuseskim == "SKTree_NoSkim" :
-        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_nocut_cat_"+defcatversion
-
-    if defrunnp == "True":
-        defoutput_file_skim_tag=defchannel
-        foutname="nonprompt"
-        if defuseskim == "FLATCAT":
-            defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
-            foutname=foutname+"_cat_"+defcatversion
-        if defuseskim == "SKTree_LeptonSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
-            foutname="SK"+foutname+"_cat_"+defcatversion
-        if defuseskim == "SKTree_DiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_dilep_cat_"+defcatversion
-        if defuseskim == "SKTree_HNDiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_hndilep_cat_"+defcatversion
-        if defuseskim == "SKTree_HNFakeSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
-            foutname="SK"+foutname+"_hnfake_cat_"+defcatversion
-        if defuseskim == "SKTree_HNFatJetSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
-            foutname="SK"+foutname+"_hnfatjet_cat_"+defcatversion
-
-
-        if defuseskim == "SKTree_TriLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_trilep_cat_"+defcatversion
-
-            
-        defFinaloutputdirMC=""
-
-        if "/Fake/" in defFinaloutputdir:
-            defFinaloutputdirMC=defFinaloutputdir
-            defFinaloutputdirMC=defFinaloutputdirMC.replace("Fake/","")
-
-        if defdata_lumi == "ALL" or defdata_lumi==os.getenv("catdatatag"):
-            if not  "SKTreeMaker" in cycle:
-                os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_"+defoutput_file_skim_tag+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
-                os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root")
-                if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
-                    os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
-                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt"   )
-                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
-                
-
-                if os.getenv("USER") == "jalmond":
-                    transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
-                    catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
-                    readcatpath=open(catpath,"r")
-                    lxmachine=""
-                    for rline in readcatpath:
-                        if "localcpu" in rline:
-                            srline = rline.split()
-                            lxmachine=srline[2]
-                    readcatpath.close()
-                    os.system("scp -r "+ defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root" + " jalmond@"+lxmachine+".cern.ch:"+transout)
-                
-
-
-    elif defruncf == "True":
-        defoutput_file_skim_tag=defchannel
-        foutname="chargeflip"
-        if defuseskim == "FLATCAT":
-            defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
-            foutname=foutname+"_cat_"+defcatversion
-        if defuseskim == "SKTree_LeptonSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
-            foutname="SK"+foutname+"_cat_"+defcatversion
-        if defuseskim == "SKTree_DiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_dilep_cat_"+defcatversion
-        if defuseskim == "SKTree_HNDiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_hndilep_cat_"+defcatversion
-        if defuseskim == "SKTree_HNFakeSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
-            foutname="SK"+foutname+"_hnfake_cat_"+defcatversion            
-        if defuseskim == "SKTree_HNFatJetSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
-            foutname="SK"+foutname+"_hnfatjet_cat_"+defcatversion
-
-        if defuseskim == "SKTree_TriLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
-            foutname="SK"+foutname+"_trilep_cat_"+defcatversion
-
-    else:
-        defoutput_file_skim_tag=defchannel
-        if defuseskim == "FLATCAT":
-            defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
-        if defuseskim == "SKTree_NoSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_nocut_cat_"+defcatversion            
-        if defuseskim == "SKTree_LeptonSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
-        if defuseskim == "SKTree_DiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
-        if defuseskim == "SKTree_HNDiLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
-        if defuseskim == "SKTree_HNFakeSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
-        if defuseskim == "SKTree_HNFatJetSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
-
-        if defuseskim == "SKTree_TriLepSkim" :
-            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion            
-
-        defFinaloutputdirMC=""
-
-        if "/Data/" in defFinaloutputdir:
-            defFinaloutputdirMC=defFinaloutputdir
-            defFinaloutputdirMC=defFinaloutputdirMC.replace("Data/","")
-        else:
-            return 
-        
-        
-        output_datafile=defFinaloutputdirMC+"/"+defcycle+"_data_cat_"+ defcatversion+".root"
-        if defdata_lumi == "ALL" or defdata_lumi==os.getenv("catdatatag"):
-            if not "SKTreeMaker" in cycle:
-
-                os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_data_cat_"+defcatversion+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
-                os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_cat_"+defcatversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root")
-                
-
-                if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
-                    os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
-                os.system("source "+str(os.getenv("LQANALYZER_DIR"))+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt" )  
-                os.system("source "+str(os.getenv("LQANALYZER_DIR"))+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
-
-                if os.getenv("USER") == "jalmond":
-                    transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
-                    catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
-                    readcatpath=open(catpath,"r")
-                    lxmachine=""
-                    for rline in readcatpath:
-                        if "localcpu" in rline:
-                            srline = rline.split()
-                            lxmachine=srline[2]
-                    readcatpath.close()
-                    os.system("scp -r "+ defFinaloutputdirMC+ "/"+ defcycle+"_data_" + defchannel+"_cat_"+defcatversion+".root  jalmond@"+lxmachine+".cern.ch:"+transout)
-
-
-def UpdateOutput(outputlist,outputlist_path):
-    out_file = open(outputlist_path,"w")
-    for x in outputlist:
-        out_file.write(x+"\n")
-    out_file.close()
-    
-def GetListOld():
-    
-    ### List of tags with stst logging but no memeory values in the Master File
-    clist=[]
-    clist.append("v8-0-1.7")
-    clist.append("v8-0-1.6")
-    return clist
-
-def GetListNew():
-
-    ### change in format (add memory of jobs since v8-0-1.8)
-    ### This new format allows job to output WARNING if jobs are using more memory than previously.
-    ### This should help fix any possible memory leaks when the happen
-    clist=[]
-    clist.append("v8-0-1.8")
-    clist.append("v8-0-2")### this will take care of all 802 tags
-    return clist
-
-def GetList():
-    
-    clist=GetListNew() + GetListOld()
-    #for ct in GetListNew():
-    return clist
-
-def NewForat(ct):
-    
-    clist = GetListNew()
-    for ctag in clist:
-        if ct == ctag:
-            return True
-        if ctag in ct:
-            return True
-    return False
-
-
-def GetNFiles( deftagger,defsample,defcycle,defskim):
-
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
-        return 1000.
-
-    nit=2
-    if "SKTreeMaker" in defcycle:
-        nit=0
-    avg_time=-999.
-    checkdate = datetime.datetime.now()
-    tmpday=int(checkdate.strftime("%d"))
-    diff = datetime.timedelta(days=(tmpday+1))
-    checkdate=checkdate+diff
-    get_nfiles=0
-    while avg_time < 0:
-        if nit < 0:
-            return 1000.
-        nit =nit-1
-        #### get previous month                                                                                                                                                 
-        checkdate=checkdate-diff
-        month=checkdate.strftime("%m")
-        day=checkdate.strftime("%d")
-        year=checkdate.strftime("%y")
-
-        file_jobsummary="/data1//LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
-
-        if not os.path.exists(file_jobsummary):
-            return 1000.
-
-        read_file_jobsummary = open(file_jobsummary,"r")
-    
-
-        for line in read_file_jobsummary:
-            if os.getenv("USER") in line:
-                tmpsample=defsample+" skim"
-                if not "True" in line:
-                    continue
-                if len(defsample) == 1:
-                    tmpsample="_"+tmpsample+" "
-                elif "H_" in defsample:
-                    tmpsample="_"+tmpsample+" "
-                                    
-                if tmpsample in line and defskim in line and defcycle in line and os.getenv("CATVERSION") in line:
-                    splitline = line.split()
-                    nthsplit=0
-                    for s in splitline:
-                        if nthsplit== 12:
-                            get_nfiles=int(s)
-                        nthsplit=nthsplit+1
-        read_file_jobsummary.close()
-
-        if get_nfiles < 1:
-            continue
-        else:
-            return get_nfiles
-
-    return 1000.
-
-
-def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundebug):
-
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
-        return 1000.
-    
-
-    nit=2
-    avg_time=-999.
-    checkdate = datetime.datetime.now()
-    tmpday=int(checkdate.strftime("%d"))
-    diff = datetime.timedelta(days=(tmpday+1))
-    checkdate=checkdate+diff
-    
-    while avg_time < 0:
-        
-        gettime_nfiles=0
-        gettime_njobs=0
-        gettime_jobtime=0
-
-        if nit < 0:
-            return 1000.
-        nit =nit-1
-        #### get previous month
-        checkdate=checkdate-diff
-        month=checkdate.strftime("%m")
-        day=checkdate.strftime("%d")
-        year=checkdate.strftime("%y")
-
-        file_jobsummary="/data1//LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
-        if rundebug:
-            file_debug = open("debug.txt","a")
-            file_debug.write(file_jobsummary+"\n")
-        if not os.path.exists(file_jobsummary):
-            return 1000.
-
-        read_file_jobsummary = open(file_jobsummary,"r")
-        nfound=0.
-        for line in read_file_jobsummary:
-            
-            if not "True" in line:
-                continue
-            if os.getenv("USER") in line:
-                tmpsample=defsample+" skim"
-                if len(defsample) == 1:
-                    tmpsample="_"+tmpsample+" "
-                elif "H_" in defsample:
-                    tmpsample="_"+tmpsample+" "
-
-                if tmpsample in line and defskim in line and defcycle in line:
-                    splitline = line.split()
-                    nthsplit=0
-                    if len(splitline) < 38:
-                        continue
-                    for s in splitline:
-                        if nthsplit==24:
-                            if float(s) < 0:
-                                gettime_jobtime=0.
-                            else:
-                                gettime_jobtime=float(s)
-                        if nthsplit==10:
-                            gettime_njobs=float(s)
-                        if nthsplit==12:
-                            gettime_nfiles=float(s)
-
-                        nthsplit=nthsplit+1
-                    if gettime_jobtime > 0.:
-                        break
-                                                        
-        read_file_jobsummary.close()
-          
-        if gettime_jobtime < 1.:
-            if rundebug:
-                file_debug.write("gettime_jobtime = " + str(gettime_jobtime)+"\n")
-            continue
-        if gettime_nfiles < 1:
-            if rundebug:
-                file_debug.write("gettime_nfiles = " + str(gettime_nfiles)+"\n")
-                
-            continue
-        if gettime_njobs < 1:
-            if rundebug:
-                file_debug.write("gettime_njobs = " + str(gettime_njobs)+"\n")
-
-            continue
-
-        if gettinglongest:
-            if rundebug:
-                file_debug.close()
-            return (float(gettime_jobtime) * float(gettime_njobs))
-                
-        gettime_jobtime = float(gettime_jobtime) / float(gettime_nfiles) 
-        gettime_jobtime = float(gettime_jobtime) * float(gettime_njobs)
-        avg_time=float(gettime_jobtime)
-        if rundebug:
-            file_debug.close()
-        return avg_time
-    if rundebug:
-        file_debug.close()
-
-    return 1000.
-    
-def FreeSpaceInQueue(jobqueue, deftagger):
-
-    is_allowed_queue =  jobqueue == "fastq" or jobqueue == "longq"
-    if not is_allowed_queue:
-        return 1000.
-
-    path_clust_check_njobs=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
-    os.system("qstat -f   > " +  path_clust_check_njobs)
-    file_clust_check_njobs=open(path_clust_check_njobs ,"r")
-    fastq_ninqueue=0.
-    fastq_nallowedinqueue=0.
-    longq_ninqueue=0.
-    longq_nallowedinqueue=0.
-    for cline in file_clust_check_njobs:
-        if "fastq" in cline:
-            splitline = cline.split()
-            if len(splitline) ==6 and ".local" in cline:
-                if splitline[5] == "a":
-                    return 0
-                            
-            if len(splitline) ==5:
-                qjobinfo=splitline[2]
-                qjobinfo=qjobinfo.replace("/"," ")
-                splitqjobinfo=qjobinfo.split()
-                fastq_ninqueue=fastq_ninqueue+float(splitqjobinfo[1])
-                fastq_nallowedinqueue=fastq_nallowedinqueue+float(splitqjobinfo[2])
-        if "longq" in cline:
-            splitline = cline.split()
-            if len(splitline) ==6 and ".local" in cline:
-                if splitline[5] == "a":
-                    return 0
-
-            if len(splitline) ==5:
-                qjobinfo=splitline[2]
-                qjobinfo=qjobinfo.replace("/"," ")
-                splitqjobinfo=qjobinfo.split()
-                longq_ninqueue=longq_ninqueue+float(splitqjobinfo[1])
-                longq_nallowedinqueue=longq_nallowedinqueue+float(splitqjobinfo[2])
-
-    file_clust_check_njobs.close()
-
-    if jobqueue == "fastq":
-        return (fastq_nallowedinqueue - fastq_ninqueue)
-    
-    else:
-        return(longq_nallowedinqueue - longq_ninqueue)
-
-
-    
-def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger, rundebug):
-
-    if rundebug:
-        file_debug = open("debug.txt","a")
-    
-    if not ( jobqueue == "fastq" or jobqueue == "longq"):
-        return jobqueue
-
-    if rundebug:
-        file_debug.write("queue ok\n")
-    path_clust_check_njobs=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
-    os.system("qstat -f   > " +  path_clust_check_njobs)
-    file_clust_check_njobs=open(path_clust_check_njobs ,"r")
-    fastq_ninqueue=0.
-    fastq_nallowedinqueue=0.
-    longq_ninqueue=0.
-    longq_nallowedinqueue=0.
-    alarm_fast=False
-    alarm_long=False
-        
-    for cline in file_clust_check_njobs:
-        if "fastq" in cline:
-            splitline = cline.split()
-            if len(splitline) ==5:
-                qjobinfo=splitline[2]
-                qjobinfo=qjobinfo.replace("/"," ")
-                splitqjobinfo=qjobinfo.split()
-                fastq_ninqueue=fastq_ninqueue+float(splitqjobinfo[1])
-                fastq_nallowedinqueue=fastq_nallowedinqueue+float(splitqjobinfo[2])
-            elif len(splitline) ==6 and ".local" in cline:
-                if splitline[5] == "a":
-                    alarm_fast=True
-                else:
-                    qjobinfo=splitline[2]
-                    qjobinfo=qjobinfo.replace("/"," ")
-                    splitqjobinfo=qjobinfo.split()
-                    fastq_ninqueue=fastq_ninqueue+float(splitqjobinfo[1])
-                    fastq_nallowedinqueue=fastq_nallowedinqueue+float(splitqjobinfo[2])
-                    
-
-        if "longq" in cline:
-            splitline = cline.split()
-            if len(splitline) ==5:
-                qjobinfo=splitline[2]
-                qjobinfo=qjobinfo.replace("/"," ")
-                splitqjobinfo=qjobinfo.split()
-                longq_ninqueue=longq_ninqueue+float(splitqjobinfo[1])
-                longq_nallowedinqueue=longq_nallowedinqueue+float(splitqjobinfo[2])
-            elif len(splitline) ==6 and ".local" in cline:
-                if splitline[5] == "a":
-                    alarm_long=True
-                else:
-                    qjobinfo=splitline[2]
-                    qjobinfo=qjobinfo.replace("/"," ")
-                    splitqjobinfo=qjobinfo.split()
-                    longq_ninqueue=longq_ninqueue+float(splitqjobinfo[1])
-                    longq_nallowedinqueue=longq_nallowedinqueue+float(splitqjobinfo[2])
-        if alarm_long and alarm_fast:
-            curses.echo()
-            curses.nocbreak()
-            curses.endwin()
-            print "Exiting since fast and long queues are in alarm state"
-            sys.exit()
-        elif alarm_long:
-            return "fastq"
-        elif alarm_fast:
-            return "longq"
-                
-    file_clust_check_njobs.close()
-    if rundebug:
-        file_debug.write("queue fast: fastq_ninqueue=" + str(fastq_ninqueue) + " fastq_nallowedinqueue = " + str(fastq_nallowedinqueue)+ " \n")
-        file_debug.write("queue long: long_ninqueue=" + str(longq_ninqueue) + " longq_nallowedinqueue = " + str(longq_nallowedinqueue)+ " \n")
-        file_debug.write("ncores_job = " + str(ncores_job) + " \n")
-    if jobqueue == "fastq":
-        if ncores_job < (fastq_nallowedinqueue-fastq_ninqueue):
-            if rundebug:
-                file_debug.write("fastq, return " + jobqueue+ "\n")
-                file_debug.close()
-            return jobqueue
-        else:
-            if (float(fastq_ninqueue) / float(fastq_nallowedinqueue)) < 0.9:
-                if rundebug:
-                    file_debug.write("fastq2, return " + jobqueue+ "\n")
-                    file_debug.close()
-                return jobqueue
-            else:
-                if ncores_job < (longq_nallowedinqueue-longq_ninqueue):
-                    job_summary.append("########################################")
-                    job_summary.append("Changing queue to submit job in empty queue")
-                    job_summary.append("########################################")
-                    if rundebug:
-                        file_debug.write("longq, return " + jobqueue+ "\n")
-                        file_debug.close()
-                    return "longq"
-                elif (float(longq_ninqueue)/ float(longq_nallowedinqueue)) < 0.1:
-                    job_summary.append("########################################")
-                    job_summary.append("Changing queue to submit job in empty queue")
-                    job_summary.append("########################################")
-                    if rundebug:
-                        file_debug.write("longq2, return " + jobqueue+ "\n")
-                        file_debug.close()
-                    return "longq"
-                else:
-                    return jobqueue
-    else:
-        if ncores_job < (longq_nallowedinqueue-longq_ninqueue):
-            if rundebug:
-                file_debug.write("longq, return " + jobqueue+ "\n")
-                file_debug.close()
-            return jobqueue
-        else:
-            if (float(longq_ninqueue) / float(longq_nallowedinqueue)) < 0.7:
-                if rundebug:
-                    file_debug.write("longq2, return " + jobqueue+ "\n")
-                    file_debug.close()
-                return jobqueue
-            else:
-                if ncores_job < (fastq_nallowedinqueue-fastq_ninqueue):
-                    job_summary.append("########################################")
-                    job_summary.append("Changing queue to submit job in empty queue")
-                    job_summary.append("########################################")
-                    if rundebug:
-                        file_debug.write("fastq, return " + jobqueue+ "\n")
-                        file_debug.close()
-
-                    return "fastq"
-                elif (float(fastq_ninqueue)/ float(fastq_nallowedinqueue)) < 0.9:
-                    job_summary.append("########################################")
-                    job_summary.append("Changing queue to submit job in empty queue")
-                    job_summary.append("########################################")
-                    if rundebug:
-                        file_debug.write("fastq2, return " + jobqueue+ "\n")
-                        file_debug.close()
-                    return "fastq"
-                else:
-                    return jobqueue
-
-
-    return jobqueue
-            
-def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger,defsample,defcycle,defskim, defqueue, nfreeqall, submitall, rundebug, njobs_expectedtorun, jobsleft):
-
-    if rundebug:
-        file_debug = open("debug.txt","a")
-
-    tmplongestjobtime=float(GetAverageTime(True,deftagger, defsample, defcycle,defskim,rundebug))
-    isLongestJob=False
-    if tmplongestjobtime == longestjobtime:
-        isLongestJob=True
-
-    if rundebug:
-        file_debug.write("deftagger " + deftagger + " defsample = " + defsample + " defskim = " + defskim + " defqueue = " + defqueue + "\n")
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
-        return 20
-       
-    if ncores_job == 0:
-         return 1
-
-    if ncores_job == 1:
-        return 1
-
-    if submitall:
-        return 1000
-
-    expectedjobnfiles=int(GetNFiles(deftagger, defsample, defcycle,defskim))                                                                                             
-    if "SKTreeMaker" in defcycle:
-        return expectedjobnfiles
-
-    if rundebug:
-        file_debug.write("number of files = " + str(expectedjobnfiles)+"\n")
-    
-    if expectedjobnfiles < 0:
-        jobsummary.append( "current sample/skim has not been processed before. Setting number of of jobs to 20 as default.")
-        return 20
-
-
-    if rundebug:
-        file_debug.write("queue = " + str(defqueue) + "\n")    
-        file_debug.write("FreeSpaceInQueue: number of free cores = " + str(nfreeqall) +"\n" )
-
-
-    if tmplongestjobtime == 1000.:
-        return 20
-
-    #### longestjobtime is time[s] to run 1 job on batch system
-
-    ### for jobs that take longer than 5000/n s
-    isbusy_addon=0
-    
-    if njobs_expectedtorun > 0:
-        if tmplongestjobtime < 60000 and tmplongestjobtime > 5000:
-            if rundebug:
-                file_debug.write("njobs_expectedtorun = " + str(njobs_expectedtorun) + "\n")
-            if float(nfreeqall)  - float(njobs_expectedtorun) > 20:
-                nleftover = float(nfreeqall)  - float(njobs_expectedtorun) - 20.
-                if rundebug:
-                    file_debug.write("nleftover= " +str(nleftover) + "\n")
-                while  nleftover%float(jobsleft):
-                    nleftover=nleftover+1
-                    if rundebug:
-                        file_debug.write("correctednleftover= " +str(nleftover) + "\n")
-                isbusy_addon = float(nleftover)/float(jobsleft)
-                if rundebug:
-                    file_debug.write("isbusy_addon = " + str(isbusy_addon) + "\n")
-
-    njobs_long=0            
-
-    if longestjobtime > 150000:
-        njobs_long=75 
-        longestjobtime= longestjobtime/float(njobs_long)
-        if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 50:
-                return nfreeqall
-            else:
-                return njobs_long
-    elif longestjobtime > 100000:
-        njobs_long=60 
-        longestjobtime= longestjobtime/float(njobs_long)
-        if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 50:
-                return nfreeqall
-            else:
-                return njobs_long
-    elif longestjobtime > 60000:
-        njobs_long=50 
-        longestjobtime= longestjobtime/float(njobs_long)
-        if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 35:
-                return nfreeqall
-            else:
-                return njobs_long
-
-    elif longestjobtime >20000:
-        njobs_long=35 
-        
-        longestjobtime= longestjobtime/float(njobs_long)
-        if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 20:
-                return nfreeqall
-            else:
-                return njobs_long
-            
-    elif longestjobtime >10000:
-        njobs_long=25 
-        
-        longestjobtime= longestjobtime/float(njobs_long)
-        if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 15:
-                return nfreeqall
-            else:
-                return njobs_long
-
-    elif longestjobtime >5000:
-        njobs_long=15 
-
-        longestjobtime= longestjobtime/float(njobs_long)
-        if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 12:
-                return nfreeqall
-            else:
-                return njobs_long
-
-
-
-    elif longestjobtime >2000:
-
-        njobs_long=10 
-        longestjobtime= longestjobtime/float(njobs_long)
-        if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 10:
-                return nfreeqall
-            else:
-                return njobs_long
-
-
-
-    elif longestjobtime >1000:
-
-        njobs_long=10 
-        longestjobtime= longestjobtime/float(njobs_long)
-        if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 5:
-                return nfreeqall
-            else:
-                return njobs_long
-
-
-
-    elif longestjobtime >600:
-
-        njobs_long=5 
-        longestjobtime= longestjobtime/float(njobs_long)
-        if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 2:
-                return nfreeqall
-            else:
-                return njobs_long
-
-    else:
-         njobs_long=2
-         longestjobtime= longestjobtime/float(njobs_long)
-         if isLongestJob:
-             return njobs_long
-         
-
-
-    if rundebug:
-        file_debug.write("longestjobtime = " + str(longestjobtime)  +"\n" )
-    if not longestjobtime == -499.5:        
-        if longestjobtime < 0.:
-            if rundebug:
-                file_debug.close()
-            return 20
-
-
-    ### expectedjobtime = time per file if ran 1 job in bacth queue
-    expectedjobtime=tmplongestjobtime
-
-    if rundebug:
-        file_debug.write("expectedjobtime = " + str(expectedjobtime) + "\n")
-    if expectedjobtime  < 0:
-        print "current job has not been processed before. Setting number of of jobs to 20 as default."
-        if rundebug:
-            file_debug.close()
-        return 20
-
-    if expectedjobtime  == 1000.:
-        print "current job has not been processed before. Setting number of of jobs to 20 as default."
-        if rundebug:
-            file_debug.close()
-        return 20
-
-    ## now this is total time expcected to run for all files
-    #expectedjobtime = expectedjobtime* expectedjobnfiles
-    if rundebug:
-        file_debug.write("enfiles*xpectedjobtime = " + str(expectedjobtime) + "\n")
-
-
-    #### If expectedjobtime is large then submit 10 or more jobs (as few as will be finihsed bfore longest jobs time)
-    if expectedjobtime > 5000.:
-        if not longestjobtime == expectedjobtime:
-            for ix in range(10, 75):
-                if float(expectedjobtime) < (float(ix)*float(longestjobtime)):
-                    if rundebug:
-                        file_debug.close()
-                    return ix+isbusy_addon
-            if rundebug:
-                file_debug.close()
-            return 25+isbusy_addon
-        else:
-            if rundebug:
-                file_debug.close()
-            return 50+isbusy_addon
-
-    
-    elif expectedjobtime > 3000.:
-    
-        for i in range(5, 15):
-            if rundebug:
-                file_debug.write("range " + str(i) + "\n")
-            #### IF job will run in less than 10 minutes run max number of jobs                                                                                                                                  
-            for ix in range(i, 15):
-                if (float(expectedjobtime) / float(ix)) < longestjobtime:
-                    if rundebug:
-                        file_debug.write(str((float(expectedjobtime) / float(ix)))+"\n")
-                        file_debug.write("ix = " + str(ix) +"\n")
-                        file_debug.close()
-                    return ix+isbusy_addon
-
-    elif expectedjobtime > 600.:
-
-        for i in range(2, 10):
-            if rundebug:
-                file_debug.write("range " + str(i) + "\n")
-            #### IF job will run in less than 10 minutes run max number of jobs                                                                                                                                                                                
-            for ix in range(i, 15):
-                if (float(expectedjobtime) / float(ix)) < longestjobtime:
-                    if rundebug:
-                        file_debug.write(str((float(expectedjobtime) / float(ix)))+"\n")
-                        file_debug.write("ix = " + str(ix) +"\n")
-                        file_debug.close()
-                    return ix+isbusy_addon
-
-    else:                
-        if rundebug:
-            file_debug.close()
-        return 2
-    if rundebug:
-        file_debug.write("After expectedtime \n")
-    
-
-
-    if expectedjobtime > 1.:
-        if not longestjobtime == expectedjobtime:
-            for ix in range(2, 25):
-                if float(expectedjobtime) < (float(ix)*float(longestjobtime)):
-                    if rundebug:
-                        file_debug.close()
-                    return ix
-            if rundebug:
-                file_debug.close()
-            return 25    
-        else:
-            if rundebug:
-                file_debug.close()
-            return 50
-    
-    else:
-        pre_job_time=GetTime(defsample,defcycle,deftagger, defskim)
-        if pre_job_time == "None":
-            pre_job_time=100.
-        njobs_max=50
-        if float(pre_job_time) < 100.:
-            njobs_max=50
-        elif float(pre_job_time) < 200.:
-            njobs_max=25
-        elif float(pre_job_time) < 300.:
-            njobs_max=20
-        elif float(pre_job_time) < 500.:
-            njobs_max=15
-        elif float(pre_job_time) < 1000.:
-            njobs_max=10
-        elif float(pre_job_time) < 1500.:
-            njobs_max=5
-        else:
-            njobs_max=5
-        if rundebug:
-            file_debug.close()
-        return njobs_max
-
-    
-
-def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
-
-    if "FLATCAT" in defskim:
-        defsample +="_lepton"        
-    if "SKTree_LeptonSkim" in defskim:
-        defsample +="_lepton"
-    if "SKTree_DiLepSkim"in defskim:
-        defsample +="_dilepton"
-    if "SKTree_HNDiLepSkim"in defskim:
-        defsample +="_hndilepton"
-    if "SKTree_HNFakeSkim"in defskim:
-        defsample +="_hnfake"
-    if "SKTree_HNFatJetSkim"in defskim:
-        defsample +="_hnfatjet"
-
-    if "SKTree_TriLepSkim"in defskim:
-        defsample +="_trilepton"    
-    if "SKTree_NoSkim" in defskim:
-        defsample +="_nocut"    
-    
-    jobline=""
-    list_tags=GetList()
-    
-    itag=-1
-    while not jobline:
-        itag=itag+1
-        cattag=list_tags[itag]
-        newformat=NewForat(cattag)
-
-        #info_file_master = path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"
-        info_file= path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
-
-        #os.system("cp " + info_file_master + " " + info_file)
-        read_info_file = open(info_file,"r")
-        isuser=False
-        iscycle=False
-        jobline=""
-        for infoline in read_info_file:
-            if "USER" in infoline:
-                if  os.getenv("USER") in infoline:
-                    isuser=True
-                else:
-                    isuser=False
-            if isuser: 
-                if "Code:" in infoline and defcycle in infoline:
-                    iscycle=True
-                if "Code:" in infoline and not defcycle in infoline:
-                    iscycle=False
-                if iscycle:
-                    if defsample in infoline:
-                        if cattag in infoline:
-                            jobline=infoline
-        read_info_file.close()            
-        if itag == (len(list_tags) - 1):
-            if not jobline:
-                jobline="None"
-    if jobline == "None":
-        return "None"
-
-    sinfoline = jobline.split()
-    if newformat:
-        if len(sinfoline) == 7:
-            if info_type == "MemoryV":
-                return sinfoline[5]
-            if info_type == "MemoryP":
-                return sinfoline[6]
-            if info_type == "Time":
-                return sinfoline[3]
-            if info_type == "FileSize":
-                return sinfoline[4]
-        
-    else:
-        if len(sinfoline) == 5:
-            if info_type == "MemoryV":
-                return "None"
-            if info_type == "MemoryP":
-                return "None"
-            if info_type == "Time":
-                return sinfoline[3]
-            if info_type == "FileSize":
-                return sinfoline[4]
-
-    return "None"        
-
-def GetVirtualMemoryUsage(defsample, defcycle,tagger,defskim):
-    return CheckJobHistory("MemoryV", defsample, defcycle, tagger,defskim)
-
-def GetPhysicalMemoryUsage(defsample, defcycle, tagger,defskim):
-    return CheckJobHistory("MemoryP", defsample, defcycle, tagger,defskim)
-
-def GetTime(defsample, defcycle, tagger,defskim):
-    return CheckJobHistory("Time", defsample, defcycle, tagger,defskim)
-
-def GetFileSize(defsample, defcycle,tagger,defskim):
-    return CheckJobHistory("FileSize", defsample, defcycle,tagger,defskim)
-                                
-                
-def SendEmail(jobsummary, deftagger, e_subject, email_user, sendplots, plotlist):
-
-    if not  os.getenv("USER") == "jalmond":
-        if "jalmond" in email_user:
-            print "Email could not be set since email address is not set correctly in bin/catconfig."
-            return 
-
-    plotstring =""
-    for x in plotlist:
-        plotstring = plotstring+" -a " + x + " "
-
-    path_file_email=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.sh"
-    file_email=open(path_file_email,"w")
-    if not sendplots:
-        file_email.write('cat '+an_jonpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
-    else:
-        file_email.write('cat '+an_jonpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail  '+ plotstring+' -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
-    file_email.close()
-
-    filejobsummary = open(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.txt","w")
-    for eline in jobsummary:
-        filejobsummary.write(eline)
-    filejobsummary.close()    
-    os.system("source " + path_file_email)
-    
-    
-def CrashHelper(defcrashlog):
-    
-    crashmessage=[]
-    for cline in defcrashlog:
-        if "vector::_M_range_check" in cline:
-            crashmessage=CrashHelpMessage(0)
-        if "Did not find"  in cline:
-            crashmessage=CrashHelpMessage(1)        
-        if "Muon collection not found" in cline:
-            crashmessage=CrashHelpMessage(2)
-        if "Electron collection not found" in cline:
-            crashmessage=CrashHelpMessage(3)
-        if "Jet collection not found" in cline:
-            crashmessage=CrashHelpMessage(4)
-    for mline in crashmessage:
-        print mline        
-    return crashmessage
-
-def CrashHelpMessage(crashtype):
-    crashmessage=[]
-    if crashtype == 0:
-        crashmessage.append("Crash likedly caused by attempt to access an element of a vector that does not exist")
-        crashmessage.append("Check in your code places where you access any vector using vec.at(x) or vec[x] that x < vec.size()")
-        crashmessage.append("i.e.,")
-        crashmessage.append("std::vector muons = GetMuons()")
-        crashmessage.append("if(muons.at(0).Pt() > 20.) ...  --> this would cause crash for events with no muons. You must require muons vector size > 0"  )
-        crashmessage.append("__________________________")
-        crashmessage.append("if(muons.size() > 0){ ")
-        crashmessage.append("   if(muons.at(0).Pt() > 20.) ... This will not crash")
-        return crashmessage
-    if crashtype == 1: 
-        crashmessage.append("Crash caused due to missing file. Check that file is located in $LQANALYZER_FILE_DIR directory (use ls $LQANALYZER_FILE_DIR).")
-        crashmessage.append("If file is located in $LQANALYZER_FILE_DIR do:")
-        crashmessage.append("cp $LQANALYZER_FILE_DIR/file  $FILEDIR")
-        crashmessage.append("If file is not located in $LQANALYZER_FILE_DIR email jalmond@cern.ch with crash message")
-    if crashtype == 2:
-        crashmessage.append("Crash caused due to Error in GetMuons input string")
-    if crashtype == 3:
-        crashmessage.append("Crash caused due to Error in GetElectrons input string")
-    if crashtype == 4:
-        crashmessage.append("Crash caused due to Error in GetJets input string")
-
-    return crashmessage
-
-def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle):
-
-    if defskim == "SKTree_NoSkim":
-        defskim ="NoCut"
-    elif defskim == "SKTree_LeptonSkim":
-        defskim ="Lepton"
-    elif defskim == "SKTree_DiLepSkim":
-        defskim="DiLep"
-    elif defskim == "SKTree_HNDiLepSkim":
-        defskim="HNDiLep"
-    elif defskim == "SKTree_HNFakeSkim":
-        defskim="HNFake"
-    elif defskim == "SKTree_HNFatJetSkim":
-        defskim="HNFatJet"
-
-    elif defskim == "SKTree_TriLepSkim":
-        defskim="TriLep"
-    
-    output_catversion=str(os.getenv("CATVERSION"))
-                                              
-    if not ismc:
-        if defskim == "Lepton":
-            defchannel="SK" + defchannel
-        else:
-            if defskim == "NoCut":
-                defchannel="SK" + defchannel + "_nocut"
-            else:
-                if defskim == "DiLep":
-                    defchannel="SK" + defchannel + "_dilep"
-                else:
-                    if defskim == "HNDiLep":
-                        defchannel="SK" + defchannel + "_hndilep"
-                    else:
-                        if defskim == "HNFake":
-                            defchannel="SK" + defchannel + "_hnfake"
-                        else:
-                            if defskim == "HNFatJet":
-                                defchannel="SK" + defchannel + "_hnfatjet"
-                            else:
-                                if defskim == "TriLep":
-                                    defchannel="SK" + defchannel + "_trilep"
-    else:
-        if defskim == "Lepton":
-            defsample="SK" + defsample
-        else:
-            if defskim == "NoCut":
-                defsample="SK" + defsample + "_nocut"
-            else:
-                if defskim == "DiLep":
-                    defsample="SK" + defsample + "_dilep"
-                else:
-                    if defskim == "HNDiLep":
-                        defsample="SK" + defsample + "_hndilep"
-
-                    else:
-                        if defskim == "HNFake":
-                            defsample="SK" + defsample + "_hnfake"
-                        else:
-                            if defskim == "HNFatJet":
-                                defsample="SK" + defsample + "_hnfatjet"
-                            else:
-                                if defskim == "TriLep":
-                                    defsample="SK" + defsample + "_trilep"
-
-    outsamplename=""                        
-    if ismc:
-        outsamplename=defsample
-    else:
-        outsamplename="period"+defsample
-
-    if defrunnp == "True":
-        outsamplename = "nonprompt_" + outsamplename
-    if defruncf == "True":
-        outsamplename = "chargeflip_" + outsamplename
-    if not ismc:
-        outsamplename = outsamplename +  "_" + defchannel
-        outsamplename = outsamplename + "_cat_" + str(output_catversion)
-    else:
-        outsamplename = outsamplename + "_cat_"+ str(output_catversion)
-
-    if  "SKTreeMaker" in defcycle:
-        outsamplename = outsamplename +  str(os.getenv("CATTAG"))
-
-    return outsamplename
-                        
-
-def GetLogFilePath(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle):
-    tmpname= GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle)
-    outlogname = str(os.getenv("LQANALYZER_LOG_PATH")) + "/" + tmpname + "/" + tmpname+"_Job_*"
-    return outlogname
-
-def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle, mergedname):
-    tmpname= GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle)
-    outsamplename=""
-    if ismc:
-        outsamplename=  defcycle +"_"+tmpname + ".root"
-    elif defrunnp == "True":
-        output_catversion=str(os.getenv("CATVERSION"))
-        skimtag=""
-        if defskim == "DiLep":
-            skimtag= "_dilep"
-        elif defskim == "HNDiLep":
-            skimtag= "_hndilep"
-        elif defskim == "HNFake":
-            skimtag= "_hnfake"
-        elif defskim == "HNFatJet":
-            skimtag= "_hnfatjet"
-
-        elif defskim == "TriLep":
-            skimtag= "_trilep"
-        elif defskim == "NoCut":
-            skimtag= "_nocut"
-        outsamplename=  defcycle + "_" + defchannel + "_SKnonprompt"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
-        if not mergedname:
-            outsamplename=  defcycle + tmpname + ".root"
-
-    elif defruncf == "True":
-        output_catversion=str(os.getenv("CATVERSION"))
-        skimtag=""
-        if defskim == "DiLep":
-            skimtag= "_dilep"
-        elif defskim == "HNDiLep":
-            skimtag= "_hndilep"
-        elif defskim == "HNFake":
-            skimtag= "_hnfake"
-        elif defskim == "HNFatJet":
-            skimtag= "_hnfatjet"
-        elif defskim == "TriLep":
-            skimtag= "_trilep"
-        elif defskim == "NoCut":
-            skimtag= "_nocut"
-        outsamplename=  defcycle + "_" + defchannel + "SKchargeflip_"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
-        if not mergedname:
-            outsamplename=  defcycle + tmpname + ".root"
-                        
-
-    else:
-        output_catversion=str(os.getenv("CATVERSION"))
-        outsamplename=  defcycle +"_data_"+ defchannel + "_cat_" +  str(output_catversion)+ ".root"
-        if not  mergedname:
-            outsamplename=defcycle +"_"+tmpname + ".root"
-     
-    if "SKTreeMaker" in defcycle:
-        if ismc:
-            if defskim == "DiLep":
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCTriLep/"+defsample+"/"
-                            
-            elif "FatJet" in defcycle:
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFatJet/"+defsample+"/"
-
-            elif "Fake" in defcycle:
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFake/"+defsample+"/"                
-
-            elif defskim == "Lepton":
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
-            else:
-                if defcycle == "SKTreeMakerNoCut":
-                    return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCNoCut/"+defsample+"/"
-                else:
-                    return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+defsample+"/"
-                                                    
-    return outsamplename    
-
-def LargeFileSize(fsize):
-    sfilesize=str(fsize)
-    string_length= len(sfilesize)
-    float_only_fsize= sfilesize[:-1]
-    unit_only_fsize=  sfilesize[(int(string_length) - 1):]
-    if unit_only_fsize == "G":
-        return True
-    if  unit_only_fsize == "M":
-        if float(float_only_fsize)> large_file_size:
-            return True
-    return False    
-
-def FileSizeInB(fsize):
-    unit_remove=1
-    if "B" in str(fsize):
-        unit_remove=2
-    sfilesize=str(fsize)
-    string_length= len(sfilesize)
-    float_only_fsize= sfilesize[:-unit_remove]
-    unit_only_fsize=  sfilesize[(int(string_length) - unit_remove):]
-    
-    if "K" in  unit_only_fsize:
-        return float(float_only_fsize)*1000.
-    elif "M" in  unit_only_fsize:
-        return float(float_only_fsize)*1000000.
-    elif "G" in  unit_only_fsize:
-        return float(float_only_fsize)*1000000000.
-    else:
-        return float(float_only_fsize)
-
-def LargeFileSizeIncrease(fsize,defsample, defcycle, tagger,defskim):
-
-    if GetFileSize(defsample, defcycle,tagger,defskim) == "None":
-        return False
-    file_size_prev=   FileSizeInB(GetFileSize(defsample, defcycle, tagger,defskim))
-    file_size = FileSizeInB(fsize)
-    if file_size > file_increase_warning*file_size_prev:
-        return True
-    else:
-        return False
-    
-
-def TimeIncrease(stime,defsample, defcycle, tagger,defskim):
-    time_prev=GetTime(defsample, defcycle, tagger,defskim)
-    if time_prev == "None":
-        return False
-
-    if float(stime) > float(time_prev)*time_increase_warning:
-        if float(stime) < 30.:
-            ##### if time is small this can be an issue with machine not code
-            return False
-        else:
-            return True
-    else:
-        return False
-    
-    
-def LargeMemory(mem):
-    if "GB" in str(mem):
-        return True
-    
-    smem=str(mem)
-    string_length= len(smem)
-    float_only_mem= smem[:-2]
-    if "MB" in smem:
-        if float(float_only_mem) > large_memory_check:
-            return True
-    else:
-        return False
-
-
-def LargePhysicalMemoryIncrease(mem,defsample, defcycle, tagger,defskim):
-
-    if GetPhysicalMemoryUsage(defsample, defcycle, tagger,defskim) == "None":
-        return False
-    
-    if not "MB" in str(mem):
-        return False
-    smem=str(mem)
-    string_length= len(smem)
-    float_only_mem= smem[:-2]
-    unit_only_mem=  smem[(int(string_length)-2):]
-
-    rounded_float= str(round(float(float_only_mem),2))
-    if unit_only_mem == "MB":
-        if float(float_only_mem)  < 300:
-            if (float(float_only_mem)*1000.) > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle, tagger,defskim))*1.4:
-                return True
-            else:
-                return False
-        else:
-             if (float(float_only_mem)*1000.)  > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle, tagger,defskim))*1.3:
-                 return True
-             else:
-                 return False
-    return False 
-    
-
-def LargeVirtualMemoryIncrease(mem,defsample, defcycle, tagger,defskim):
-
-    if GetVirtualMemoryUsage(defsample, defcycle,tagger,defskim) == "None":
-        return False
-    if not "MB" in str(mem):
-        return False
-    smem=str(mem)
-    string_length= len(smem)
-    float_only_mem= smem[:-2]
-    unit_only_mem=  smem[(int(string_length)-2):]
-
-    rounded_float= str(round(float(float_only_mem),2))
-    if unit_only_mem == "MB":
-        if float(float_only_mem) < 300:
-            if (float(float_only_mem)*1000.) > (FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle, tagger,defskim))*1.4):
-                return True
-            else:
-                return False
-        else:
-             if (float(float_only_mem)*1000.) > ((FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle,tagger,defskim))*1.3)):
-                 return True
-             else:
-                 return False
-    return False
-
-
-
-def CheckRunningStatus(check_crashfile):
-    if not os.path.exists(check_crashfile):
-        return
-    file_check_crashfile=open(check_crashfile,"r")
-    for line in file_check_crashfile:
-        if " No such file or directory:" in line:
-            print line 
-            sys.exit()
-        if "is not defined" in line:
-            print line 
-            sys.exit()
-        if "SyntaxError: invalid syntax" in line:
-            print line 
-            sys.exit()
-    file_check_crashfile.close()            
-    return
-
-def RoundMemory(mem):
-    if not "MB" in str(mem):
-        return str(mem)
-    smem=str(mem)
-    string_length= len(smem)
-    float_only_mem= smem[:-2]
-    unit_only_mem=  smem[(int(string_length)-2):]
-    
-    rounded_float= str(round(float(float_only_mem),2)) + unit_only_mem
-    return rounded_float
-
-def GetRunning(tagger, rsample):
-    jobid_exists=True
-    while jobid_exists:
-        path_job_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "jobid.txt"
-        if  os.path.exists(path_job_check):
-            jobid_exists=False
-
-
-    file_job_check=open(path_job_check ,"r")
-    jobid1=0
-    jobid2=0
-    
-    njobs_finished=0.
-    nrunning=0.
-    nqueue=0.
-    njobs_in_total=0.  ### should equal three above                                                                                                                                                                                                                                                                   
-    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
-    os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
-    ijob=0
-    
-    for sline in file_job_check:
-        ssline = sline.split()
-        if len(ssline) < 1:
-            continue
-        line=ssline[0]
-        if jobid1 == 0:
-            jobid1=line
-        jobid2=line
-        ijob=ijob+1.
-        njobs_in_total=njobs_in_total+1.
-        file_clust_check=open(path_clust_check,"r")
-        job_inqueue=False
-        for cline in file_clust_check:
-            splitline  = cline.split()
-            if len(splitline) < 6:
-                continue
-            if not os.getenv("USER")  in cline:
-                continue
-            if line == splitline[0]:
-                job_inqueue=True
-                if splitline[4] == "r":
-                    nrunning = nrunning + 1.
-                else:
-                    nqueue = nqueue + 1.
-        if not job_inqueue:
-            njobs_finished=njobs_finished+1.
-        file_clust_check.close()
-    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
-    os.system("rm " + path_clust_check)
-
-    if njobs_in_total == 0:
-        return 0.
-    file_job_check.close()
-
-    nrunning = nrunning + njobs_finished
-    nrun_per = round( (nrunning/float(njobs_in_total)), 2)
-    
-    return nrun_per
-                
-
-    
-
-
 #Import parser to get options                                                                                                                                                 
-parser = OptionParser()
-parser.add_option("-p", "--period", dest="period", default="A",help="which data period or mc sample")
-parser.add_option("-s", "--stream", dest="stream", default="NULL", help="Which data channel- ee,or mumu?")
-parser.add_option("-j", "--jobs", dest="jobs", default=1, help="Name of Job")
-parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
-parser.add_option("-t", "--tree", dest="tree", default="ntuple/event", help="What is input tree name?")
-parser.add_option("-g", "--tmpfilename", dest="tmpfilename", default="", help="")
-parser.add_option("-o", "--logstep", dest="logstep", default=-1, help="How many events betwene log messages")
-parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you running on/ needed to weight mc?")
-parser.add_option("-l", "--loglevel", dest="loglevel", default="INFO", help="Set Log output level")
-parser.add_option("-n", "--nevents", dest="nevents", default=-1, help="Set number of events to process")
-parser.add_option("-k", "--skipevent", dest="skipevent", default=-1, help="Set number of events to skip")
-parser.add_option("-a", "--datatype", dest="datatype", default="", help="Is data or mc?")
-parser.add_option("-e", "--totalev", dest="totalev", default=-1, help="How many events in sample?")
-parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many events in sample?")
-parser.add_option("-X", "--tagger", dest="tagger", default="123", help="random number string?")
-parser.add_option("-T", "--targetlumi", dest="targetlumi", default=-1., help="How many events in sample?")
-parser.add_option("-E", "--efflumi", dest="efflumi", default=-1., help="How many events in sample?")
-parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_DIR}/data/output/", help="Where do you like output to go?")
-parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
-parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
-parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
-parser.add_option("-N", "--useCATv742ntuples", dest="useCATv742ntuples", default=True, help="' to run on these samples")
-parser.add_option("-L", "--LibList", dest="LibList", default="NULL", help="Add extra lib files to load")
-parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
-parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
-parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake mode for np bkg?")
-parser.add_option("-G", "--runtau", dest="runtau", default="runtau", help="Run only tausmode for bkg?")
-parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
-parser.add_option("-q", "--queue", dest="queue", default="", help="Which queue to use?")
-parser.add_option("-J", "--setnjobs", dest="setnjobs", default="False", help="user sets njobs?")
-parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help="What cat version?")
-parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
-parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
-parser.add_option("-u", "--useremail", dest="useremail", default="", help="Set user email")
-parser.add_option("-B", "--bkg", dest="bkg", default="False", help="run in bkg")
-parser.add_option("-A","--drawhists",dest="drawhists",default="False", help="draw nothing")
-parser.add_option("-F","--submitallfiles",dest="submitallfiles",default="False", help="force n=1000")
-parser.add_option("-H","--sendmail",dest="sendmail",default="False", help="force n=1000")
+#parser = SetUpParser()
  
-
-#curses.resizeterm
-
-job_time=0.
-
-now = datetime.datetime.now()
-diff = datetime.timedelta(days=3)
-diffweek = datetime.timedelta(days=7)
-future = now + diff
-future_week = now + diffweek
-future=future.strftime("%m/%d/%Y")
-future_week=future_week.strftime("%m/%d/%Y")
-
-
 ###################################################                                                                                                                            
 #set the local variables using options                                                                                                                                         
 ###################################################                                                                                                                            
-(options, args) = parser.parse_args()
-number_of_cores = int(options.jobs)
-setjobs = options.setnjobs
-setnumber_of_cores=False
-if setjobs== "true":
-    setnumber_of_cores=True
 
-tmp_filename=options.tmpfilename
-if tmp_filename =="":
-    tmp_filename="None"
-sample = options.period
-channel = options.stream
-cycle = options.cycle
-sendmail=options.sendmail
+### submit_vardef sets variables from parser 
+from submit_vardef import *
 
-logstep = int(options.logstep)
-loglevel = options.loglevel
-runnp = options.runnp
-runtau = options.runtau
-runcf = options.runcf
-queue = options.queue
-tagger= options.tagger
-useremail=options.useremail
-### THESE ARE OPTIONS THAT CAN BE INCLUDED but not in example                                                                                                                  
-tree = options.tree
-number_of_events_per_job= int(options.nevents)
-skipev = int(options.skipevent)
-dataType = options.datatype
-totalev = int(options.totalev)
-xsec = float(options.xsec)
-tar_lumi = float(options.targetlumi)
-eff_lumi = float(options.efflumi)
-data_lumi = options.data_lumi
-catversion = options.catversion
-Finaloutputdir = options.outputdir
-remove_workspace=options.remove
-useskinput=options.skinput
-runevent= options.runevent
-useCATv742ntuples = options.useCATv742ntuples
-tmplist_of_extra_lib=options.LibList
-DEBUG = options.debug
-useskim = options.useskim
-skflag = options.skflag
-usebatch =options.usebatch
-runinbkg=options.bkg
-quick_draw=options.drawhists
-tmpsubmit_allfiles=options.submitallfiles
-submit_allfiles=False
-if tmpsubmit_allfiles == "true":
-    submit_allfiles=True
-
-
-
-if getpass.getuser()  == "jalmond":
-    if not os.path.exists(Finaloutputdir):
-        os.system("mkdir " + Finaloutputdir)
-
-
-    catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
-    readcatpath=open(catpath,"r")
-    lxmachine=""
-    for rline in readcatpath:
-        if "localcpu" in rline:
-            srline = rline.split()
-            lxmachine=srline[2]
-    readcatpath.close()
-
-
-    print  "Making dir at lxplus"
-    
-    transout=Finaloutputdir
-    transout=transout.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/" ,"/afs/cern.ch/work/j/jalmond/CAT/")
-    transout=transout.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/" ,"/afs/cern.ch/work/j/jalmond/CAT/")
-
-    os.system("ssh  jalmond@"+lxmachine+".cern.ch  mkdir " + transout )
-    if "OPT" in skflag:
-        Finaloutputdir=Finaloutputdir+"/OPT/"
-    print "Made dir " + transout
-    
-    if "OPT" in skflag:
-        transout = transout+"/OPT/"
-        os.system("ssh  jalmond@"+lxmachine+".cern.ch  mkdir " + transout )
-        print "Made dir " + transout
-
-
-    os.system("cat ~/.ssh/config > check_connection.txt")
-    
-    ch_connect = open("check_connection.txt",'r')
-    cpath="/tmp/"
-    for line in ch_connect:
-        if "ControlPath" in line:
-            if "~/ssh" in line:
-                cpath="~/"
-            elif "/tmp/" in line:
-                cpath="/tmp/"
-            else:
-                print "Modify the cms21 connection since  ControlPath in ~/.ssh/cofig is set to something other than tmp or home dir"
-
-    ch_connect.close()
-    os.system("rm check_connection.txt")
-    os.system("ls " + cpath + " > check_snu_connection.txt")
-    snu_connect = open("check_snu_connection.txt",'r')
-    connected_lxplus=False
-    catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
-    readcatpath=open(catpath,"r")
-    lxmachine=""
-    for rline in readcatpath:
-        if "localcpu" in rline:
-            srline = rline.split()
-            lxmachine=srline[2]
-    readcatpath.close()
-
-    for line in snu_connect:
-        if "ssh-jalmond@"+lxmachine in line:
-            connected_lxplus=True
-    snu_connect.close()
-    os.system("rm check_snu_connection.txt")
-    
-    if not connected_lxplus:
-        print "No connection to " + lxmachine
-        sys.exit()                                                                                                                                                                 
 
 queuepath=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
+
 file_queuepath = open(queuepath,"r")
 QueueForced=False
 for line in file_queuepath:
@@ -1637,7 +42,11 @@ for line in file_queuepath:
             QueueForced=True
 file_queuepath.close()
 
+if isKisti:
+    queue =  "KISTIBATCH"
 
+
+### printedqueue is queue outpit to screen, 
 printedqueue=queue
 printedqueue=printedqueue.replace("all.q@cms-0-","node")
 printedqueue=printedqueue.replace(".local","")
@@ -1646,9 +55,13 @@ if printedqueue == "None":
     printedqueue = "fastq"
     queue = "fastq"
 
+
+#### DoSendEmail sets whether email is to be sent about job status
 DoSendEmail=False
 if sendmail=="True":
     DoSendEmail=True
+
+###  run_in_bkg True means no cursor used and no job status is printed to screen
 run_in_bkg=False
 if runinbkg == "True":
     run_in_bkg=True
@@ -1660,23 +73,12 @@ if runinbkg == "True":
             print "Please set email address and resubmit job"
             sys.exit()
 
-skim_print=useskim
-if useskim == "SKTree_LeptonSkim":
-    skim_print ="Lepton   "
-elif useskim == "SKTree_DiLepSkim":
-    skim_print="DiLep. "
-elif useskim == "SKTree_HNDiLepSkim":
-    skim_print="HNDiLep. "
-elif useskim == "SKTree_HNFake":
-    skim_print="HNFake. "
-elif useskim == "SKTree_HNFatJet":
-    skim_print="HNFatJet. "
 
-elif useskim == "SKTree_TriLepSkim":
-    skim_print="TriLep. "
-elif useskim == "SKTree_NoSkim":
-    skim_print="NoCut  "
+###  set screen skim string
+skim_print= SKIMNAME(useskim)
 
+
+###### check if sample name is given in string
 sample = sample.replace(":", " ")
 sample = sample.replace("!!", " ")
 sample = sample.split()
@@ -1685,23 +87,38 @@ for s in sample:
     if not s:
         sys.exit()
 
+################################################
+################################################
+################################################
+####
+###
+###  setup online screening of job config
+###
+####
+################################################
+################################################
+
+
 istatus_message=2
+
+##### x and y coordinate of cursor window
 winx = 5*len(sample) + 22 +  istatus_message
 winy = 180
 
+#####  output lists 
+
 crash_output=[]
 crash_outputjob=[]
-
 output_bkg=[]
-for out_x in range(1,winx):
-    output_bkg.append(" "*170)
 
+for out_x in range(1,winx):
+    output_bkg.append(" "*170)   ### fill list with empty strings that will be replaced for lines with output messages
+    
 
 start_time = time.time()  
 screen = curses.initscr()
-
-
 screen.refresh()
+
 stdscr = curses.newwin(winx, winy)
 if not run_in_bkg:
     curses.noecho()
@@ -1709,7 +126,7 @@ if not run_in_bkg:
 
 box_shift=0
 summary_block0=4 + box_shift
-summary_block1=summary_block0+ len(options.cycle) + 5
+summary_block1=summary_block0+ len(cycle) + 5
 summary_block2=summary_block1+20
 summary_block3=summary_block2+10
 summary_block4=summary_block3+15
@@ -1766,12 +183,16 @@ stdscr.addstr(list3c, box_shift,  "Output Files:" ,curses.A_UNDERLINE)
 
 for nsample in range(0, len(sample)):
     s=sample[nsample]
-    isMC = len(s) > 1
-    if s == "H_v2" or s == "H_v3":
-        isMC= False
+
+    ###  data has single le
+
+    isMC = ISMC(s)
     if not isMC:
-        if not "ui" in str(os.getenv("HOSTNAME")):
+        if not isKisti:
             an_jonpre="/data7/DATA/"
+            ####
+            #### change dir of workspace to same as where data is  stored
+
 
 #### make working directorr
 if not os.path.exists(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):
@@ -1780,10 +201,12 @@ else:
     os.system("rm -r " + an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
     os.system("mkdir " + an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 
+
 ### Make directory for job stats
 statdir=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"+ os.getenv("USER")
 if not os.path.exists(statdir):
     os.system("mkdir " +statdir)
+
 
 if channel == "":
     channel = NULL
@@ -1795,7 +218,6 @@ if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyze
 jobinfo_file_master = path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"
 jobinfo_file= path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
 os.system("cp " + jobinfo_file_master + " " + jobinfo_file)
-
 
 
 #http://stackoverflow.com/questions/14300770/how-to-noutrefresh-the-multi-line-output-dynamically
@@ -1959,11 +381,6 @@ if rundebug:
         file_debug.write(s + " run on fastq\n" )
     file_debug.close()
                                 
-    #curses.echo()
-    #curses.nocbreak()
-    #curses.endwin()
-    #sys.exit()
-    
 
 ### reset jobsummary
 job_summary=[]
@@ -2066,10 +483,6 @@ for nsample in range(0, len(sample)):
         file_debug = open("debug.txt","a")
         file_debug.write("njobs = " + str(njobs_for_submittion) + "\n")
         file_debug.close()
-        #curses.echo()
-        # curses.nocbreak()
-        # curses.endwin()
-        # sys.exit()
 
     if not sample_islongjob:
         if not sample_isfastjob:
@@ -2097,16 +510,11 @@ for nsample in range(0, len(sample)):
             queue="longq"
 
 
-    
-        #if os.path.exists("debug.txt"):
-        #os.system(" rm debug.txt")
-        
+            
     isample=isample+1
     queuelist.append(printedqueue)
     ## set MC bool from the sample length. This is the letter of the data period for data
-    isMC = len(s) > 1
-    if s == "H_v2" or s == "H_v3":
-        isMC= False
+    isMC = ISMC(s)
 
     runningData= not isMC
     
@@ -2140,9 +548,8 @@ for nsample in range(0, len(sample)):
         ### the following variables are used to print the output sample name that is determined in the localsubmit.py
 
         useskimtmp=useskim
-        ismctmp=  len(sample[x])>1
-        if sample[x] == "H_v2" or sample[x] == "H_v3":
-            ismctmp= False
+
+        ismctmp = ISMC(sample[x])
 
         sampletmp=sample[x]
         runnptmp=runnp
@@ -2179,7 +586,13 @@ for nsample in range(0, len(sample)):
             nqueue=0.
             njobs_in_total=0.  ### should equal three above
             path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
-            os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
+            if not  isKisti:
+                os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
+            else:
+                os.system("condor_q " + os.getenv("USER") + " > " +  path_clust_check)
+
+
+                
             ijob=0
 
             ### loop over job IDS
@@ -2191,26 +604,50 @@ for nsample in range(0, len(sample)):
                 if jobid1 == 0:
                     jobid1=line
                 jobid2=line    
-                ### line == job ID
+                jobid1=jobid1.replace(".","")
+                jobid2=jobid2.replace(".","")
+
+                if  isKisti:
+                    os.system("condor_q " + line + " > " +  path_clust_check)
+
+
                 ijob=ijob+1.
                 njobs_in_total=njobs_in_total+1.
                 file_clust_check=open(path_clust_check,"r")
-                job_inqueue=False
-                for cline in file_clust_check:
-                    splitline  = cline.split()
-                    if len(splitline) < 6:
-                        continue
-                    if not os.getenv("USER")  in cline:
-                        continue
-                    if line == splitline[0]:
-                        job_inqueue=True
-                        if splitline[4] == "r":
+                job_in_queue=False
+                if  isKisti:
+                    for cline in file_clust_check:
+                        if not os.getenv("USER")  in cline:
+                            continue
+                        job_in_queue=True
+                        splitline  = cline.split()
+                        if splitline[6] ==  "1":
                             nrunning = nrunning + 1.
+                        elif splitline[5] ==  "1":
+                            job_in_queue=False
                         else:
                             nqueue = nqueue + 1.
-                if not job_inqueue:
-                    njobs_finished=njobs_finished+1.
-                file_clust_check.close()
+                    if not job_in_queue:
+                        njobs_finished=njobs_finished+1.
+
+                else:
+                    for cline in file_clust_check:
+                        splitline  = cline.split()
+                        if len(splitline) < 6:
+                            continue
+                        if not os.getenv("USER")  in cline:
+                            continue
+                        if line == splitline[0]:
+                            job_in_queue=True
+                            if splitline[4] == "r":
+                                nrunning = nrunning + 1.
+                            else:
+                                nqueue = nqueue + 1.
+                    if not job_in_queue:
+                        njobs_finished=njobs_finished+1.
+
+
+
             path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
             os.system("rm " + path_clust_check)
     
@@ -2403,9 +840,9 @@ for nsample in range(0, len(sample)):
                     file_job.close()
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| " + str(round(first_job_time,2)) + "-" +  str(round(last_job_time,2)) + "[s]   ",curses.A_DIM) 
 
-                    if LargeMemory(memoryusage_p):
+                    if LargeMemory(memoryusage_p,large_memory_check):
                         output_warning.append("WARNING:: Physical memory of job " + sample[x]+ "  is excess of " + str(large_memory_check) + " MB.")
-                    if LargeMemory(memoryusage_v):
+                    if LargeMemory(memoryusage_v,large_memory_check):
                         output_warning.append("WARNING:: Virtual memory of job " + sample[x] + " is excess of " + str(large_memory_check) + " MB.")
 
                     if isMC:
@@ -2413,23 +850,23 @@ for nsample in range(0, len(sample)):
                             output_warning.append("WARNING:: Physical memory of job " + sample[x] + " is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")
                         if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle,tagger,useskim):
                                 output_warning.append("WARNING:: Virtual memory of job " + sample[x] + " is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")    
-                        if LargeFileSize(outputfile_size):
+                        if LargeFileSize(outputfile_size,large_file_size):
                             output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
-                        if LargeFileSizeIncrease(outputfile_size,sample[x], cycle,tagger,useskim):
+                        if LargeFileSizeIncrease(outputfile_size,sample[x], cycle,tagger,useskim,file_increase_warning):
                             output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle,tagger,useskim))
-                        if TimeIncrease(first_job_time,sample[x], cycle,tagger,useskim):
+                        if TimeIncrease(first_job_time,sample[x], cycle,tagger,useskim,time_increase_warning):
                             output_warning.append("WARNING:: Job time per input file increased for " + sample[x] + "  from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle,tagger,useskim))
                     else:
                         if LargePhysicalMemoryIncrease(memoryusage_p,channel + "_" + sample[x], cycle,tagger,useskim):
                             output_warning.append("WARNING:: Physical memory of job " + sample[x] + " is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(channel + "_" + sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")
                         if LargeVirtualMemoryIncrease(memoryusage_v,channel + "_" + sample[x], cycle,tagger,useskim):
                                 output_warning.append("WARNING:: Virtual memory of job " +sample[x] +" is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(channel + "_" + sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")
-                        if LargeFileSize(outputfile_size):
+                        if LargeFileSize(outputfile_size,large_file_size):
                             output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
-                        if LargeFileSizeIncrease(outputfile_size,channel + "_" + sample[x], cycle,tagger,useskim):
+                        if LargeFileSizeIncrease(outputfile_size,channel + "_" + sample[x], cycle,tagger,useskim,file_increase_warning):
                             output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(channel + "_" + sample[x], cycle,tagger,useskim))
-                        if TimeIncrease(first_job_time,channel + "_" + sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Job time per input file for  " + sample[x] + " increased from " + str(first_job_time) + " compared to previous job time " + GetTime(vsample[x], cycle,tagger,useskim))
+                        if TimeIncrease(first_job_time,channel + "_" + sample[x], cycle,tagger,useskim,time_increase_warning):
+                            output_warning.append("WARNING:: Job time per input file for  " + sample[x] + " increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle,tagger,useskim))
      
                         
                     stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM) 
@@ -2438,10 +875,6 @@ for nsample in range(0, len(sample)):
                     stdscr.addstr(2+list2+int(x), summary2_block5 ,"| ",curses.A_DIM)
                     stdscr.refresh()
 
-                    #logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    #outfilepath=str(Finaloutputdir)  +GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    #stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
-                    #stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
 
         else:
             stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)) )
@@ -2485,8 +918,10 @@ for nsample in range(0, len(sample)):
     checkqueue=True
     stdscr.addstr(list4+1, box_shift,  "Initialise:: sample " + s +  blankbuffer)
     stdscr.refresh()
+
     while checkqueue:
         os.system(command1)
+
         if not os.path.exists(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER") +"/"+tagger):
             stdscr.addstr(list4+1, box_shift,  "Queue busy.. please wait")
             stdscr.refresh()
@@ -2503,9 +938,7 @@ for nsample in range(0, len(sample)):
                 if bs == sample[x]:
                     backgroundsamples=True
             useskimtmp=useskim
-            ismctmp=  len(sample[x])>1
-            if sample[x] == "H_v2" or sample[x] == "H_v3":
-                ismctmp= False
+            ismctmp= ISMC(sample[x])
 
             sampletmp=sample[x]
             runnptmp=runnp
@@ -2525,8 +958,14 @@ for nsample in range(0, len(sample)):
                 nqueue=0.
                 njobs_in_total=0.  ### should equal three above                                                                                                                                                                                                       
                 path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
-                os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
+                if not isKisti:
+                    os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
+                else:
+                    os.system("condor_q " + os.getenv("USER") + " > " +  path_clust_check)
+
+
                 ijob=0
+
                 for sline in file_job_check:
                     ssline = sline.split()
                     if len(ssline) < 1:
@@ -2535,25 +974,53 @@ for nsample in range(0, len(sample)):
                     if jobid1 == 0:
                         jobid1=line
                     jobid2=line
+                    jobid1=jobid1.replace(".","")
+                    jobid2=jobid2.replace(".","")
+
+
+                    if  isKisti:
+                        os.system("condor_q " + line + " > " +  path_clust_check)
+
+
                     ijob=ijob+1.
                     njobs_in_total=njobs_in_total+1.
                     file_clust_check=open(path_clust_check,"r")
-                    job_inqueue=False
-                    for cline in file_clust_check:
-                        splitline  = cline.split()
-                        if len(splitline) < 6:
-                            continue
-                        if not os.getenv("USER")  in cline:
-                            continue
-                        if line == splitline[0]:
-                            job_inqueue=True
-                            if splitline[4] == "r":
+                    job_in_queue=False
+                    if  isKisti:
+                        for cline in file_clust_check:
+                            if not os.getenv("USER")  in cline:
+                                continue
+                            job_in_queue=True
+                            splitline  = cline.split()
+                            if splitline[6] ==  "1":
                                 nrunning = nrunning + 1.
+                            elif splitline[5] ==  "1":
+                                job_in_queue=False
                             else:
                                 nqueue = nqueue + 1.
-                    if not job_inqueue:
-                        njobs_finished=njobs_finished+1.
+                        if not job_in_queue:
+                            njobs_finished=njobs_finished+1.
+
+
+                    else:
+                        for cline in file_clust_check:
+                            splitline  = cline.split()
+                            if len(splitline) < 6:
+                                continue
+                            if not os.getenv("USER")  in cline:
+                                continue
+                            if line == splitline[0]:
+                                job_in_queue=True
+                                if splitline[4] == "r":
+                                    nrunning = nrunning + 1.
+                                else:
+                                    nqueue = nqueue + 1.
+                        if not job_in_queue:
+                            njobs_finished=njobs_finished+1.
+
+
                     file_clust_check.close()
+
                 path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
                 os.system("rm " + path_clust_check)
                 if njobs_in_total == 0:
@@ -2650,6 +1117,7 @@ for nsample in range(0, len(sample)):
             stdscr.refresh()
             
             checkqueue=False
+            
             if not os.path.exists(an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger):
                 os.system("mkdir  "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger)
 
@@ -2696,10 +1164,7 @@ while StillRunning:
         time.sleep(2.)
         
         useskimtmp=useskim
-        ismctmp=  len(sample[x])>1
-        if sample[x] == "H_v2" or sample[x] == "H_v3":
-            ismctmp= False
-
+        ismctmp= ISMC(sample[x])
         sampletmp=sample[x]
         runnptmp=runnp
         runcftmp=runcf
@@ -2722,8 +1187,6 @@ while StillRunning:
                 if  os.path.exists(path_job_check):
                     jobid_exists=False
 
-            #CheckRunningStatus(an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt")
-
 
             file_job_check=open(path_job_check ,"r")
             njobs_finished=0.
@@ -2731,7 +1194,12 @@ while StillRunning:
             nqueue=0.
             njobs_in_total=0.
             path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
-            os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
+            if not  isKisti:
+                os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
+            else:
+                os.system("condor_q " + os.getenv("USER") + " > " +  path_clust_check)
+
+
             ijob=0
             jobid1=0
             jobid2=0
@@ -2743,26 +1211,51 @@ while StillRunning:
                 if jobid1==0:
                     jobid1=line
                 jobid2=line
+                jobid1=jobid1.replace(".","")
+                jobid2=jobid2.replace(".","")
+                
+                if  isKisti:
+                    os.system("condor_q " + line + " > " +  path_clust_check)
+                    
+                    
                 ijob=ijob+1.
                 njobs_in_total=njobs_in_total+1.
                 file_clust_check=open(path_clust_check,"r")
                 job_in_queue=False
-                for cline in file_clust_check:
-                    splitline  = cline.split()
-                    if len(splitline) < 6:
-                        continue
-                    if not os.getenv("USER")  in cline:
-                        continue
-                    if line == splitline[0]:
+                if  isKisti:
+                    for cline in file_clust_check:
+                        if not os.getenv("USER")  in cline:
+                            continue
                         job_in_queue=True
-                        if splitline[4] == "r":
+                        splitline  = cline.split()
+                        if splitline[6] ==  "1":
                             nrunning = nrunning + 1.
+                        elif splitline[5] ==  "1":
+                            job_in_queue=False
                         else:
                             nqueue = nqueue + 1.
-                if not job_in_queue:
-                    njobs_finished=njobs_finished+1.
+                    if not job_in_queue:
+                        njobs_finished=njobs_finished+1.
+
+
+                else:
+                    for cline in file_clust_check:
+                        splitline  = cline.split()
+                        if len(splitline) < 6:
+                            continue
+                        if not os.getenv("USER")  in cline:
+                            continue
+                        if line == splitline[0]:
+                            job_in_queue=True
+                            if splitline[4] == "r":
+                                nrunning = nrunning + 1.
+                            else:
+                                nqueue = nqueue + 1.
+                    if not job_in_queue:
+                        njobs_finished=njobs_finished+1.
                     
                 file_clust_check.close()
+
             path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
             os.system("rm " + path_clust_check)
         
@@ -2898,7 +1391,6 @@ while StillRunning:
                                 file_crash.close()
                             break
 
-
                     continue
 
                 crash_log= an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
@@ -2963,9 +1455,9 @@ while StillRunning:
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| " + str(round(first_job_time,2)) + "-" +  str(round(last_job_time,2)) + "[s]     ",curses.A_DIM) 
 
 
-                    if LargeMemory(memoryusage_p):
+                    if LargeMemory(memoryusage_p,large_memory_check):
                         output_warning.append("WARNING:: Physical memory of job " + sample[x] + "  is excess of " + str(large_memory_check) + " MB.")
-                    if LargeMemory(memoryusage_v):
+                    if LargeMemory(memoryusage_v,large_memory_check):
                         output_warning.append("WARNING:: Virtual memory of job " + sample[x] + "  is excess of " + str(large_memory_check) + " MB.")
 
                     if isMC:
@@ -2973,22 +1465,22 @@ while StillRunning:
                             output_warning.append("WARNING:: Physical memory of job " + sample[x] + "  is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle,tagger,useskim))
                         if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle,tagger,useskim):
                             output_warning.append("WARNING:: Virtual memory of job " + sample[x] + "  is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle,tagger,useskim))
-                        if LargeFileSize(outputfile_size):
+                        if LargeFileSize(outputfile_size,large_file_size):
                             output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
-                        if LargeFileSizeIncrease(outputfile_size,sample[x], cycle,tagger,useskim):
+                        if LargeFileSizeIncrease(outputfile_size,sample[x], cycle,tagger,useskim,file_increase_warning):
                             output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle,tagger,useskim))
-                        if TimeIncrease(first_job_time,sample[x], cycle,tagger,useskim):
+                        if TimeIncrease(first_job_time,sample[x], cycle,tagger,useskim,time_increase_warning):
                             output_warning.append("WARNING:: Job time per input file for " +  sample[x] +"  increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle,tagger,useskim))
                     else:
                         if LargePhysicalMemoryIncrease(memoryusage_p,channel + "_" +sample[x], cycle,tagger,useskim):
                             output_warning.append("WARNING:: Physical memory of job " + sample[x] + "  is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(channel + "_" +sample[x], cycle,tagger,useskim))
                         if LargeVirtualMemoryIncrease(memoryusage_v,channel + "_" +sample[x], cycle,tagger,useskim):
                             output_warning.append("WARNING:: Virtual memory of job " + sample[x] + "  is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(channel + "_" +sample[x], cycle,tagger,useskim))
-                        if LargeFileSize(outputfile_size):
+                        if LargeFileSize(outputfile_size,large_file_size):
                             output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
-                        if LargeFileSizeIncrease(outputfile_size,channel + "_" +sample[x], cycle,tagger,useskim):
+                        if LargeFileSizeIncrease(outputfile_size,channel + "_" +sample[x], cycle,tagger,useskim,file_increase_warning):
                             output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(channel + "_" +sample[x], cycle,tagger,useskim))
-                        if TimeIncrease(first_job_time,channel + "_" +sample[x], cycle,tagger,useskim):
+                        if TimeIncrease(first_job_time,channel + "_" +sample[x], cycle,tagger,useskim,time_increase_warning):
                             output_warning.append("WARNING:: Job time per input file " + sample[x] +" increased from " + str(first_job_time) + " compared to previous job time " + GetTime(channel + "_" +sample[x], cycle,tagger,useskim))
                
 
@@ -3148,7 +1640,7 @@ if len(output_warning) > 0:
 
 if runningData and  not "SKTreeMaker" in cycle:
 
-    file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/Hist.txt","r")
+    file_read_counter = open(path_jobpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/Hist.txt","r")
     nhists=0
     for rc_line in file_read_counter:
 
@@ -3173,8 +1665,12 @@ if runningData and  not "SKTreeMaker" in cycle:
         print "#"*40
         job_summary.append("#"*40+ "\n")
 
+        
+    hist_pre =  "/data2/CAT_SKTreeOutput/"
+    if isKisti:
+        hist_pre ="/cms/scratch/SNU/CATAnalyzer/"
 
-    cffile_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/CutFlow.txt","r")
+    cffile_read_counter = open(hist_pre+os.getenv("USER")+"/Histdir" + tagger + "/CutFlow.txt","r")
     cfnhists=0
     for rc_line in cffile_read_counter:
 
@@ -3192,17 +1688,13 @@ if runningData and  not "SKTreeMaker" in cycle:
         job_summary.append(rc_line + "\n")
         
     cffile_read_counter.close()
-    #if cfnhists> 0:
-    #    print "#"*40
-    #    job_summary.append("#"*40+ "\n")
-
 
 elif  not "SKTreeMaker" in cycle:
                               
     cuts =[]
     print " "
     print "%%%%%%%%%%%%%%"*4
-    file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+sample[0]+"Hist.txt","r")
+    file_read_counter = open(path_jobpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+sample[0]+"Hist.txt","r")
     for rc_line in file_read_counter:
         src_line = rc_line.split()
         if  "=" in rc_line :
@@ -3218,7 +1710,10 @@ elif  not "SKTreeMaker" in cycle:
         sample_sum=[]
         sample_err=[]
         for hs in sample:
-            file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+hs+"Hist.txt","r")
+            hist_pre =  "/data2/CAT_SKTreeOutput/"
+            if isKisti:
+                hist_pre ="/cms/scratch/SNU/CATAnalyzer/"
+            file_read_counter = open(hist_pre+os.getenv("USER")+"/Histdir" + tagger + "/"+hs+"Hist.txt","r")
             for rc_line in file_read_counter:
                 cut_line=False
                 src_line = rc_line.split()
@@ -3342,7 +1837,11 @@ remdir=False
 if remdir:
     njobs_in_total=0.
     path_clust_check2=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/clusterjobs.txt"
-    os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check2)
+    if not  "ui" in str(os.getenv("HOSTNAME")):
+        os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
+    else:
+        os.system("condor_q " + os.getenv("USER") + " > " +  path_clust_check)
+
     file_clust_check2=open(path_clust_check2,"r")
     for sline in file_clust_check2:
         ssline = sline.split()
@@ -3357,3 +1856,5 @@ if remdir:
         os.system("rm -r "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG*")
     else:
         os.system("rm -r "+an_jonpre+"CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) )
+
+

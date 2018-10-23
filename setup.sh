@@ -35,6 +35,7 @@ if [[ $setupok == "False" ]]; then
     return 1
 fi
 
+
 if [[ $USER == "jalmond" ]]; then
     alias cat_path_analysis_ls='ll -rth /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/ '
     if [ $LQANALYZER_DIR ]; then
@@ -50,38 +51,39 @@ fi
 
 
 
-
-if [[ $PWD !=  *"/data4/LQAnalyzerCode/"* ]];
-then
-    if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
-    then
-        echo "Setup failed. LQanalyzer needs to be in /data4/LQAnalyzerCode/"$USER
-        if [ ! -d /data4/LQAnalyzerCode/$USER ]; then
-            mkdir /data4/LQAnalyzerCode/$USER
-        fi
-        echo "Move the current LQAnalyzer directory to "/data4/LQAnalyzerCode/$USER
-
-        return
-    fi
-fi
-
-
 if [ $LQANALYZER_DIR ]; then
     echo LQANALYZER_DIR is already defined, use a clean shell
     return 1
 fi
 
 
-
-
-
-
-## variables that are specific to your machine: Change if noy listed
-if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
-    source /share/apps/root_v5-34-32/root/bin/thisroot.sh 
-elif [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
 then
+
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    echo "%%%%%%    Working on KISTI               %%%%%%%%"
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+
+
     export LQANALYZER_DIR=${PWD}
+
+    export CMS_PATH=/cvmfs/cms.cern.ch
+    source $CMS_PATH/cmsset_default.sh
+    export SCRAM_ARCH=slc6_amd64_gcc630
+    cd /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/src/
+    eval `scramv1 runtime -sh`
+    echo " "
+    echo "Working directory: "
+    cd -
+    source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/external/slc6_amd64_gcc630/bin/thisroot.sh
+    echo " "
+    cd $LQANALYZER_DIR
+
+else
+
+    echo "Working on 42cluster"
 
     export CMS_PATH=/cvmfs/cms.cern.ch
     source $CMS_PATH/cmsset_default.sh
@@ -90,11 +92,7 @@ then
     eval `scramv1 runtime -sh`
     cd -
     source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_4/external/slc6_amd64_gcc630/bin/thisroot.sh
-    cd $LQANALYZER_DIR
-
-
-else
-    source /share/apps/root_v5-34-32/root/bin/thisroot.sh
+    
 fi    
 
 
@@ -102,66 +100,10 @@ fi
 export LQANALYZER_DIR=${PWD}
 
 
-
-if [[ $1 == *"v7"* ]]; then
-    echo "Setting up tag "$1
-    export CHECKTAGFILE=/data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
-    if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
-    then
-	export CHECKTAGFILE=/data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
-    fi
-    if [ $HOSTNAME == "ui10.sdfarm.kr" ];
-    then
-        export CHECKTAGFILE=/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
-    fi
-
-    if [[ ! -f $CHECKTAGFILE ]]; then 
-	export LQANALYZER_DIR=""
-	echo $1 "is not allowed input. Use one of:"
-	
-	source /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
-	if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
-	then
-	    source /data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
-	    elif [ $HOSTNAME == "ui10.sdfarm.kr" ];
-	then
-	    source /cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
-	    else:
-            source /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
-	    
-	fi
-	
-
-	for ic in  ${list_of_catversions[@]};
-        do
-            echo $ic
-	done
-	return 1
-    
-    fi
-
-    export LQANALYZER_MOD="/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD2015/"
-    if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
-        then
-	export LQANALYZER_MOD="/data2/LQAnalyzer_rootfiles_for_analysis/CATMOD2015/"
-
-    fi
-    source $LQANALYZER_DIR/bin/setup2015.sh
-    export running2015=True
-    cvdir=$LQANALYZER_DIR/LQLib/$CATVERSION
-    if [[ ! -d "${cvdir}" ]]; then
-        mkdir $cvdir
-        make distclean
-	make
-    fi
-    return 1
-fi
-
 export LQANALYZER_MOD="/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD/"
 if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
     export LQANALYZER_MOD="/data2/LQAnalyzer_rootfiles_for_analysis/CATMOD/"
-
 fi
 
 if [ $HOSTNAME == "ui10.sdfarm.kr" ];
@@ -188,20 +130,22 @@ then
 fi
 
 ##### Check that this is not the branch and a tag was checked out
+
 export CHECKTAGFILE=$LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 source $CHECKTAGFILE Tag
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
+
+#### check for buggy tags 
 buglist=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
 if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
     buglist=/data2/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
-fi
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
-then
+else
     buglist=/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
 fi
+
 while read line
 do
     if [[ $line == $CATTAG* ]];
@@ -211,6 +155,7 @@ do
     fi
 done < $buglist
 
+
 export LIBTAG=""
 if [[ $1 != "" ]];then
 
@@ -218,9 +163,7 @@ if [[ $1 != "" ]];then
     if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
     then
 	export CHECKTAGFILE=/data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
-    fi
-    if [ $HOSTNAME == "ui10.sdfarm.kr" ];
-    then
+    else
 	export CHECKTAGFILE=/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
     fi
     if [[ ! -f $CHECKTAGFILE ]]; then
@@ -252,6 +195,9 @@ export yeartag="80X/"
 
 
 
+### setup alias for using analyzer
+
+
 alias cathistcounter="source scripts/Counter.sh "
 alias catcutflowcounter="source scripts/CutFlow.sh "
 alias sktree="bash submitSKTree.sh"
@@ -274,9 +220,7 @@ then
     export LQANALYZER_DATASET_DIR="/data2/LQAnalyzer_rootfiles_for_analysis/DataSetLists/"
     export LQANALYZER_SKTreeLOG_DIR="/data2/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
     export CATTAGDIR="/data2/LQAnalyzer_rootfiles_for_analysis/CATTag/"
-fi
-if  [ $HOSTNAME == "ui10.sdfarm.kr" ];
-then
+else
     export LQANALYZER_FILE_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/"
     export LQANALYZER_DATASETFILE_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
     export LQANALYZER_DATASET_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/DataSetLists/"
@@ -298,27 +242,11 @@ export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 export isSLC5="False"
 export BTAGDIR=${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/BTag/BTagC11/
 export ROCHDIR=${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/rochcor2016/
-if [[ "$HOSTNAME" == "cms.snu.ac.kr" ]];
-then 
-    if [[ $LIBTAG == *"v"* ]]; then
-	export OBJ=obj/cms21$LIBTAG
-	export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21$LIBTAG/
-        export LQANALYZER_BATCHLIB_PATH=${LQANALYZER_DIR}/LQLib/batch/
-	
-    else 
-	export OBJ=obj/cms21
-        export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21/
-	export LQANALYZER_BATCHLIB_PATH=${LQANALYZER_DIR}/LQLib/batch/
-    fi
-elif [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+
+if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
     export OBJ=obj/cluster/
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cluster/
-
-elif [[ "$HOSTNAME" == "cms1" ]];
-then
-    export OBJ=obj/cms1
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms1/
 
 elif [ $HOSTNAME == "ui10.sdfarm.kr" ];
 then
@@ -332,8 +260,8 @@ else
 
 fi
 
-export LQANALYZER_OLDLIB_PATH=${LQANALYZER_DIR}/LQLib/
 
+export LQANALYZER_OLDLIB_PATH=${LQANALYZER_DIR}/LQLib/
 export LQANALYZER_RUN_PATH=${LQANALYZER_DIR}/LQRun/
 export LQANALYZER_CLUSTER_TXT_PATH=${LQANALYZER_DIR}/LQRun/txt/Cluster/
 export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
@@ -396,7 +324,9 @@ python ${LQANALYZER_DIR}/python/SetUpWorkSpace.py
 python ${LQANALYZER_DIR}/python/BackUpDirectory.py
 python ${LQANALYZER_DIR}/python/SetupEmailList.py
 
-# Setup root area and other paths
+
+
+# CHeck onroot area and other paths
  
 if [[ `which root-config` == "" ]]; then
     echo "Warning: ROOT environment doesn't seem to be configured!"
@@ -420,6 +350,7 @@ if [ -z ${ROOTSYS} ] ; then
     else echo "Setup root enviroment for user."
     fi
 fi
+
 
 if [[ `root-config --platform` == "macosx" ]]; then
 
@@ -450,6 +381,3 @@ if [ ! -d ${LQANALYZER_LOG_PATH} ]; then
 fi
 
 echo "Running analysis from" $HOSTNAME " in directory: " $PWD
-
-#clean up all emacs tmp files
-#clean_emacs

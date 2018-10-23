@@ -12,24 +12,29 @@ all: tagcheck btag roch fakes Ntuplecore plotting selection analysis
 
 Ntuplecore::
 	(cd LQCore/Ntuplecore; make)
+	(mv LQCore/Ntuplecore/src/*pcm ${LQANALYZER_LIB_PATH})
 
 roch::
 	(bash bin/Make/make_rocher_lib.sh; cd ${LQANALYZER_DIR} )
 
 plotting::
 	(cd LQCore/Plotting; make)
+	(mv LQCore/Plotting/src/*pcm ${LQANALYZER_LIB_PATH})
 
 selection::
 	(cd LQCore/Selection; make)
+	(mv LQCore/Selection/src/*pcm ${LQANALYZER_LIB_PATH})
 
 analysis::
 	(cd LQAnalysis/AnalyzerTools; make)
 	(cd LQAnalysis/Analyzers; make)
 	(cd LQAnalysis/SKTreeMaker; make)
 	(cd LQAnalysis/Validation; make)
-	(python ${LQANALYZER_DIR}/python/PCM.py)
+	(mv */*/src/*pcm ${LQANALYZER_LIB_PATH})
+
 fakes::
 	(cd ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
+
 
 btag::  
 	(bash bin/Make/make_btag_lib.sh; cd ${LQANALYZER_DIR} )	
@@ -48,6 +53,7 @@ clean::
 	(bash bin/Clean/clean_fake.sh)
 	(bash bin/Clean/clean_rochor.sh)
 	(bash bin/Clean/clean_btag.sh)
+	(rm ${LQANALYZER_LIB_PATH}/*.pcm)
 
 distclean::
 	(cd LQCore/Ntuplecore; make distclean)
@@ -57,7 +63,7 @@ distclean::
 	(cd LQAnalysis/Analyzers; make distclean)
 	(cd LQAnalysis/SKTreeMaker; make distclean)
 	(cd LQAnalysis/Validation; make distclean)
-
+	(rm ${LQANALYZER_LIB_PATH}/*.pcm)
 
 	(bash bin/Clean/clean_fake.sh)
 	(bash bin/Clean/clean_rochor.sh)
