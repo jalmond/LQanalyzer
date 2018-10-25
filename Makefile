@@ -12,6 +12,7 @@ all: tagcheck btag roch fakes Ntuplecore plotting selection analysis
 Ntuplecore::
 	(cd LQCore/Ntuplecore; make clean)
 	(cd LQCore/Ntuplecore; make)
+	(cp LQCore/Ntuplecore/src/*.pcm   ${LQANALYZER_LIB_PATH})
 
 roch::
 	(bash bin/Make/make_rocher_lib.sh; cd ${LQANALYZER_DIR} )
@@ -19,11 +20,12 @@ roch::
 plotting::
 	(cd LQCore/Plotting; make clean)
 	(cd LQCore/Plotting; make)
-
+	(cp LQCore/Plotting/src/*.pcm ${LQANALYZER_LIB_PATH})
 
 selection::
 	(cd LQCore/Selection; make clean)
 	(cd LQCore/Selection; make)
+	(cp LQCore/Selection/src/*.pcm ${LQANALYZER_LIB_PATH})
 
 analysis::
 	(cd LQAnalysis/AnalyzerTools; make clean)
@@ -34,7 +36,7 @@ analysis::
 	(cd LQAnalysis/Analyzers; make)
 	(cd LQAnalysis/SKTreeMaker; make)
 	(cd LQAnalysis/Validation; make)
-
+	(cp LQAnalysis/*/src/*.pcm ${LQANALYZER_LIB_PATH})
 
 fakes::
 	(cd ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )

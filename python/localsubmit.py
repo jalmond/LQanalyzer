@@ -117,7 +117,7 @@ merge_mounted="/data8/DATA"
 if isKisti:
     merge_mounted = "/xrootd_user/"+getpass.getuser()+"/xrootd/"                                                                      
     workoutput_mounted="/cms/scratch/SNU/CATAnalyzer/"
-    sktreeoutput="/xrootd/store/user/jalmond/"     
+    sktreeoutput="/xrootd_user/"+getpass.getuser()+"/xrootd/"
 
                     
 ##########################################################
