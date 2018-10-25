@@ -6,9 +6,9 @@ def  CheckRunningNonBatch(filename, low_cpu):
 
     running = 0
 
-    sys.stdout.write('\r TEST: running on local machine....')
+    #sys.stdout.write('\r TEST: running on local machine....')
     os.system("ps ux &> " +filename)
-    sys.stdout.write('\r TEST: log sent to ' + filename)
+    #sys.stdout.write('\r TEST: log sent to ' + filename)
     for line in open(filename, 'r'):
         if "root.exe" in line:
             running = 1
@@ -26,14 +26,14 @@ def CheckRunningKistiBatch(filename,job_id, output,i,  messagelog):
     
     
     running = 0
-
-    sys.stdout.write('\r TEST: running on kisti batch machine....' +messagelog+' \n')
+    
+    #sys.stdout.write('\r TEST: running on kisti batch machine....' +messagelog+' \n')
     if i > 0:
         os.system("condor_q "+ str(job_id) +" > " + filename)
     else:
         os.system("condor_q "+ str(os.getenv("USER")) +" > " + filename)
 
-    sys.stdout.write('\r TEST: log sent to ' + filename+'\n')
+    #sys.stdout.write('\r TEST: log sent to ' + filename+'\n')
     
     
     
@@ -134,9 +134,9 @@ def CheckRunningSNUBatch(filename, array_batchjobs, output):
     check_cluster="_"
 
     running = 0
-    sys.stdout.write('\r TEST: running on  tamsa ibatch machine....')
+    #sys.stdout.write('\r TEST: running on  tamsa ibatch machine....')
     os.system("condor_q "+ str(os.getenv("USER")) +" > " + filename)
-    sys.stdout.write('\r TEST: log sent to ' + filename)
+    #sys.stdout.write('\r TEST: log sent to ' + filename)
     
     for line in open(filename, 'r'):
         for job_id in array_batchjobs:

@@ -439,7 +439,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
   //
   ////// Either  use default OR use class specified by user                                                                                                       
 
-  cout << "TEST !" << endl;
   try {
     
     TClass* cycleClass  = gROOT->GetClass(CycleName.Data(), true);
@@ -472,7 +471,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
       else if(inputType == mc) cycle->SetDataType(false);
       else throw LQError( "InputType is wrongly configured",LQError::SkipCycle);
     }
-    cout << "TEST 2" << endl;
     cycle->SetFlags(v_user_flags);
 
     cycle->SetNPStatus(runnp);
@@ -481,15 +479,12 @@ void LQController::ExecuteCycle() throw( LQError ) {
     cycle->SetSampleName(jobName);
     cycle->SetTagName(tagName);
 
-    cout << "TEST 3" << endl;
-
     cycle->BeginCycle();
 
     cycle->ClearOutputVectors();
 
     GetMemoryConsumption("Ran Begin Cycle");
 
-    cout << "TEST 4" << endl;
     if(!kLQInput){
       /// Use SKTree input
 
@@ -546,7 +541,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
       }
     }
 
-    cout << "TEST 5" << endl;
     
     //    cycle->SetVersion(VersionStamp());
 
@@ -554,7 +548,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     cycle->SetTargetLumi(target_luminosity);
 
-    cout << "TEST 6" << endl;
     //// Connect chain to Data class                                                                                                                                        
     if(inputType!=NOTSET) {
       if(inputType == data) cycle->SetLQNtupleInputType(1 );
@@ -565,7 +558,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     GetMemoryConsumption("Connected All Active Branches");
     cycle->Init(chain); 
-    cout << "TEST 7" << endl;
+
     /// We can now check 
     // a) is this Data?
     // b) how many events in sample
@@ -608,7 +601,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
     else if(k_period == "GH") cycle->SetMCPeriod(7); 
     else cycle->SetMCPeriod(-1); 
     
-    cout << "TEST 8" << endl;
     /// Check the current branch is upto date wrt the catuples
     string catversion_env = getenv("CATVERSION");
     
