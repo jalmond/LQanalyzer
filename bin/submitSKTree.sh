@@ -14,7 +14,7 @@ cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim"  "SKTree_HNDiLepSkim" "SKTree_HNFakeSkim" "SKTree_HNFatJetSkim"  "SKTree_TriLepSkim" "SKTree_SSLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton" "JetHT")
-declare -a  oldcat=("v7-4-4" "v7-4-5")
+declare -a  oldcat=()
 
 #declare -a queueoptions=("allq" "fastq" "longq" "node1" "node2" "node3" "node4" "node5" "node6" "None")
 declare -a queueoptions=("allq" "fastq" "longq"  "None")  
@@ -104,20 +104,12 @@ set_sktreemaker_debug=false
 
 
 
-FLATCAT_MC="/data2/DATA/cattoflat/MC/"
-SKTREE_MC="/data2/CatNtuples/"
-if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
-then
-    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/Cluster/datasets_snu_cluster_"
-    FLATCAT_MC="/data4/DATA/FlatCatuples/MC/"
-    SKTREE_MC="/data4/LocalNtuples/SKTrees13TeV/"
-fi
+FLATCAT_MC="cattoflat/MC/"
+SKTREE_MC="CatNtuples/"
 
 if [ $HOSTNAME == "ui10.sdfarm.kr" ];
 then
-    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_kisti_"
-    FLATCAT_MC="/xrootd/store/user/jalmond/flatcat/"
-    SKTREE_MC="/xrootd/store/user/jalmond/CatNtuples/"
+    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
 fi
 
 is_mc=""
@@ -127,8 +119,8 @@ source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
 ### setup list of samples and other useful functions
 if [ $HOSTNAME == "ui10.sdfarm.kr" ];
 then
-    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_kisti_nonsig_"
-    OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_kisti_"
+    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_nonsig_"
+    OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
 else
     TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_nonsig_"
     OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"

@@ -35,6 +35,7 @@ KMuon::KMuon() :
   k_muon_relminiiso(-999.),
   k_muon_relminiisoBeta(-999.),
   k_muon_relminiisoRho(-999.),
+  k_muon_trkiso(-999.),
   k_muon_maod_reliso03(-999.),
   k_muon_maod_reliso04(-999.),
 
@@ -46,6 +47,7 @@ KMuon::KMuon() :
 
   k_isloose(0),
   k_istight(0),
+  k_ishighpt(0),
   k_matched(0),
   k_is_cf(0),
   k_is_conv(0),
@@ -100,6 +102,8 @@ KMuon::KMuon(const KMuon& muon) :
   k_muon_relminiiso(muon.k_muon_relminiiso),
   k_muon_relminiisoBeta(muon.k_muon_relminiisoBeta),
   k_muon_relminiisoRho(muon.k_muon_relminiisoRho),
+  k_muon_trkiso(muon.k_muon_trkiso),
+  
   k_muon_maod_reliso03(muon.k_muon_maod_reliso03),
   k_muon_maod_reliso04(muon.k_muon_maod_reliso04),
 
@@ -112,6 +116,7 @@ KMuon::KMuon(const KMuon& muon) :
 
   k_isloose(muon.k_isloose),
   k_istight(muon.k_istight), 
+  k_ishighpt(muon.k_ishighpt), 
   k_matched(muon.k_matched), 
   k_is_cf(muon.k_is_cf),
   k_is_conv(muon.k_is_conv),
@@ -168,6 +173,8 @@ void KMuon::Reset()
   k_muon_relminiiso=-999.;
   k_muon_relminiisoBeta=-999.;
   k_muon_relminiisoRho=-999.;
+  k_muon_trkiso=-999.;
+
   k_muon_maod_reliso03=-999.;
   k_muon_maod_reliso04=-999.;
   k_roch_pt=-999.;
@@ -180,6 +187,7 @@ void KMuon::Reset()
 
   k_isloose=false;
   k_istight=false;
+  k_ishighpt=false;
   k_matched=false;
   k_is_cf=false;
   k_is_conv=false;
@@ -222,6 +230,7 @@ KMuon& KMuon::operator= (const KMuon& p)
 	muon_pt_down = p.PtShiftedDown();
 	k_isloose = p.IsLoose();
 	k_istight = p.IsTight();
+	k_ishighpt = p.IsHighPt();
 	k_issoft = p.IsSoft();
         k_ismedium = p.IsMedium();
 	k_matched = p.MCMatched();
@@ -241,7 +250,7 @@ KMuon& KMuon::operator= (const KMuon& p)
 	k_muon_relminiiso = p.RelMiniIso();
 	k_muon_relminiisoBeta = p.PFRelMiniIsoBeta();
 	k_muon_relminiisoRho = p.PFRelMiniIsoRho();
-	
+	k_muon_trkiso = p.TrkIso();
 	k_muon_maod_reliso03 = p.RelMiniAODIso03();
         k_muon_maod_reliso04 = p.RelMiniAODIso04();
 	
@@ -447,6 +456,9 @@ void KMuon::SetIsLoose(bool isloose){
 void KMuon::SetIsTight(bool istight){
   k_istight= istight;
 }
+void KMuon::SetIsHighPt(bool ishighpt){
+  k_ishighpt= ishighpt;
+}
 
 void KMuon::SetIsMedium(bool ismedium){
   k_ismedium= ismedium;
@@ -473,6 +485,10 @@ void KMuon::SetRelMiniIsoBeta( double iso){
 
 void KMuon::SetRelMiniIsoRho( double iso){
   k_muon_relminiisoRho = iso;
+}
+
+void KMuon::SetTrkIso(double trkiso){
+  k_muon_trkiso = trkiso;
 }
 
 

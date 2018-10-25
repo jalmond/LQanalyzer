@@ -394,6 +394,7 @@ public :
    std::vector<double>  *muon_normchi;
    std::vector<double>  *muon_phi;
    std::vector<double>  *muon_pt;
+   std::vector<double>  *muon_trkiso;
    std::vector<double>  *muon_relIso03;
    std::vector<double>  *muon_relIso04;
    std::vector<double>  *muon_minirelIso;
@@ -462,6 +463,7 @@ public :
    std::vector<bool>    *muon_isPF;
    std::vector<bool>    *muon_isSoft;
    std::vector<bool>    *muon_isTight;
+   std::vector<bool>    *muon_isHighPt;
    std::vector<bool>    *muon_isTracker;
    std::vector<bool>    *muon_matched;
    std::vector<int>     *electrons_electronID_snu;
@@ -763,6 +765,7 @@ public :
    TBranch        *b_muon_phi;   //!                                                                                                                                                                                                                                         
    TBranch        *b_muon_pt;   //!                                                                                                                                                                                                                                          
    TBranch        *b_muon_q;   //!                                                                                                                                                                                                                                           
+   TBranch        *b_muon_trkiso;   //!                                                                                                                                                                                                                                    
    TBranch        *b_muon_relIso03;   //!                                                                                                                                                                                                                                    
    TBranch        *b_muon_relIso04;   //!                                                                                                                                                                                                                                    
    TBranch        *b_muon_minirelIso;   //! 
@@ -849,6 +852,7 @@ public :
    TBranch        *b_muon_isPF;   //!                                                                                                                                                                                                                                        
    TBranch        *b_muon_isSoft;   //!                                                                                                                                                                                                                                      
    TBranch        *b_muon_isTight;   //!                                                                                                                                                                                                                                     
+   TBranch        *b_muon_isHighPt;   //!                                                                                                                                                                                                                                     
    TBranch        *b_muon_isTracker;   //!                                                                                                                                                                                                                                   
    TBranch        *b_muon_matched;   //!                                                                                                                                                                                                                                     
    TBranch        *b_electrons_electronID_snu;   //!                                                                                                                                                                                                                         

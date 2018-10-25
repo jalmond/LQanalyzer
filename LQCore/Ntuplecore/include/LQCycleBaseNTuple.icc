@@ -25,9 +25,6 @@
 #include <TLeaf.h>
 #include <TString.h>
 
-#include "KElectron.h"
-#include "KPhoton.h"
-
 
 template < class T >
 TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,

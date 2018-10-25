@@ -203,6 +203,7 @@ void Data::Reset(){
   muon_isLoose = 0;
   muon_isMedium = 0;
   muon_isTight = 0;
+  muon_isHighPt = 0;
   muon_isSoft = 0;
   muon_matched = 0;
   muon_isPF = 0;
@@ -277,6 +278,7 @@ void Data::Reset(){
   muon_ip3D = 0;
   muon_dz = 0;
   muon_normchi = 0;
+  muon_trkiso=0;
   muon_relIso03 = 0;
   muon_relIso04 = 0;
   muon_minirelIso = 0;
@@ -674,13 +676,11 @@ void Data::ConnectMuons(){
   ConnectVariable("muon_eta" , muon_eta , b_muon_eta);
   ConnectVariable("muon_isGlobal",muon_isGlobal , b_muon_isGlobal);
 
-  if(k_cat_version >=5){
-    ConnectVariable("muon_roch_pt"  , muon_roch_pt, b_muon_roch_pt);
-    ConnectVariable("muon_roch_eta" , muon_roch_eta , b_muon_roch_eta);
-    ConnectVariable("muon_roch_m",muon_roch_m , b_muon_roch_m);
-    ConnectVariable("muon_roch_phi",muon_roch_phi , b_muon_roch_phi);
-    ConnectVariable("muon_roch_energy",muon_roch_energy , b_muon_roch_energy);
-  }
+  ConnectVariable("muon_roch_pt"  , muon_roch_pt, b_muon_roch_pt);
+  ConnectVariable("muon_roch_eta" , muon_roch_eta , b_muon_roch_eta);
+  ConnectVariable("muon_roch_m",muon_roch_m , b_muon_roch_m);
+  ConnectVariable("muon_roch_phi",muon_roch_phi , b_muon_roch_phi);
+  ConnectVariable("muon_roch_energy",muon_roch_energy , b_muon_roch_energy);
  
   ConnectVariable("muon_dxy",muon_dxy , b_muon_dxy);
   ConnectVariable("muon_sigdxy",muon_sigdxy , b_muon_sigdxy);
@@ -691,6 +691,7 @@ void Data::ConnectMuons(){
   ConnectVariable("muon_isLoose",muon_isLoose , b_muon_isLoose);
   ConnectVariable("muon_isMedium", muon_isMedium, b_muon_isMedium);
   ConnectVariable("muon_isTight", muon_isTight, b_muon_isTight);
+  ConnectVariable("muon_isHighPt", muon_isHighPt, b_muon_isHighPt);
   ConnectVariable("muon_isSoft", muon_isSoft, b_muon_isSoft);
   ConnectVariable("muon_isTracker",muon_isTracker , b_muon_isTracker);
   ConnectVariable("muon_m",muon_m , b_muon_m);
@@ -699,6 +700,7 @@ void Data::ConnectMuons(){
   ConnectVariable("muon_normchi", muon_normchi, b_muon_normchi);
   ConnectVariable("muon_phi",muon_phi , b_muon_phi);
   ConnectVariable("muon_q",muon_q , b_muon_q);
+  ConnectVariable("muon_trkiso", muon_trkiso, b_muon_trkiso);
   ConnectVariable("muon_relIso03", muon_relIso03, b_muon_relIso03);
   ConnectVariable("muon_relIso04", muon_relIso04, b_muon_relIso04);
   ConnectVariable("muon_minirelIso", muon_minirelIso, b_muon_minirelIso);

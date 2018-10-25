@@ -1,5 +1,5 @@
-#ifndef _SKTree_KFatJet_H__
-#define _SKTree_KFatJet_H__
+#ifndef KFatJet_H
+#define KFatJet_H
 
 /// Local includes
 #include "KParticle.h"

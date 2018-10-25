@@ -1,5 +1,5 @@
-#ifndef _SKTree_KMuon_H__
-#define _SKTree_KMuon_H__
+#ifndef _KMuon_H__
+#define _KMuon_H__
 
 /// Local includes
 #include "KParticle.h"
@@ -39,6 +39,7 @@ namespace snu {
     ///Return the type of this object, i.e. KMuon.h              
     virtual std::string Type() const;
     
+    void SetTrkIso(double trkiso);
     void SetRelIso(double cone, double reliso);
     void SetRelMiniIsoBeta( double relminiiso);
     void SetRelMiniIsoRho( double relminiiso);
@@ -71,6 +72,7 @@ namespace snu {
     void SetIsTracker(bool istracker);
     void SetIsLoose(bool isLoose);
     void SetIsTight(bool isTight);
+    void SetIsHighPt(bool isHighPt);
     void SetIsMedium(bool isMedium);
 
     void SetIsChargeFlip(Bool_t iscf);
@@ -128,6 +130,7 @@ namespace snu {
 
     inline Bool_t   IsLoose () const {return k_isloose;}
     inline Bool_t   IsTight () const {return k_istight;}
+    inline Bool_t   IsHighPt () const {return k_ishighpt;}
     inline Bool_t   IsMedium () const {return k_ismedium;}
     inline Bool_t   IsSoft () const {return k_issoft;}
     inline Bool_t   MCMatched () const {
@@ -163,6 +166,8 @@ namespace snu {
     inline Double_t RelMiniAODIso04()  const {return k_muon_maod_reliso04;}
 
     
+    inline Double_t TrkIso() const { return k_muon_trkiso;}
+
     inline Double_t RelMiniIso() const { return k_muon_relminiisoBeta;}
 
     inline Double_t PFRelMiniIsoBeta() const { if(k_muon_relminiiso == -999) return k_muon_relminiisoBeta; 
@@ -214,11 +219,11 @@ namespace snu {
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
     Bool_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
 
-    Double_t muon_pt_up, muon_pt_down,muon_maod_pt,  k_muon_reliso03, k_muon_reliso04,k_muon_relminiiso,k_muon_relminiisoBeta, k_muon_relminiisoRho ,k_muon_maod_reliso03, k_muon_maod_reliso04;
+    Double_t muon_pt_up, muon_pt_down,muon_maod_pt,  k_muon_reliso03, k_muon_reliso04,k_muon_relminiiso,k_muon_relminiisoBeta, k_muon_relminiisoRho ,k_muon_trkiso,k_muon_maod_reliso03, k_muon_maod_reliso04;
 
     Double_t k_roch_pt,k_roch_phi,k_roch_eta,k_roch_m,k_roch_e;
 
-    Bool_t k_isloose, k_istight, k_matched,k_is_cf,k_is_conv,k_is_fromtau,k_ismedium, k_issoft;
+    Bool_t k_isloose, k_istight, k_ishighpt, k_matched,k_is_cf,k_is_conv,k_is_fromtau,k_ismedium, k_issoft;
     Int_t k_mother_pdgid, k_mc_pdgid,k_mother_index, k_mc_index;
 
     TString k_trig_match;
@@ -226,7 +231,7 @@ namespace snu {
     
     Int_t k_mctype;
     Bool_t k_isprompt;
-    ClassDef(KMuon,24)
+    ClassDef(KMuon,25)
   };   
 }//namespace snu
 

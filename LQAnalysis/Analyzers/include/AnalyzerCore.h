@@ -40,12 +40,12 @@ class AnalyzerCore : public LQCycleBase {
   AnalyzerCore();
 
   //destructor
-  virtual ~AnalyzerCore();
+  ~AnalyzerCore();
 
   // SetUpEvent CORE function: accesses event in ntuple
-  virtual void SetUpEvent(Long64_t entry, float ev_weight) throw( LQError );
-  virtual void EndEvent()throw( LQError );
-  virtual void WriteHistograms()throw( LQError );
+  void SetUpEvent(Long64_t entry, float ev_weight) throw( LQError );
+  void EndEvent()throw( LQError );
+  void WriteHistograms()throw( LQError );
 
 
 

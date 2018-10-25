@@ -1,5 +1,5 @@
-#ifndef _SKTree_KTrigger_H__
-#define _SKTree_KTrigger_H__
+#ifndef KTrigger_H
+#define KTrigger_H
 
 #include <string>
 #include <vector>

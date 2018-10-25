@@ -20,26 +20,6 @@ SKTreeFiller::~SKTreeFiller() {};
 bool SKTreeFiller::SkipTrigger(TString tname){
   
   m_logger << DEBUG << "Trigger: " << tname << LQLogger::endmsg;  
-  /// Remove extra unnecisary  triggers (from v7-6-4+ this will not be needed))
-  if((tname.Contains("Jpsi")
-       || tname.Contains("NoFilters")
-       || tname.Contains("Upsilon")
-       || tname.Contains("7p5")
-       || tname.Contains("Save")
-       || tname.Contains("R9Id")
-       || tname.Contains("PFMET")
-       || tname.Contains("PFHT")
-       || tname.Contains("NoHE")
-       || tname.Contains("HE10")
-       || tname.Contains("PFJet50")
-       || tname.Contains("Boost")
-       || tname.Contains("LooseIso")
-       || tname.Contains("MediumIso")
-       || tname.Contains("Mass")
-       || tname.Contains("Central")
-       || tname.Contains("MW")
-       || tname.Contains("EBOnly_VBF")
-       || tname.Contains("dEta18"))) return true;
   
   return false;
 }
@@ -550,7 +530,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPassTight(electrons_electronID_tight->at(iel));
     if(electrons_electronID_hlt)el.SetPassHLT(electrons_electronID_hlt->at(iel));
     /// HEEP
-    //el.SetPassHEEP(electrons_electronID_heep->at(iel));
+    el.SetPassHEEP(electrons_electronID_heep->at(iel));
 
     // MVA
     el.SetPassMVATrigMedium(electrons_electronID_mva_trig_medium->at(iel));
@@ -1361,6 +1341,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetIsLoose(muon_isLoose->at(ilep));
     muon.SetIsMedium(muon_isMedium->at(ilep));
     muon.SetIsTight(muon_isTight->at(ilep));
+    muon.SetIsHighPt(muon_isHighPt->at(ilep));
     muon.SetIsSoft(muon_isSoft->at(ilep));
 
     if(muon_shiftedEup){
@@ -1403,6 +1384,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       muon.SetMiniAODRelIso(0.4,muon_relIso04->at(ilep));
       muon.SetIsRochesterCorrected(false);
     }
+    muon.SetTrkIso(muon_trkiso->at(ilep));
     muon.Setdz(muon_dz->at(ilep));
     muon.Setdxy(muon_dxy->at(ilep));
     if(muon_sigdxy){

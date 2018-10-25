@@ -13,6 +13,8 @@ from functions_submit import *
 
 isKisti = ("ui" in str(os.getenv("HOSTNAME")))
 
+DEBUGMODE=False
+
 ### submit_vardef sets variables from parser                                                                                                                                                               
 from submit_vardef import *
 if tmp_filename == "None":
@@ -102,12 +104,15 @@ Printuseskinput(cycle, useskinput)
 
 
 workoutput_mounted="/data2"
+sktreeoutput=workoutput_mounted + "/DATA"
 if len(sample)>1:
     if  sample == "H_v2" or sample == "H_v3":
         workoutput_mounted="/data7/DATA"
+        sktreeoutput= "/data7/DATA"
 
 merge_mounted="/data8/DATA"
-sktreeoutput=workoutput_mounted
+
+ 
 
 if isKisti:
     merge_mounted = "/xrootd_user/"+getpass.getuser()+"/xrootd/"                                                                      
@@ -714,9 +719,11 @@ for i in range(0,number_of_batch_jobs):
         kisti_batchfile.close()
 
     
+    #### script is for single job use only
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
     if  isKisti:
+        script = output+ "Job_000/runJob_000.C"
         log = output+ "Job_000/runJob_" + str(i) +".log"
 
     logbatch="Job_" + str(i) + "/"+outsamplename+ "_Job_" + str(i)+".o[batchID]"  
@@ -853,14 +860,14 @@ JobCrash=False
 checkJob=True
 n_cms1_6=""
 
-
-sys.stdout.write('\r TEST: submit_terminal checking job success... \n')
+if DEBUGMODE:
+    sys.stdout.write('\r TEST: submit_terminal checking job success... \n')
 
 from submit_terminal import *
 
 while not JobSuccess:
-
-    sys.stdout.write('\r TEST: checking job success... \n')
+    if DEBUGMODE:
+        sys.stdout.write('\r TEST: checking job success... \n')
 
     filename = local_sub_dir +'/log'
     running = False
@@ -893,10 +900,12 @@ while not JobSuccess:
             ### in this case, JobSuccess is set True but the output is set false
             JobSuccess=True
             JobOutput=False
-            sys.stdout.write('\r TEST: JobSuccess = True, JobOutput=False \n')
+            if DEBUGMODE:
+                sys.stdout.write('\r TEST: JobSuccess = True, JobOutput=False \n')
         else: 
-            sys.stdout.write('\r TEST: output file found: file ' + check_outfile + '\n')
-
+            if DEBUGMODE:
+                sys.stdout.write('\r TEST: output file found: file ' + check_outfile + '\n')
+                
 
     #### this loop loops over all subjobs, and checks each output file is present in outputdir, IF it is not already in CompletedJobs array
     #### CompletedJobs array is filled after each output file is present, so
@@ -924,8 +933,8 @@ while not JobSuccess:
                 sys.stdout.write('\r Job [' + str(i) + '] completed. Output ='  + check_outfile + '\n')
 
 
-
-    sys.stdout.write('\r ncomplete_files = ' + str(ncomplete_files) + ' number_of_cores = ' + str(number_of_cores) + '\n')
+    if DEBUGMODE:
+        sys.stdout.write('\r ncomplete_files = ' + str(ncomplete_files) + ' number_of_cores = ' + str(number_of_cores) + '\n')
 
 
     ### check that the number of output files (ncomplete_files) is equal to the number of subjobs (number_of_cores)

@@ -1,12 +1,12 @@
-#ifndef _SKTree_KElectron_H__
-#define _SKTree_KElectron_H__
+#ifndef _KElectron_H__
+#define _KElectron_H__
 
 /// Local includes
 #include "KParticle.h"
 
 #include <iosfwd>
 #include <string>
-#include "TLorentzVector.h"
+//#include "TLorentzVector.h"
 
 namespace snu {
   
@@ -34,7 +34,8 @@ namespace snu {
     KElectron(const KElectron& el);
     
     ///Destructor    
-    virtual ~KElectron() ;
+    //    virtual ~KElectron() ;
+    ~KElectron() ;
 
     KElectron& operator= (const KElectron& obj);
     
@@ -307,7 +308,7 @@ namespace snu {
 
   protected:
     /// Reset function.                                                                  
-    virtual void Reset();    
+    void Reset();    
     
   private:
     /// decalre private functions
@@ -331,7 +332,7 @@ namespace snu {
     Bool_t k_isprompt;
 
 
-    ClassDef(KElectron,32);
+    ClassDef(KElectron,33);
   }; 
   
 }//namespace snu

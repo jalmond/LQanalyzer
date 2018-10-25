@@ -716,6 +716,12 @@ function sendrequest
 function runlist
 {
     
+    prefix_sample="/data2/DATA/"
+    if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+        then
+        prefix_sample="/xrootd_user/jalmond/xrootd/"
+    fi
+
     if [[ $submit_searchlist == *$search_tag* ]];
 	then
 	tmp_submit_searchlist=$submit_catvlist
@@ -836,10 +842,7 @@ function runlist
     if [[ $isLepton  == "true" ]];
 	then
 	check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MC/"
-	if [[ ${submit_catvlist} == *"v7-4-4"* ]];
-            then
-            check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/Sep15/MC/"
-        fi
+
     fi
     if [[ $isDiLep  == "true" ]];
 	then
@@ -902,60 +905,61 @@ function runlist
     
     while read line
       do
-      if [[ $line == *${check_path}* ]];
-	  then
-	  sline=$(echo $line | head -n1 | awk '{print $1}')
-	  sline2=$(echo $line | head -n1 | awk '{print $6}')
 
-	  if [[ $submit_searchlist == "" ]];
+	if [[ $line == *${check_path}* ]];
+	then
+	    sline=$(echo $line | head -n1 | awk '{print $1}')
+	    sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
+	    
+	    if [[ $submit_searchlist == "" ]];
 	      then
-	      prefix="SK"
-	      suffix="_dilep"
-	      suffixhn="_hndilep"
-	      suffixhnfake="_hnfake"
-	      suffixhnfatjet="_hnfatjet"
-              suffix2="_trilep"
-              suffixss="_sslep"
-
-	      if [[ $sline == *${prefix}* ]];
-		  then
-		  sline=${sline:2}		  
-	      fi
-	      if [[ $sline == *${suffix}* ]];
-                  then
-		  sline=${sline%$suffix}
-	      fi
-	      if [[ $sline == *${suffix2}* ]];
-                  then
-                  sline=${sline%$suffix2}
-              fi
-              if [[ $sline == *${suffixss}* ]];
-                  then
-                  sline=${sline%$suffixss}
-              fi
-	      if [[ $sline == *${suffixhn}* ]];
-                  then
+		prefix="SK"
+		suffix="_dilep"
+		suffixhn="_hndilep"
+		suffixhnfake="_hnfake"
+		suffixhnfatjet="_hnfatjet"
+		suffix2="_trilep"
+		suffixss="_sslep"
+		
+		if [[ $sline == *${prefix}* ]];
+		then
+		    sline=${sline:2}		  
+		fi
+		if [[ $sline == *${suffix}* ]];
+                then
+		    sline=${sline%$suffix}
+		fi
+		if [[ $sline == *${suffix2}* ]];
+                then
+                    sline=${sline%$suffix2}
+		fi
+		if [[ $sline == *${suffixss}* ]];
+		then
+                    sline=${sline%$suffixss}
+		fi
+		if [[ $sline == *${suffixhn}* ]];
+		then
                   sline=${sline%$suffixhn}
-              fi
-	      if [[ $sline == *${suffixhnfake}* ]];
-                  then
-                  sline=${sline%$suffixhnfake}
-              fi
-	      if [[ $sline == *${suffixhnfatjet}* ]];
-              then
-                  sline=${sline%$suffixhnfatjet}
-              fi
-
-	      if [[ ! -d "${sline2}" ]]; then
-		  UNPROCESSED+=(${sline})
-	      elif test "$(ls -A "$sline2")"; then
-		  echo ${sline}
-		  LISTOFSAMPLES+=(${sline})
-	      else
-		  UNPROCESSED+=(${sline})
-	      fi
-	  fi
-	  
+		fi
+		if [[ $sline == *${suffixhnfake}* ]];
+                then
+                    sline=${sline%$suffixhnfake}
+		fi
+		if [[ $sline == *${suffixhnfatjet}* ]];
+		then
+                    sline=${sline%$suffixhnfatjet}
+		fi
+		
+		if [[ ! -d "${sline2}" ]]; then
+		    UNPROCESSED+=(${sline})
+		elif test "$(ls -A "$sline2")"; then
+		    echo ${sline}
+		    LISTOFSAMPLES+=(${sline})
+		else
+		    UNPROCESSED+=(${sline})
+		fi
+	    fi
+	    
 	  if [[ $submit_searchlist != "" ]];
 	      then
 	      if [[ $sline == *${submit_searchlist}* ]];
@@ -1248,7 +1252,7 @@ function runlist
 	    if [[ $line == *${check_path}* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
-		sline2=$(echo $line | head -n1 | awk '{print $6}')
+		sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
 
 		if [[ $submit_searchlist == "" ]];
 		    then
@@ -2109,6 +2113,13 @@ if [[ $MakeFullLists == "true" ]];
 
       
       #### LOOP OVER INPUT TXT FILE AND CHECK FOR AVAILABLE SAMPLES
+
+      prefix_sample="/data2/DATA/"
+      if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+      then
+          prefix_sample="/xrootd_user/jalmond/xrootd/"
+      fi
+
       
       while read line
 	do
@@ -2119,7 +2130,7 @@ if [[ $MakeFullLists == "true" ]];
 	    if [[ $line == *$FLATCAT_MC* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
-		sline2=$(echo $line | head -n1 | awk '{print $6}')
+		sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
 		
 		isDuplicate=false
 		for il in  ${FULLLISTOFSAMPLES[@]};
@@ -2146,7 +2157,7 @@ if [[ $MakeFullLists == "true" ]];
 	    if [[ $line == *$SKTREE_MC${iclist}"/SKTrees/MCNoCut/"* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
-		sline2=$(echo $line | head -n1 | awk '{print $6}')
+		sline2=$$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
 		
 		prefix="SK"
 		suffix="_nocut"
@@ -2192,7 +2203,7 @@ if [[ $MakeFullLists == "true" ]];
             if [[ $line == *$checkline* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
-		sline2=$(echo $line | head -n1 | awk '{print $6}')
+		sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
 		
 		prefix="SK"
 		if [[ $sline == *${prefix}* ]];
@@ -2230,7 +2241,7 @@ if [[ $MakeFullLists == "true" ]];
 	    if [[ $line == *$checkline* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
-		sline2=$(echo $line | head -n1 | awk '{print $6}')
+		sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
 		
 		prefix="SK"
 		suffix="_dilep"
@@ -2273,7 +2284,7 @@ if [[ $MakeFullLists == "true" ]];
             if [[ $line == *$checkline* ]];
                 then
                 sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$(echo $line | head -n1 | awk '{print $6}')
+                sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
 
                 prefix="SK"
                 suffixhn="_hndilep"
@@ -2314,7 +2325,7 @@ if [[ $MakeFullLists == "true" ]];
             if [[ $line == *$checkline* ]];
                 then
                 sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$(echo $line | head -n1 | awk '{print $6}')
+                sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
 
                 prefix="SK"
                 suffixhnfake="_hnfake"
@@ -2355,7 +2366,7 @@ if [[ $MakeFullLists == "true" ]];
             if [[ $line == *$checkline* ]];
                 then
                 sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$(echo $line | head -n1 | awk '{print $6}')
+                sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
 
                 prefix="SK"
                 suffixhnfatjet="_hnfatjet"
@@ -2399,7 +2410,7 @@ if [[ $MakeFullLists == "true" ]];
 	    if [[ $line == *$checkline* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
-		sline2=$(echo $line | head -n1 | awk '{print $6}')
+		sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
 		
 		prefix="SK"
 		suffix="_trilep"
@@ -2442,7 +2453,7 @@ if [[ $MakeFullLists == "true" ]];
             if [[ $line == *$checkline* ]];
                 then
                 sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$(echo $line | head -n1 | awk '{print $6}')
+                sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
 
                 prefix="SK"
                 suffix="_SSlep"

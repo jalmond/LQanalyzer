@@ -6,6 +6,10 @@
 
 #pragma link C++ nestedclass;
 
+#pragma link C++ namespace snu;
+
+#pragma link C++ class snu::KParticle+;
+
 #pragma link C++ class AnalysisBase+;
 #pragma link C++ class LQCycleBaseNTuple+;
 #pragma link C++ class Data+;
@@ -17,14 +21,6 @@
 #pragma link C++ class ILQCycleBase+;
 #pragma link C++ class LQCycleBaseExec+;
 
-#pragma link off all globals;
-#pragma link off all classes;
-#pragma link off all functions;
-
-#pragma link C++ nestedclass;
-#pragma link C++ namespace snu;
-
-#pragma link C++ class snu::KParticle+;
 
 #pragma link C++ class snu::KMuon+;
 #pragma link C++ class std::vector<snu::KMuon>+;

@@ -1,5 +1,5 @@
-#ifndef _SKTree_KPhoton_H__
-#define _SKTree_KPhoton_H__
+#ifndef KPhoton_H
+#define KPhoton_H
 
 /// Local includes
 #include "KParticle.h"
