@@ -30,10 +30,10 @@ analysis::
 	(cd LQAnalysis/Analyzers; make clean)
 	(cd LQAnalysis/SKTreeMaker; make clean)
 	(cd LQAnalysis/Validation; make clean)
-        (cd LQAnalysis/AnalyzerTools; make)
-        (cd LQAnalysis/Analyzers; make)
-        (cd LQAnalysis/SKTreeMaker; make)
-        (cd LQAnalysis/Validation; make)
+	(cd LQAnalysis/AnalyzerTools; make)
+	(cd LQAnalysis/Analyzers; make)
+	(cd LQAnalysis/SKTreeMaker; make)
+	(cd LQAnalysis/Validation; make)
 
 
 fakes::

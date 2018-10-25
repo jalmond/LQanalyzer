@@ -72,10 +72,10 @@ if not LQANALYZER_DIR == "None" :
                     os.system("diff " + localfiledir + "/Selection/"+str(x)+".sel " + seldir+"/"+str(x)+".sel")
                     os.system("cp " + localfiledir + "/Selection/"+str(x)+".sel " + seldir)
                     print "#"*50
-        else:
-            os.system("rm " + seldir  +"/electrons.sel") 
-            while not os.path.exists(seldir  +"/electrons.sel"):
-                os.system("scp 147.47.242.42:/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Selection/*.sel  " + seldir)
+#        else:
+#            os.system("rm " + seldir  +"/electrons.sel") 
+#            while not os.path.exists(seldir  +"/electrons.sel"):
+#                os.system("scp 147.47.242.42:/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Selection/*.sel  " + seldir)
                 
 	#os.system("cp " + localfiledir + "/*.csv " + btagfiledir)
 	#os.system("source " +  os.getenv("LQANALYZER_DIR") + "/bin/IncludePrivateSamples.sh")

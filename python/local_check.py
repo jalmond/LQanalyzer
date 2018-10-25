@@ -67,16 +67,20 @@ if not os.path.exists(tag_dir):
     if not os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")):
         os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH"))
 
+        
     if not os.path.exists("/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
         if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
             os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
     if not os.path.exists("/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
         if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
             os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
-            
-    if  not os.path.exists("/cms/scratch/SNU/CATAnalyzer/" + os.getenv("USER")):
-        if not  "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    
+    if  "ui10.sdfarm.kr" in str(os.getenv("HOSTNAME")):
+        if  not os.path.exists("/cms/scratch/SNU/CATAnalyzer/" + os.getenv("USER")):
             os.system("mkdir " + "/cms/scratch/SNU/CATAnalyzer/" + os.getenv("USER"))
+        if  not os.path.exists("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/" + os.getenv("USER")):
+            os.system("mkdir /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/" + os.getenv("USER"))
+    
 
     print "Copying all latest rootfiles for use in analysis"
 
