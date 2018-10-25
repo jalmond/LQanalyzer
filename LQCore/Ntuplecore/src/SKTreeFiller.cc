@@ -181,27 +181,39 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
   
 
+  m_logger << DEBUG << "Filling Event Info [2a]" << LQLogger::endmsg;
+
   if(!isData){
     float jpx(0.), jpy(0.), sjpx(0.), sjpy(0.), sjpxup(0.), sjpxdown(0.),sjpyup(0.), sjpydown(0.) ;
 
     /// only smear jets not close to leptons (use top projection id)
     for(unsigned int ij = 0 ; ij < jets_pt->size(); ij++){
       bool close_to_lepton(false);
+      m_logger << DEBUG << "Filling Event Info [2b]" << LQLogger::endmsg;
       if(jets_pt->at(ij) < 10.) continue;
       for(unsigned int im=0; im < muon_pt->size(); im++){
 	if(muon_pt->at(im) < 10.) continue;
 	if(fabs(muon_eta->at(im)) > 2.5) continue;
 	// find full definition for 13 TeV
 	//if(muon_relIso04->at(im) > 0.2)  continue;
+	m_logger << DEBUG << "Filling Event Info [2c]" << LQLogger::endmsg;
+
+	
         double dr = sqrt( pow(fabs( jets_eta->at(ij) - muon_eta->at(im)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( jets_phi->at(ij) - muon_phi->at(im))),2.0));
 	if(dr < 0.4){
 	  close_to_lepton=true;
 	}
       }
+      m_logger << DEBUG << "Filling Event Info [2d]" << LQLogger::endmsg;
+      
       for(unsigned int iel=0; iel < electrons_pt->size(); iel++){
+	m_logger << DEBUG << "Filling Event Info [2e]" << LQLogger::endmsg;
+
 	if(electrons_pt->at(iel) < 10.) continue;
         if(fabs(electrons_eta->at(iel)) > 2.5) continue;
 	// find full definition for 13 TeV                                                                                                                                          if(electrons_relIso03->at(ilep) > 0.15)  continue;
+	m_logger << DEBUG << "Filling Event Info [2f]" << LQLogger::endmsg;
+
         double dr = sqrt( pow(fabs( jets_eta->at(ij) - electrons_eta->at(iel)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( jets_phi->at(ij) - electrons_phi->at(iel))),2.0));
         if(dr < 0.4){
           close_to_lepton=true;
@@ -210,6 +222,8 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       
       if(close_to_lepton) continue;
       
+      m_logger << DEBUG << "Filling Event Info [2f]" << LQLogger::endmsg;
+
       float jets_px = jets_pt->at(ij) *TMath::Cos(jets_phi->at(ij)); 
       float jets_py = jets_pt->at(ij) *TMath::Sin(jets_phi->at(ij));
       jpx +=  jets_px;
@@ -231,6 +245,8 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
     }
 
+    m_logger << DEBUG << "Filling Event Info [2g]" << LQLogger::endmsg;
+
     // met_jetRes_Px_up ==met_Px since no smearing is applied in miniaods -> cattools
     float met_x  = met_xyshift_px->at(0)  +  jpx - sjpx;
     float met_y  = met_xyshift_py->at(0)  +  jpy - sjpy;
@@ -251,6 +267,8 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPFMETType1y(type1_met_y);		  
     kevent.SetPFMETType1SumEt(met_sumet->at(0));           
 
+    m_logger << DEBUG << "Filling Event Info [2h]" << LQLogger::endmsg;
+
     /// Fix met phi 
     float met_x_jer_up  = met_xyshift_px->at(0) +  jpx - sjpxup;
     float met_y_jer_up   = met_xyshift_py->at(0)  +  jpy - sjpyup;
@@ -258,6 +276,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     float met_x_jer_down   = met_xyshift_px->at(0)  +  jpx - sjpxdown;
     float met_y_jer_down  = met_xyshift_py->at(0)  +  jpy -sjpydown;
     float met_newpt_jerdown = sqrt(met_x_jer_down*met_x_jer_down+ met_y_jer_down*met_y_jer_down);
+    m_logger << DEBUG << "Filling Event Info [2i]" << LQLogger::endmsg;
 
       
     kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     met_newpt_jerup);
@@ -267,7 +286,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   }
   
 
-  m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
   
   if(k_cat_version > 2){
     if(met_unclusteredEn_Px_up){
@@ -659,7 +678,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	}
       }// end of gen loop to find status 1 electron
 	
-	//cout << iel << " " << electrons_pt->at(iel) << " " << electrons_eta->at(iel) << " " << electrons_phi->at(iel) << " " << conv_veto << endl;
 	
       ///// treat case where there is a matched status 1 electron:
       //// classify into prompt:Fake:FromTau

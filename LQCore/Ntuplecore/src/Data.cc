@@ -958,6 +958,7 @@ void Data::ConnectMET(){
   //ConnectVariable("metPfMva_pt", metPfMva_pt , b_metPfMva_pt);
   //ConnectVariable("metPfMva_sumet", metPfMva_sumet , b_metPfMva_sumet);
 
+  m_logger << DEBUG << k_cat_version  << " k_cat_version "  << LQLogger::endmsg; 
   if(k_cat_version > 2){
     ConnectVariable("met_muonEn_Px_up", met_muonEn_Px_up, b_met_muonEn_Px_up);
     ConnectVariable("met_muonEn_Py_up", met_muonEn_Py_up, b_met_muonEn_Py_up);
