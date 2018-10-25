@@ -426,7 +426,7 @@ if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     inDS=inDS.replace("/data2/","/data4")
     inDS = "/data7/DATA/"+inDS
 else:
-    inDS = "/xrootd_user/jalmond/xrootd/"+inDS
+    inDS = "/xrootd/store/user/jalmond/"+inDS
 
 InputDir = inDS
 
