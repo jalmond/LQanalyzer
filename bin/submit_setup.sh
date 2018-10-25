@@ -719,7 +719,7 @@ function runlist
     prefix_sample="/data2/DATA/"
     if [ $HOSTNAME == "ui10.sdfarm.kr" ];
         then
-        prefix_sample="/xrootd_user/jalmond/xrootd/"
+        prefix_sample="/xrootd/store/user/jalmond/"
     fi
 
     if [[ $submit_searchlist == *$search_tag* ]];
@@ -2117,7 +2117,7 @@ if [[ $MakeFullLists == "true" ]];
       prefix_sample="/data2/DATA/"
       if [ $HOSTNAME == "ui10.sdfarm.kr" ];
       then
-          prefix_sample="/xrootd_user/jalmond/xrootd/"
+          prefix_sample="/xrootd/store/user/jalmond/"
       fi
 
       
