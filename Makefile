@@ -18,7 +18,7 @@ roch::
 
 plotting::
 	(cd LQCore/Plotting; make)
-	(python python/PCM.py -x /Plotting/src/Plotting_Dict_rdict.pcm)
+	(python python/PCM.py -x LQCore/Plotting/src/Plotting_Dict_rdict.pcm)
 
 selection::
 	(cd LQCore/Selection; make)

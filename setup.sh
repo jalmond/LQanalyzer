@@ -60,6 +60,9 @@ fi
 if [ $HOSTNAME == "ui10.sdfarm.kr" ];
 then
 
+    python python/CheckProxy.py
+
+
     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     echo "%%%%%%    Working on KISTI               %%%%%%%%"
