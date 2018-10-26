@@ -7,36 +7,31 @@
  #                                                                         #
  ###########################################################################
 
-all: tagcheck btag roch fakes Ntuplecore plotting selection analysis 
-
+#all: tagcheck btag roch fakes Ntuplecore plotting selection analysis 
+all: Ntuplecore
 Ntuplecore::
-	(cd LQCore/Ntuplecore; make clean)
 	(cd LQCore/Ntuplecore; make)
-	(cp LQCore/Ntuplecore/src/*.pcm   ${LQANALYZER_LIB_PATH})
+	(python python/PCM.py -x LQCore/Ntuplecore/src/Ntuplecore_Dict_rdict.pcm)
 
 roch::
 	(bash bin/Make/make_rocher_lib.sh; cd ${LQANALYZER_DIR} )
 
 plotting::
-	(cd LQCore/Plotting; make clean)
 	(cd LQCore/Plotting; make)
-	(cp LQCore/Plotting/src/*.pcm ${LQANALYZER_LIB_PATH})
+	(python python/PCM.py -x /Plotting/src/Plotting_Dict_rdict.pcm)
 
 selection::
-	(cd LQCore/Selection; make clean)
 	(cd LQCore/Selection; make)
-	(cp LQCore/Selection/src/*.pcm ${LQANALYZER_LIB_PATH})
-
+	(python python/PCM.py -x LQCore/Selection/src/Selection_Dict_rdict.pcm)
 analysis::
-	(cd LQAnalysis/AnalyzerTools; make clean)
-	(cd LQAnalysis/Analyzers; make clean)
-	(cd LQAnalysis/SKTreeMaker; make clean)
-	(cd LQAnalysis/Validation; make clean)
 	(cd LQAnalysis/AnalyzerTools; make)
 	(cd LQAnalysis/Analyzers; make)
 	(cd LQAnalysis/SKTreeMaker; make)
 	(cd LQAnalysis/Validation; make)
-	(cp LQAnalysis/*/src/*.pcm ${LQANALYZER_LIB_PATH})
+	(python python/PCM.py -x LQAnalysis/AnalyzerTools/src/AnalyzerTools_Dict_rdict.pcm)
+	(python python/PCM.py -x LQAnalysis/Analyzers/src/LQAnalysis_Dict_rdict.pcm)
+	(python python/PCM.py -x LQAnalysis/SKTreeMaker/src/SKTreeMaker_Dict_rdict.pcm)
+	(python python/PCM.py -x LQAnalysis/Validation/src/Validation_Dict_rdict.pcm)
 
 fakes::
 	(cd ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )

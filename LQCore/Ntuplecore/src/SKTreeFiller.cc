@@ -98,9 +98,6 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
   if(!LQinput){
     kevent = *k_inputevent;
-    if(k_cat_version < 3){
-      if(!TString(kevent.CatVersion()).Contains("v7-4"))kevent.SetCatVersion(CatVersion);
-    }
     return kevent;
   }
   //  lumimask = snu::KEvent::gold
@@ -110,34 +107,33 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   // New variable to set catversion. Add this to flat ntuples for next iteration
   kevent.SetCatVersion(CatVersion);
 
-  if(k_cat_version > 7)  {
+  
+  /// type 1
+  double met_type1 =  sqrt(met_jetRes_Px_up->at(0)*met_jetRes_Px_up->at(0) + met_jetRes_Py_up->at(0)*met_jetRes_Py_up->at(0));
+  double phi_type1 =  TMath::ATan2(met_jetRes_Py_up->at(0),met_jetRes_Px_up->at(0)); 
+  // type 1 + ohi corrections
+  double met_type1xy = sqrt(met_xyshift_px->at(0)*met_xyshift_px->at(0) + met_xyshift_py->at(0)*met_xyshift_py->at(0));
+  double phi_type1xy =  TMath::ATan2(met_xyshift_py->at(0), met_xyshift_px->at(0));
+  
+  
+  /// Default MET is now xy shifted typ1
+  if(isData)  {
+    kevent.SetMET(snu::KEvent::pfmet, met_type1xy, phi_type1xy, met_xyshift_sumet->at(0));
+    kevent.SetPFMETx(met_xyshift_px->at(0));
+    kevent.SetPFMETy(met_xyshift_py->at(0));
     
-    /// type 1
-    double met_type1 =  sqrt(met_jetRes_Px_up->at(0)*met_jetRes_Px_up->at(0) + met_jetRes_Py_up->at(0)*met_jetRes_Py_up->at(0));
-    double phi_type1 =  TMath::ATan2(met_jetRes_Py_up->at(0),met_jetRes_Px_up->at(0)); 
-    // type 1 + ohi corrections
-    double met_type1xy = sqrt(met_xyshift_px->at(0)*met_xyshift_px->at(0) + met_xyshift_py->at(0)*met_xyshift_py->at(0));
-    double phi_type1xy =  TMath::ATan2(met_xyshift_py->at(0), met_xyshift_px->at(0));
-
-
-    /// Default MET is now xy shifted typ1
-    if(isData)  {
-      kevent.SetMET(snu::KEvent::pfmet, met_type1xy, phi_type1xy, met_xyshift_sumet->at(0));
-      kevent.SetPFMETx(met_xyshift_px->at(0));
-      kevent.SetPFMETy(met_xyshift_py->at(0));
-
-      /// Also for completness store type1 without phi corrections
-      kevent.SetPFMETType1x(met_jetRes_Px_up->at(0));
-      kevent.SetPFMETType1y(met_jetRes_Py_up->at(0));
-      kevent.SetPFMETType1SumEt(met_sumet->at(0));
-    }
-    /// set unsmeared met variables
-    kevent.SetPFMETType1Unsmearedx(met_jetRes_Px_up->at(0));
-    kevent.SetPFMETType1Unsmearedy(met_jetRes_Py_up->at(0));
-    kevent.SetPFMETType1xyUnsmearedx(met_xyshift_px->at(0));
-    kevent.SetPFMETType1xyUnsmearedy(met_xyshift_py->at(0));
-    
+    /// Also for completness store type1 without phi corrections
+    kevent.SetPFMETType1x(met_jetRes_Px_up->at(0));
+    kevent.SetPFMETType1y(met_jetRes_Py_up->at(0));
+    kevent.SetPFMETType1SumEt(met_sumet->at(0));
   }
+  /// set unsmeared met variables
+  kevent.SetPFMETType1Unsmearedx(met_jetRes_Px_up->at(0));
+  kevent.SetPFMETType1Unsmearedy(met_jetRes_Py_up->at(0));
+  kevent.SetPFMETType1xyUnsmearedx(met_xyshift_px->at(0));
+  kevent.SetPFMETType1xyUnsmearedy(met_xyshift_py->at(0));
+  
+
   double topreweight=1.;
   bool settopweight=false;
   if(k_sample_name.Contains("TTLL_powheg"))settopweight=true;
@@ -164,19 +160,16 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   /// Since some versions of catuples have no metNoHF due to bug in met code 
 
 
-  if(k_cat_version > 3){
-    /// k_cat_version > 3 == v765+
-    if(PDFWeights){
-      if(PDFWeights->size() > 0){
-	kevent.SetPDFWeights(*PDFWeights);
-      }
+  /// k_cat_version > 3 == v765+
+  if(PDFWeights){
+    if(PDFWeights->size() > 0){
+      kevent.SetPDFWeights(*PDFWeights);
     }
-    if(ScaleWeights){
-      if(ScaleWeights->size() > 0){
+  }
+  if(ScaleWeights){
+    if(ScaleWeights->size() > 0){
       kevent.SetScaleWeights(*ScaleWeights);
-      }
     }
-
   }
 
   
@@ -288,45 +281,44 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
   m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
   
-  if(k_cat_version > 2){
-    if(met_unclusteredEn_Px_up){
-      if(met_unclusteredEn_Px_up->at(0)){
-	
-	// catools use slimmedMETs in MiniAOD
-	// this uses type 1 corrected MET
-	// as explained in here https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#ETmiss
-	// The type1 corrections is computed from ak4PFJetsCHS jets with pT > 15 GeV,
-	// smearing mc jets
-	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution
-	// change in jet pt needs propagating into MET
-	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/JERCReference
-	/// For details see hete
-	/// https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections 
-	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
-	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
-	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
-	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_down));
-	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_up->at(0)*met_unclusteredEn_Px_up->at(0) + met_unclusteredEn_Py_up->at(0)*met_unclusteredEn_Py_up->at(0)));
-	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_down->at(0)*met_unclusteredEn_Px_down->at(0) + met_unclusteredEn_Py_down->at(0)*met_unclusteredEn_Py_down->at(0)));
-	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,met_unclusteredEn_SumEt_up->at(0));
-	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered,met_unclusteredEn_SumEt_down->at(0));
-	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,      sqrt(met_jetEn_Px_up->at(0)*met_jetEn_Px_up->at(0) + met_jetEn_Py_up->at(0)*met_jetEn_Py_up->at(0)));
-	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down->at(0)*met_jetEn_Px_down->at(0) + met_jetEn_Py_down->at(0)*met_jetEn_Py_down->at(0)));
-	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up->at(0));
-	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down->at(0));
-
-	/// https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_25/PhysicsTools/PatUtils/python/patPFMETCorrections_cff.py
-	/// jets > 15 GeV in mc smeared. This is not done in cattolls so branches have no change,
-	/// Apply this here
-	/// 
+  if(met_unclusteredEn_Px_up){
+    if(met_unclusteredEn_Px_up->at(0)){
+      
+      // catools use slimmedMETs in MiniAOD
+      // this uses type 1 corrected MET
+      // as explained in here https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#ETmiss
+      // The type1 corrections is computed from ak4PFJetsCHS jets with pT > 15 GeV,
+      // smearing mc jets
+      // https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution
+      // change in jet pt needs propagating into MET
+      // https://twiki.cern.ch/twiki/bin/viewauth/CMS/JERCReference
+      /// For details see hete
+      /// https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections 
+      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
+      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
+      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
+      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_down));
+      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_up->at(0)*met_unclusteredEn_Px_up->at(0) + met_unclusteredEn_Py_up->at(0)*met_unclusteredEn_Py_up->at(0)));
+      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_down->at(0)*met_unclusteredEn_Px_down->at(0) + met_unclusteredEn_Py_down->at(0)*met_unclusteredEn_Py_down->at(0)));
+      kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,met_unclusteredEn_SumEt_up->at(0));
+      kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered,met_unclusteredEn_SumEt_down->at(0));
+      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,      sqrt(met_jetEn_Px_up->at(0)*met_jetEn_Px_up->at(0) + met_jetEn_Py_up->at(0)*met_jetEn_Py_up->at(0)));
+      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down->at(0)*met_jetEn_Px_down->at(0) + met_jetEn_Py_down->at(0)*met_jetEn_Py_down->at(0)));
+      kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up->at(0));
+      kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down->at(0));
+      
+      /// https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_25/PhysicsTools/PatUtils/python/patPFMETCorrections_cff.py
+      /// jets > 15 GeV in mc smeared. This is not done in cattolls so branches have no change,
+      /// Apply this here
+      /// 
 
       }
     }
-  }
-  m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
   
-  /// Filling event variables
-    
+m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
+ 
+/// Filling event variables
+ 
   kevent.SetIsData(isData);
   kevent.SetRunNumber(run);
   kevent.SetEventNumber(event);
@@ -337,32 +329,15 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPUWeight(snu::KEvent::central,double(puWeightGold));
     kevent.SetPUWeight(snu::KEvent::down,double(puWeightGoldDn));
     kevent.SetPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
-    if(k_cat_version == 4){
-      if(puWeightGold_xs71000){
-	kevent.SetAltPUWeight(snu::KEvent::central,double(puWeightGold_xs71000));
-	kevent.SetAltPUWeight(snu::KEvent::down,double(puWeightGoldDn_xs71000));
-	kevent.SetAltPUWeight(snu::KEvent::up,  double(puWeightGoldUp_xs71000));
-      }
-    }
-    else{
-      kevent.SetAltPUWeight(snu::KEvent::central,double(puWeightGold));
-      kevent.SetAltPUWeight(snu::KEvent::down,double(puWeightGoldDn));
-      kevent.SetAltPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
-
-      if(k_cat_version > 7){
-	kevent.SetPeriodPileupWeight(double(puWeightGoldB),double(puWeightGoldC),double(puWeightGoldD),double(puWeightGoldE),double(puWeightGoldF),double(puWeightGoldG),double(puWeightGoldH));
-      }
-    }
+    kevent.SetAltPUWeight(snu::KEvent::central,double(puWeightGold));
+    kevent.SetAltPUWeight(snu::KEvent::down,double(puWeightGoldDn));
+    kevent.SetAltPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
+    
+    kevent.SetPeriodPileupWeight(double(puWeightGoldB),double(puWeightGoldC),double(puWeightGoldD),double(puWeightGoldE),double(puWeightGoldF),double(puWeightGoldG),double(puWeightGoldH));
   }
   if(isData){
-    if(k_cat_version > 2&&k_cat_version < 5){
-      kevent.SetLumiMask(snu::KEvent::silver, lumiMaskSilver);
-      kevent.SetLumiMask(snu::KEvent::gold,   lumiMaskGold);
-    }
-    else{
-      kevent.SetLumiMask(snu::KEvent::silver, 1);
-      kevent.SetLumiMask(snu::KEvent::gold,   1);
-    }
+    kevent.SetLumiMask(snu::KEvent::silver, 1);
+    kevent.SetLumiMask(snu::KEvent::gold,   1);
   }
   kevent.SetGenId(genWeight_id1, genWeight_id2);
   kevent.SetLHEWeight(lheWeight);
@@ -385,24 +360,16 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetIsGoodEvent(nGoodPV);
 
   /// MET filter cuts/checks
-  if(k_cat_version > 4){
-    kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(ecalDCTRFilter);
-    kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
-    kevent.SetPassHBHENoiseIsoFilter(HBHENoiseIsoFilter);
-    kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
-    kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
-    kevent.SetPassTightHalo2016Filter(Flag_globalTightHalo2016Filter);
-  }
-  else{
-    kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(ecalDCTRFilter);
-    kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
-    kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
-    kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
-  }
-  if(k_cat_version > 6){
-    kevent.SetPassBadChargedCandidateFilter(BadChargedCandidateFilter);
-    kevent.SetPassBadPFMuonFilter(BadPFMuonFilter);
-  }
+  kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(ecalDCTRFilter);
+  kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
+  kevent.SetPassHBHENoiseIsoFilter(HBHENoiseIsoFilter);
+  kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
+  kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
+  kevent.SetPassTightHalo2016Filter(Flag_globalTightHalo2016Filter);
+
+  kevent.SetPassBadChargedCandidateFilter(BadChargedCandidateFilter);
+  kevent.SetPassBadPFMuonFilter(BadPFMuonFilter);
+
   return kevent;
 }
 
@@ -580,7 +547,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
     int           eltype=0;
     bool conv_veto=false;
-    if(k_cat_version  > 3){
       
       if(gen_pt){
 	// Default deltaR setting for matching
@@ -676,7 +642,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    }
 	  }
 	}
-      }// end of gen loop to find status 1 electron
+	}// end of gen loop to find status 1 electron
 	
 	
       ///// treat case where there is a matched status 1 electron:
@@ -1064,7 +1030,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       if(conv_veto)el.SetType(40);
 
     }
-    }
+    
     electrons.push_back(el);
   }
   m_logger << DEBUG << "END electrons " << LQLogger::endmsg;
@@ -1093,14 +1059,7 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
     }
     return genjets;
   }
-  if(k_cat_version < 3){
-    for (UInt_t ijet=0; ijet< slimmedGenJets_pt->size(); ijet++) {
-      KGenJet jet;
-      jet.SetPtEtaPhiE(slimmedGenJets_pt->at(ijet), slimmedGenJets_eta->at(ijet), slimmedGenJets_phi->at(ijet), slimmedGenJets_energy->at(ijet));
-      genjets.push_back(jet);
-    }
-    return genjets;
-  }
+
   
   for (UInt_t ijet=0; ijet< genjet_pt->size(); ijet++) {
     KGenJet jet;
@@ -1226,7 +1185,6 @@ std::vector<KFatJet> SKTreeFiller::GetAllFatJets(){
 
   std::vector<KFatJet> fatjets;
 
-  if(k_cat_version <  7) return fatjets;
 
   if(!LQinput){
 
@@ -1369,19 +1327,10 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     
     
     muon.SetPtEtaPhiE(muon_pt->at(ilep), muon_eta->at(ilep),muon_phi->at(ilep), muon_energy->at(ilep));
-    if(k_cat_version > 4){
-      muon.SetRochEta(muon_roch_eta->at(ilep));
-      muon.SetRochPhi(muon_roch_phi->at(ilep));
-      muon.SetRochE(muon_roch_energy->at(ilep));
-      muon.SetRochM(muon_roch_m->at(ilep));
-    }
-    else{
-      muon.SetRochPt(muon_pt->at(ilep));
-      muon.SetRochEta(muon_eta->at(ilep));
-      muon.SetRochPhi(muon_phi->at(ilep));
-      muon.SetRochE(muon_energy->at(ilep));
-      muon.SetRochM(muon_m->at(ilep));
-    }
+    muon.SetRochEta(muon_roch_eta->at(ilep));
+    muon.SetRochPhi(muon_roch_phi->at(ilep));
+    muon.SetRochE(muon_roch_energy->at(ilep));
+    muon.SetRochM(muon_roch_m->at(ilep));
     muon.SetCharge(muon_q->at(ilep));
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
@@ -1396,12 +1345,11 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       if(muon_minirelIsoBeta)muon.SetRelMiniIsoBeta(muon_minirelIsoBeta->at(ilep));
       if(muon_minirelIsoRho)muon.SetRelMiniIsoRho(muon_minirelIsoRho->at(ilep));
     }
-    if(k_cat_version  > 7){
-      muon.SetMiniAODPt(muon_pt->at(ilep));
-      muon.SetMiniAODRelIso(0.3,muon_relIso03->at(ilep));
-      muon.SetMiniAODRelIso(0.4,muon_relIso04->at(ilep));
-      muon.SetIsRochesterCorrected(false);
-    }
+    muon.SetMiniAODPt(muon_pt->at(ilep));
+    muon.SetMiniAODRelIso(0.3,muon_relIso03->at(ilep));
+    muon.SetMiniAODRelIso(0.4,muon_relIso04->at(ilep));
+    muon.SetIsRochesterCorrected(false);
+  
     muon.SetTrkIso(muon_trkiso->at(ilep));
     muon.Setdz(muon_dz->at(ilep));
     muon.Setdxy(muon_dxy->at(ilep));
@@ -1440,7 +1388,6 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     
     int          mutype=0;
 
-    if(k_cat_version > 3){
 
     if(gen_pt){
       float min_Dr=0.1;
@@ -1788,7 +1735,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       if(gen_status->at(matched_index)==1)muon.SetIsPromptFlag(gen_isprompt->at(matched_index));
 
     }
-    }
+    
 
     /// Fill vector
     muons.push_back(muon);
@@ -1830,22 +1777,21 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
     truthp.SetParticleStatus(gen_status->at(it));
     truthp.SetParticleIndexMother(gen_motherindex->at(it));
     
-    if(k_cat_version > 3){
-      // To save space set a single int as the flag. 
-      // 
-      int truth_flag = 0;
-      if(gen_isprompt->at(it)) truth_flag+=1;
-      if(gen_isdecayedleptonhadron->at(it)) truth_flag+=10;
-      if(gen_istaudecayproduct->at(it)) truth_flag+=100;
-      if(gen_isprompttaudecayproduct->at(it)) truth_flag+=1000;
-      if(gen_isdirecthadrondecayproduct->at(it)) truth_flag+=10000;
-      if(gen_ishardprocess->at(it)) truth_flag+=100000;
+    // To save space set a single int as the flag. 
+    // 
+    int truth_flag = 0;
+    if(gen_isprompt->at(it)) truth_flag+=1;
+    if(gen_isdecayedleptonhadron->at(it)) truth_flag+=10;
+    if(gen_istaudecayproduct->at(it)) truth_flag+=100;
+    if(gen_isprompttaudecayproduct->at(it)) truth_flag+=1000;
+    if(gen_isdirecthadrondecayproduct->at(it)) truth_flag+=10000;
+    if(gen_ishardprocess->at(it)) truth_flag+=100000;
       if(gen_fromhardprocess->at(it)) truth_flag+=1000000;
       if(gen_fromhardprocess_beforeFSR->at(it)) truth_flag+=10000000;
       truthp.SetStatusFlag(truth_flag);
-    }
-    
-    vtruth.push_back(truthp);  
+      
+      
+  vtruth.push_back(truthp);  
   }
   
   return vtruth;

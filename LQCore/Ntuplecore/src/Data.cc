@@ -583,66 +583,30 @@ void Data::ConnectEvent(int setting_data){
   ConnectVariable("lumi",lumi , b_lumi);
   ConnectVariable("event", event, b_event);
 
-  // new for v7-4-6
-  if(k_cat_version > 2 && k_cat_version < 5){
-    if( (setting_data == 1) || (setting_data == 3)){
-      m_logger << INFO << "setting_lumi" << LQLogger::endmsg;
-      ConnectVariable("lumiMaskGold", lumiMaskGold, b_lumiMaskGold);
-      ConnectVariable("lumiMaskSilver", lumiMaskSilver, b_lumiMaskSilver);
-    }
-    if( (setting_data ==2) || (setting_data ==3)){
-
-      ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
-      ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
-      ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
-      if(k_cat_version ==4){
-	ConnectVariable("puWeightSilver",puWeightSilver, b_puWeightSilver);
-	ConnectVariable("puWeightSilverUp",puWeightSilverUp, b_puWeightSilverUp);
-	ConnectVariable("puWeightSilverDn",puWeightSilverDn, b_puWeightSilverDn);
-	ConnectVariable("puWeightGold_xs71000",puWeightGold_xs71000, b_puWeightGold_xs71000);
-	ConnectVariable("puWeightGoldUp_xs71000",puWeightGoldUp_xs71000, b_puWeightGoldUp_xs71000);
-	ConnectVariable("puWeightGoldDn_xs71000",puWeightGoldDn_xs71000, b_puWeightGoldDn_xs71000);
-      }
-    }
-  }
-  else{
-    ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
-    ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
-    ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
-
-    ConnectVariable("puWeightGoldB",puWeightGoldB, b_puWeightGoldB);
-    ConnectVariable("puWeightGoldC",puWeightGoldC, b_puWeightGoldC);
-    ConnectVariable("puWeightGoldD",puWeightGoldD, b_puWeightGoldD);
-    ConnectVariable("puWeightGoldE",puWeightGoldE, b_puWeightGoldE);
-    ConnectVariable("puWeightGoldF",puWeightGoldF, b_puWeightGoldF);
-    ConnectVariable("puWeightGoldG",puWeightGoldG, b_puWeightGoldG);
-    ConnectVariable("puWeightGoldH",puWeightGoldH, b_puWeightGoldH);
-   
-  }
+  ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
+  ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
+  ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
+  
+  ConnectVariable("puWeightGoldB",puWeightGoldB, b_puWeightGoldB);
+  ConnectVariable("puWeightGoldC",puWeightGoldC, b_puWeightGoldC);
+  ConnectVariable("puWeightGoldD",puWeightGoldD, b_puWeightGoldD);
+  ConnectVariable("puWeightGoldE",puWeightGoldE, b_puWeightGoldE);
+  ConnectVariable("puWeightGoldF",puWeightGoldF, b_puWeightGoldF);
+  ConnectVariable("puWeightGoldG",puWeightGoldG, b_puWeightGoldG);
+  ConnectVariable("puWeightGoldH",puWeightGoldH, b_puWeightGoldH);
   
 
   ConnectVariable("nTrueInteraction", nTrueInteraction , b_nTrueInteraction);
-  if(k_cat_version > 4){
-    ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
-    ConnectVariable("HBHENoiseIsoFilter", HBHENoiseIsoFilter, b_HBHENoiseIsoFilter);
-    ConnectVariable("Flag_globalTightHalo2016Filter",Flag_globalTightHalo2016Filter,b_Flag_globalTightHalo2016Filter);
-    ConnectVariable("CSCTightHaloFilter", csctighthaloFilter, b_csctighthaloFilter);
-    ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
-    ConnectVariable("eeBadScFilter",eeBadScFilter , b_eeBadScFilter);
-    ConnectVariable("goodVertices", goodVertices, b_goodVertices);
-    if(k_cat_version > 6){
-      ConnectVariable("BadChargedCandidateFilter",BadChargedCandidateFilter,b_BadChargedCandidateFilter);
-      ConnectVariable("BadPFMuonFilter",BadPFMuonFilter,b_BadPFMuonFilter);
-    }
-  }
-
-  if(k_cat_version ==4){
-    ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
-    ConnectVariable("CSCTightHaloFilter", csctighthaloFilter, b_csctighthaloFilter);
-    ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
-    ConnectVariable("eeBadScFilter",eeBadScFilter , b_eeBadScFilter);
-    ConnectVariable("goodVertices", goodVertices, b_goodVertices);
-  }
+  
+  ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
+  ConnectVariable("HBHENoiseIsoFilter", HBHENoiseIsoFilter, b_HBHENoiseIsoFilter);
+  ConnectVariable("Flag_globalTightHalo2016Filter",Flag_globalTightHalo2016Filter,b_Flag_globalTightHalo2016Filter);
+  ConnectVariable("CSCTightHaloFilter", csctighthaloFilter, b_csctighthaloFilter);
+  ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
+  ConnectVariable("eeBadScFilter",eeBadScFilter , b_eeBadScFilter);
+  ConnectVariable("goodVertices", goodVertices, b_goodVertices);
+  ConnectVariable("BadChargedCandidateFilter",BadChargedCandidateFilter,b_BadChargedCandidateFilter);
+  ConnectVariable("BadPFMuonFilter",BadPFMuonFilter,b_BadPFMuonFilter);
   
   ConnectVariable("nGoodPV", nGoodPV, b_nGoodPV);
   ConnectVariable("nPV", nPV, b_nPV);
@@ -720,7 +684,7 @@ void Data::ConnectMuons(){
 
 void Data::ConnectPhotons(){
   
-  if(k_cat_version >2 && k_cat_version < 5){
+  /*
     ConnectVariable("photons_pt",photons_pt , b_photons_pt);
     ConnectVariable("photons_eta",photons_eta , b_photons_eta);
     ConnectVariable("photons_phi",photons_phi , b_photons_phi);
@@ -746,10 +710,10 @@ void Data::ConnectPhotons(){
     ConnectVariable("photons_photonID_mva", photons_photonID_mva, b_photons_photonID_mva);
     ConnectVariable("photons_mcMatched", photons_mcMatched, b_photons_mcMatched);
     ConnectVariable("photons_haspixseed", photons_haspixseed, b_photons_haspixseed);
-    ConnectVariable("photons_passelectronveto",photons_passelectronveto , b_photons_passelectronveto);
-  }
+    ConnectVariable("photons_passelectronveto",photons_passelectronveto , b_photons_passelectronveto);*/
+}
   
- }
+
 
 void Data::ConnectElectrons(){
 
@@ -782,7 +746,7 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_energy", electrons_energy, b_electrons_energy);
   ConnectVariable("electrons_eta", electrons_eta, b_electrons_eta);
   ConnectVariable("electrons_isPF", electrons_isPF, b_electrons_isPF);
-  if(k_cat_version > 2)  ConnectVariable("electrons_isTrigMVAValid", electrons_isTrigMVAValid, b_electrons_isTrigMVAValid);
+  ConnectVariable("electrons_isTrigMVAValid", electrons_isTrigMVAValid, b_electrons_isTrigMVAValid);
   ConnectVariable("electrons_m", electrons_m, b_electrons_m);
   ConnectVariable("electrons_mcMatched", electrons_mcMatched, b_electrons_mcMatched);
   ConnectVariable("electrons_nhIso03", electrons_nhIso03, b_electrons_nhIso03);
@@ -821,19 +785,13 @@ void Data::ConnectPFJets(){
   //  ConnectVariable("rhoJets", rhoJets, b_rhoJets);
   /// TLV variables
 
-  if(k_cat_version > 2){
-    ConnectVariable("jets_CSVInclV2", jets_CSVInclV2, b_jets_CSVInclV2);
-    ConnectVariable("jets_CMVAV2", jets_CMVAV2, b_jets_CMVAV2);
-    ConnectVariable("jets_JetProbBJet", jets_JetProbBJet, b_jets_JetProbBJet);
-    if(k_cat_version >=4){
-      ConnectVariable("jets_iCSVCvsL", jets_iCSVCvsL, b_jets_iCSVCvsL);
-      ConnectVariable("jets_CCvsLT", jets_CCvsLT, b_jets_CCvsLT);
-      ConnectVariable("jets_CCvsBT",jets_CCvsBT,b_jets_CCvsBT);
-    }
-  }
-  else{
-    ConnectVariable("jets_CVSInclV2", jets_CSVInclV2, b_jets_CSVInclV2);
-  }
+  ConnectVariable("jets_CSVInclV2", jets_CSVInclV2, b_jets_CSVInclV2);
+  ConnectVariable("jets_CMVAV2", jets_CMVAV2, b_jets_CMVAV2);
+  ConnectVariable("jets_JetProbBJet", jets_JetProbBJet, b_jets_JetProbBJet);
+  ConnectVariable("jets_iCSVCvsL", jets_iCSVCvsL, b_jets_iCSVCvsL);
+  ConnectVariable("jets_CCvsLT", jets_CCvsLT, b_jets_CCvsLT);
+  ConnectVariable("jets_CCvsBT",jets_CCvsBT,b_jets_CCvsBT);
+
 
   ConnectVariable("jets_chargedEmEnergyFraction",jets_chargedEmEnergyFraction,b_jets_chargedEmEnergyFraction);
   ConnectVariable("jets_energy", jets_energy, b_jets_energy);
@@ -880,8 +838,6 @@ void Data::ConnectPFFatJets(){
   //  ConnectVariable("rhoJets", rhoJets, b_rhoJets);                                                                                                                            
   /// TLV variables                                                                                                                                                              
 
-  if(k_cat_version <  7) return;
-  
   ConnectVariable("fatjets_rawpt",fatjets_rawpt,b_fatjets_rawpt);
   ConnectVariable("fatjets_rawenergy",fatjets_rawenergy,b_fatjets_rawenergy);
   ConnectVariable("fatjets_CSVInclV2", fatjets_CSVInclV2, b_fatjets_CSVInclV2);
@@ -951,66 +907,54 @@ void Data::ConnectMET(){
   //ConnectVariable("metPuppi_pt",metPuppi_pt , b_metPuppi_pt);
   //ConnectVariable("metPuppi_phi",metPuppi_phi , b_metPuppi_phi);
   //ConnectVariable("metPuppi_sumet", metPuppi_sumet , b_metPuppi_sumet);
-  ConnectVariable("metNoHF_phi",metNoHF_phi , b_metNoHF_phi);
-  ConnectVariable("metNoHF_pt", metNoHF_pt , b_metNoHF_pt);
-  ConnectVariable("metNoHF_sumet", metNoHF_sumet , b_metNoHF_sumet);
   //ConnectVariable("metPfMva_phi",metPfMva_phi , b_metPfMva_phi);
   //ConnectVariable("metPfMva_pt", metPfMva_pt , b_metPfMva_pt);
   //ConnectVariable("metPfMva_sumet", metPfMva_sumet , b_metPfMva_sumet);
 
-  m_logger << DEBUG << k_cat_version  << " k_cat_version "  << LQLogger::endmsg; 
-  if(k_cat_version > 2){
-    ConnectVariable("met_muonEn_Px_up", met_muonEn_Px_up, b_met_muonEn_Px_up);
-    ConnectVariable("met_muonEn_Py_up", met_muonEn_Py_up, b_met_muonEn_Py_up);
-    ConnectVariable("met_muonEn_Px_down", met_muonEn_Px_down, b_met_muonEn_Px_down);
-    ConnectVariable("met_muonEn_Py_down", met_muonEn_Py_down, b_met_muonEn_Py_down);
-    ConnectVariable("met_electronEn_Px_up", met_electronEn_Px_up, b_met_electronEn_Px_up);
-    ConnectVariable("met_electronEn_Py_up", met_electronEn_Py_up, b_met_electronEn_Py_up);
-    ConnectVariable("met_electronEn_Px_down", met_electronEn_Px_down, b_met_electronEn_Px_down);
-    ConnectVariable("met_electronEn_Py_down", met_electronEn_Py_down, b_met_electronEn_Py_down);
-    ConnectVariable("met_unclusteredEn_Px_up", met_unclusteredEn_Px_up, b_met_unclusteredEn_Px_up);
-    ConnectVariable("met_unclusteredEn_Py_up", met_unclusteredEn_Py_up, b_met_unclusteredEn_Py_up);
-    ConnectVariable("met_unclusteredEn_Px_down", met_unclusteredEn_Px_down, b_met_unclusteredEn_Px_down);
-    ConnectVariable("met_unclusteredEn_Py_down", met_unclusteredEn_Py_down, b_met_unclusteredEn_Py_down);
-    ConnectVariable("met_unclusteredEn_SumEt_down", met_unclusteredEn_SumEt_down, b_met_unclusteredEn_SumEt_down);
-    ConnectVariable("met_unclusteredEn_SumEt_up", met_unclusteredEn_SumEt_up, b_met_unclusteredEn_SumEt_up);
-    ConnectVariable("met_jetEn_Px_up", met_jetEn_Px_up, b_met_jetEn_Px_up);
-    ConnectVariable("met_jetEn_Py_up", met_jetEn_Py_up, b_met_jetEn_Py_up);
-    ConnectVariable("met_jetEn_Px_down", met_jetEn_Px_down, b_met_jetEn_Px_down);
-    ConnectVariable("met_jetEn_Py_down", met_jetEn_Py_down, b_met_jetEn_Py_down);
-    ConnectVariable("met_jetEn_SumEt_down", met_jetEn_SumEt_down, b_met_jetEn_SumEt_down);
-    ConnectVariable("met_jetEn_SumEt_up", met_jetEn_SumEt_up, b_met_jetEn_SumEt_up);
-    ConnectVariable("met_jetRes_Px_up", met_jetRes_Px_up, b_met_jetRes_Px_up);
-    ConnectVariable("met_jetRes_Py_up", met_jetRes_Py_up, b_met_jetRes_Py_up);
-    ConnectVariable("met_jetRes_Px_down", met_jetRes_Px_down, b_met_jetRes_Px_down);
-    ConnectVariable("met_jetRes_Py_down", met_jetRes_Py_down, b_met_jetRes_Py_down);
-    ConnectVariable("met_jetRes_SumEt_down", met_jetRes_SumEt_down, b_met_jetRes_SumEt_down);
-    ConnectVariable("met_jetRes_SumEt_up", met_jetRes_SumEt_up, b_met_jetRes_SumEt_up);
-  }
+  ConnectVariable("met_muonEn_Px_up", met_muonEn_Px_up, b_met_muonEn_Px_up);
+  ConnectVariable("met_muonEn_Py_up", met_muonEn_Py_up, b_met_muonEn_Py_up);
+  ConnectVariable("met_muonEn_Px_down", met_muonEn_Px_down, b_met_muonEn_Px_down);
+  ConnectVariable("met_muonEn_Py_down", met_muonEn_Py_down, b_met_muonEn_Py_down);
+  ConnectVariable("met_electronEn_Px_up", met_electronEn_Px_up, b_met_electronEn_Px_up);
+  ConnectVariable("met_electronEn_Py_up", met_electronEn_Py_up, b_met_electronEn_Py_up);
+  ConnectVariable("met_electronEn_Px_down", met_electronEn_Px_down, b_met_electronEn_Px_down);
+  ConnectVariable("met_electronEn_Py_down", met_electronEn_Py_down, b_met_electronEn_Py_down);
+  ConnectVariable("met_unclusteredEn_Px_up", met_unclusteredEn_Px_up, b_met_unclusteredEn_Px_up);
+  ConnectVariable("met_unclusteredEn_Py_up", met_unclusteredEn_Py_up, b_met_unclusteredEn_Py_up);
+  ConnectVariable("met_unclusteredEn_Px_down", met_unclusteredEn_Px_down, b_met_unclusteredEn_Px_down);
+  ConnectVariable("met_unclusteredEn_Py_down", met_unclusteredEn_Py_down, b_met_unclusteredEn_Py_down);
+  ConnectVariable("met_unclusteredEn_SumEt_down", met_unclusteredEn_SumEt_down, b_met_unclusteredEn_SumEt_down);
+  ConnectVariable("met_unclusteredEn_SumEt_up", met_unclusteredEn_SumEt_up, b_met_unclusteredEn_SumEt_up);
+  ConnectVariable("met_jetEn_Px_up", met_jetEn_Px_up, b_met_jetEn_Px_up);
+  ConnectVariable("met_jetEn_Py_up", met_jetEn_Py_up, b_met_jetEn_Py_up);
+  ConnectVariable("met_jetEn_Px_down", met_jetEn_Px_down, b_met_jetEn_Px_down);
+  ConnectVariable("met_jetEn_Py_down", met_jetEn_Py_down, b_met_jetEn_Py_down);
+  ConnectVariable("met_jetEn_SumEt_down", met_jetEn_SumEt_down, b_met_jetEn_SumEt_down);
+  ConnectVariable("met_jetEn_SumEt_up", met_jetEn_SumEt_up, b_met_jetEn_SumEt_up);
+  ConnectVariable("met_jetRes_Px_up", met_jetRes_Px_up, b_met_jetRes_Px_up);
+  ConnectVariable("met_jetRes_Py_up", met_jetRes_Py_up, b_met_jetRes_Py_up);
+  ConnectVariable("met_jetRes_Px_down", met_jetRes_Px_down, b_met_jetRes_Px_down);
+  ConnectVariable("met_jetRes_Py_down", met_jetRes_Py_down, b_met_jetRes_Py_down);
+  ConnectVariable("met_jetRes_SumEt_down", met_jetRes_SumEt_down, b_met_jetRes_SumEt_down);
+  ConnectVariable("met_jetRes_SumEt_up", met_jetRes_SumEt_up, b_met_jetRes_SumEt_up);
+  
   return;
 }
 
 void Data::ConnectTruth(int setting_data){
-
+  
   //#####   Truth branches
-
+  
   //  ConnectVariable("GenSumETTrue", GenSumETTrue, b_GenSumETTrue);
   if(setting_data == 1) return;
-  if(k_cat_version > 2){
-    ConnectVariable("genjet_pt",genjet_pt ,b_genjet_pt);
-    ConnectVariable("genjet_eta",genjet_eta ,b_genjet_eta);
-    ConnectVariable("genjet_phi",genjet_phi ,b_genjet_phi);
-    ConnectVariable("genjet_energy",genjet_energy ,b_genjet_energy);
-    ConnectVariable("genjet_emf",genjet_emf ,b_genjet_emf);
-    ConnectVariable("genjet_hadf",genjet_hadf ,b_genjet_hadf);
-    ConnectVariable("genjet_pdgid",genjet_pdgid ,b_genjet_pdgid);
-  }
-  else{
-    ConnectVariable("slimmedGenJets_eta", slimmedGenJets_eta,b_slimmedGenJets_eta);
-    ConnectVariable("slimmedGenJets_pt", slimmedGenJets_pt,b_slimmedGenJets_pt);
-    ConnectVariable("slimmedGenJets_phi", slimmedGenJets_phi,b_slimmedGenJets_phi);
-    ConnectVariable("slimmedGenJets_energy", slimmedGenJets_energy,b_slimmedGenJets_energy);
-  }
+  ConnectVariable("genjet_pt",genjet_pt ,b_genjet_pt);
+  ConnectVariable("genjet_eta",genjet_eta ,b_genjet_eta);
+  ConnectVariable("genjet_phi",genjet_phi ,b_genjet_phi);
+  ConnectVariable("genjet_energy",genjet_energy ,b_genjet_energy);
+  ConnectVariable("genjet_emf",genjet_emf ,b_genjet_emf);
+  ConnectVariable("genjet_hadf",genjet_hadf ,b_genjet_hadf);
+  ConnectVariable("genjet_pdgid",genjet_pdgid ,b_genjet_pdgid);
+
  
   ConnectVariable("genWeightQ",genWeightQ, b_genWeightQ);
   ConnectVariable("genWeightX1",genWeightX1, b_genWeightX1);
@@ -1027,18 +971,16 @@ void Data::ConnectTruth(int setting_data){
   ConnectVariable("gen_pdgid",gen_pdgid ,b_gen_pdgid );
   ConnectVariable("gen_motherindex",gen_motherindex ,b_gen_motherindex );
   
-  if(k_cat_version >= 4){
-    ConnectVariable("gen_isprompt" ,gen_isprompt ,b_gen_isprompt);
-    ConnectVariable("gen_isdecayedleptonhadron" ,gen_isdecayedleptonhadron ,b_gen_isdecayedleptonhadron);
-    ConnectVariable("gen_istaudecayproduct" , gen_istaudecayproduct, b_gen_istaudecayproduct);
-    ConnectVariable("gen_isprompttaudecayproduct" ,gen_isprompttaudecayproduct ,b_gen_isprompttaudecayproduct);
-    ConnectVariable("gen_isdirecthadrondecayproduct" ,gen_isdirecthadrondecayproduct ,b_gen_isdirecthadrondecayproduct);
-    ConnectVariable("gen_ishardprocess" ,gen_ishardprocess ,b_gen_ishardprocess);
-    ConnectVariable("gen_fromhardprocess" ,gen_fromhardprocess ,b_gen_fromhardprocess);
-    ConnectVariable("gen_fromhardprocess_beforeFSR" ,gen_fromhardprocess_beforeFSR ,b_gen_fromhardprocess_beforeFSR);
-    ConnectVariable("ScaleWeights" ,ScaleWeights ,b_ScaleWeights);
-    ConnectVariable("PDFWeights" ,PDFWeights ,b_PDFWeights);
-  }
+  ConnectVariable("gen_isprompt" ,gen_isprompt ,b_gen_isprompt);
+  ConnectVariable("gen_isdecayedleptonhadron" ,gen_isdecayedleptonhadron ,b_gen_isdecayedleptonhadron);
+  ConnectVariable("gen_istaudecayproduct" , gen_istaudecayproduct, b_gen_istaudecayproduct);
+  ConnectVariable("gen_isprompttaudecayproduct" ,gen_isprompttaudecayproduct ,b_gen_isprompttaudecayproduct);
+  ConnectVariable("gen_isdirecthadrondecayproduct" ,gen_isdirecthadrondecayproduct ,b_gen_isdirecthadrondecayproduct);
+  ConnectVariable("gen_ishardprocess" ,gen_ishardprocess ,b_gen_ishardprocess);
+  ConnectVariable("gen_fromhardprocess" ,gen_fromhardprocess ,b_gen_fromhardprocess);
+  ConnectVariable("gen_fromhardprocess_beforeFSR" ,gen_fromhardprocess_beforeFSR ,b_gen_fromhardprocess_beforeFSR);
+  ConnectVariable("ScaleWeights" ,ScaleWeights ,b_ScaleWeights);
+  ConnectVariable("PDFWeights" ,PDFWeights ,b_PDFWeights);
   
   return;
 }

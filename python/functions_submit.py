@@ -1141,7 +1141,7 @@ def GetFileSize(defsample, defcycle,tagger,defskim):
 
 
 
-def SedEmail(jobsummary, deftagger, e_subject, email_user, sendplots, plotlist):
+def SendEmail(jobsummary, deftagger, e_subject, email_user, sendplots, plotlist):
 
     if not  os.getenv("USER") == "jalmond":
         if "jalmond" in email_user:

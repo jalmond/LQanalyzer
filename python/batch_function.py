@@ -65,7 +65,7 @@ def CheckRunningKistiBatch(filename,job_id, output,i,  messagelog):
 
     os.system("rm  " + filename)
     
-    sys.stdout.write('\r CheckRunningKistiBatch = ' + str(running) + '\n') 
+    #sys.stdout.write('\r CheckRunningKistiBatch = ' + str(running) + '\n') 
 
     return running
 
@@ -87,7 +87,7 @@ def CheckMachinesSNUBatch(filename, array_batchjobs, output):
     
 
     os.system("qstat -u '*' > " +  filename)
-    sys.stdout.write('\r TEST: log sent to ' + filename)
+    #sys.stdout.write('\r TEST: log sent to ' + filename)
 
     for line in open(filename, 'r'):
         for job_id in array_batchjobs:
@@ -249,7 +249,7 @@ def CheckPercentComplete(isKisti,number_of_cores,output,outsamplename, array_bat
                             event_split = s.split()
                             if len(event_split) < 2:
                                 print "Warning [2002] " + s
-                                print line
+
                                 os.system("cp " + local_sub_dir + '/outlog.txt ~/error_log_'+str(array_batchjobs[i-1]))
                             if lineok:
                                 nevent_processed_i = float(event_split[0])
