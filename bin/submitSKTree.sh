@@ -52,6 +52,7 @@ job_submitallfiles="false"
 job_logstep=1000
 job_loglevel="INFO"
 job_njobs=2
+job_remove="True"
 job_skim="SKTree_LeptonSkim"
 changed_skim=false
 job_output_dir=""
@@ -1949,6 +1950,7 @@ if [[ $runMC  == "true" ]];
     run_in_bkg=${job_run_bkg}
     cycle=${job_cycle}
     echo "LQanalyzer::sktree :: INFO :: queue ="$queuename
+    remove=${job_remove}
     queue=${queuename}
     skinput=${submit_skinput}
     useskim=${job_skim}

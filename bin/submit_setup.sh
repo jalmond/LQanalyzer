@@ -1465,6 +1465,9 @@ while [ "$1" != "" ]; do
 				submit_version_tag="$1"
 				changed_submit_version_tag=true
 				;;
+        -rj )                 shift
+                                job_remove=$1
+				;;
         -ac | --AllCatVersion)  shift
                                 check_all_catversions=$1
                                 ;;
