@@ -177,7 +177,12 @@ void HNDiLepton::DoCutFlow(float w){
 void HNDiLepton::ExecuteEvents()throw( LQError ){
 
   PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
-    
+  
+  FillHist("Z_mm", 0., 1., 0., 2, 2);
+  
+  return ;
+  
+
 
   if(k_running_nonprompt){
     while(!fake_configured){
@@ -804,6 +809,7 @@ float HNDiLepton::EEWeight(std::vector<snu::KElectron> electrons,TString id){
   
   if(isData) return 1.;
   
+
   double mc_weight = mcdata_correction->ElectronScaleFactor(id, electrons, 0);
   double electron_RecoSF =  mcdata_correction->ElectronRecoScaleFactor(electrons);
   mc_weight*= electron_RecoSF;

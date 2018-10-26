@@ -35,6 +35,7 @@ if [[ $setupok == "False" ]]; then
     return 1
 fi
 
+alias make_sktree='make -j 5'
 
 if [[ $USER == "jalmond" ]]; then
     alias cat_path_analysis_ls='ll -rth /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/ '
@@ -60,7 +61,7 @@ fi
 if [ $HOSTNAME == "ui10.sdfarm.kr" ];
 then
 
-    python python/CheckProxy.py
+    python python/CheckProxy.py -x "setup"
 
 
     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"

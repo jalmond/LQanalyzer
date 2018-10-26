@@ -343,7 +343,11 @@ fr_update = open(local_sub_dir + '/inputlist_updated.txt', 'w')
 ### inputlist_updated.txt now has updated paths
 for line in fr:    
     if isKisti:
-        newline = line.replace("/xrootd_user/"+str(os.getenv("USER"))+"/xrootd","root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/"+str(os.getenv("USER")))
+        if "/xrootd_user/" in line:
+            newline = line.replace("/xrootd_user/"+str(os.getenv("USER"))+"/xrootd","root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/"+str(os.getenv("USER")))
+        else:
+             newline = line.replace("/xrootd/store/user/"+str(os.getenv("USER")) , "root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/"+str(os.getenv("USER")))
+
         fr_update.write(newline)
     else:
         fr_update.write(line)

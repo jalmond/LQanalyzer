@@ -1,18 +1,35 @@
-("emacs" "batch_function.py")
-Loading /usr/share/emacs/site-lisp/site-start.d/cmake3-init.el (source)...done
-Loading /usr/share/emacs/site-lisp/site-start.d/focus-init.el (source)...done
-Loading /usr/share/emacs/site-lisp/site-start.d/php-mode-init.el (source)...done
-Loading /usr/share/emacs/site-lisp/site-start.d/po-mode-init.el (source)...done
-Loading /usr/share/emacs/site-lisp/site-start.d/puppet-mode-init.el (source)...done
-Loading /usr/share/emacs/site-lisp/site-start.d/rpm-spec-mode-init.el (source)...done
-For information about GNU Emacs and the GNU system, type C-h C-a.
-Loading vc-git...done
-Mark saved where search started [2 times]
-Closes def CheckRunningKistiBatch(filename, array_batchjobs, output):
-Auto-saving...done
-Mark saved where search started
-Saving file /cms/scratch/jalmond/LQANALYZER/CATanalyzerKI/python/batch_function.py...
-Wrote /cms/scratch/jalmond/LQANALYZER/CATanalyzerKI/python/batch_function.py
-(No changes need to be saved) [2 times]
-read-file-name: Command attempted to use minibuffer while in minibuffer [2 times]
-File `/cms/scratch/jalmond/LQANALYZER/CATanalyzerKI/python/killbkg.py' exists; overwrite? (y or n) 
+import os
+from optparse import OptionParser
+
+parser = OptionParser()
+parser.add_option("-x", "--x", dest="x", default="123",help="tag")
+(options, args) = parser.parse_args()
+filetag=options.x
+
+print "Looking for " + filetag
+
+os.system("ps ux > logk")
+readps= open("logk")
+listpid=[]
+for line in readps:
+    if filetag in line:
+        if not "killbkg" in line:
+            sline = line.split()
+            pidtokill = sline[1]
+            listpid.append(pidtokill)
+            processtokill=""
+            for x in range(10, len(sline)):
+                processtokill+=  sline[x]+" "
+        
+            print "Kill " + str(pidtokill) + "  : " + processtokill
+        
+readps.close()
+os.system("rm logk")
+
+input = raw_input("Kill all list?")
+if input == "Y":
+    for x in listpid:
+        os.system("kill -9 " + str(x))
+        print "kill -9 " + str(x)
+
+os.system("ps ux")
