@@ -344,9 +344,9 @@ fr_update = open(local_sub_dir + '/inputlist_updated.txt', 'w')
 for line in fr:    
     if isKisti:
         if "/xrootd_user/" in line:
-            newline = line.replace("/xrootd_user/"+str(os.getenv("USER"))+"/xrootd","root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/"+str(os.getenv("USER")))
+            newline = line.replace("/xrootd_user/jalmond/xrootd","root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jalmond"
         else:
-             newline = line.replace("/xrootd/store/user/"+str(os.getenv("USER")) , "root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/"+str(os.getenv("USER")))
+            newline = line.replace("/xrootd/store/user/jalmond" , "root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jalmond"
 
         fr_update.write(newline)
     else:
