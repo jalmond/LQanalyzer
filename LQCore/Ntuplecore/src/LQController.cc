@@ -542,9 +542,9 @@ void LQController::ExecuteCycle() throw( LQError ) {
     }
 
     
-    cycle->SetVersion(VersionStamp());
+    //cycle->SetVersion(VersionStamp());
 
-    //cycle->SetCatVersion(SetNTCatVersion());
+    cycle->SetCatVersion(SetNTCatVersion());
 
     cycle->SetTargetLumi(target_luminosity);
 
