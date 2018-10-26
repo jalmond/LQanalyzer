@@ -7,8 +7,8 @@
  #                                                                         #
  ###########################################################################
 
-#all: tagcheck btag roch fakes Ntuplecore plotting selection analysis 
-all: Ntuplecore
+all: tagcheck btag roch fakes Ntuplecore plotting selection analysis 
+
 Ntuplecore::
 	(cd LQCore/Ntuplecore; make)
 	(python python/PCM.py -x LQCore/Ntuplecore/src/Ntuplecore_Dict_rdict.pcm)
