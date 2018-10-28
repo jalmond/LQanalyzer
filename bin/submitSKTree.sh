@@ -1008,8 +1008,8 @@ fi
 outputdir_mc=${outputdir_analyzer}"/"${dir_tag}
 
 
-if [[ $USER == "jalmond" ] || [ $USER == "suoh" ]];
-    then
+if [ $USER == "jalmond" ] || [ $USER == "suoh" ];
+then
     
     if [[  $job_cycle != "SKTreeMaker"* ]];
     then
