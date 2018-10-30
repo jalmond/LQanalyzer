@@ -5,7 +5,8 @@ export LQANALYZER_DATASET_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetL
 export LQANALYZER_SKTreeLOG_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
 export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
 
-elif [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
     export LQANALYZER_FILE_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/"
     export LQANALYZER_DATASETFILE_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
     export LQANALYZER_DATASET_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/DataSetLists/"

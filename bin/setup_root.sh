@@ -26,10 +26,22 @@ then
     echo " "
     cd $LQANALYZER_DIR
 
+elif [ $HOSTNAME == "cms.snu.ac.kr" ];
+then
+    echo ""
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    echo "%%%%%%    Working on 42cluster           %%%%%%%%"
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+
+
+    source /share/apps/root_v5-34-32/root/bin/thisroot.sh
+    
+    
 else
 
-    echo "Working on 42cluster"
-
+    
     export CMS_PATH=/cvmfs/cms.cern.ch
     source $CMS_PATH/cmsset_default.sh
     export SCRAM_ARCH=slc6_amd64_gcc630

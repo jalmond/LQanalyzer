@@ -47,7 +47,6 @@ if not LQANALYZER_DIR == "None" :
             CleanUpLogs("/data8/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs("/data8/DATA/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs("/data7/DATA/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
-            CleanUpLogs(os.getenv("LQANALYZER_BATCHLIB_PATH"))
         else:
             ## setup kisti clean
             CleanUpLogs(path_jobpre+"CAT_SKTreeOutput/" + getpass.getuser()+ "/")

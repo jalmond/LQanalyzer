@@ -19,10 +19,8 @@ source $LQANALYZER_DIR/bin/CheckTag.sh
 
 #### check for buggy tags                                                                                                                                                                                                                                                       
 buglist=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
-if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
 then
-    buglist=/data2/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
-else
     buglist=/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
 fi
 

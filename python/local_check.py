@@ -64,9 +64,11 @@ if not os.path.exists(tag_dir):
         os.system("rm -r " + libpath)
         os.system("mkdir  " +libpath)
     os.system("mkdir " + tag_dir)
-    if not os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")):
-        os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH"))
-
+    
+    if  "ui10.sdfarm.kr" in str(os.getenv("HOSTNAME")):
+        if not os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")):
+            os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH"))
+            
         
     if not os.path.exists("/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
         if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
