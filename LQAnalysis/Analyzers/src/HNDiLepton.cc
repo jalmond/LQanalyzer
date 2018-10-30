@@ -178,10 +178,6 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
   PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
   
-  FillHist("Z_mm", 0., 1., 0., 2, 2);
-  
-  return ;
-  
 
 
   if(k_running_nonprompt){
@@ -265,8 +261,12 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   
   /// Get collection of muons with non-prompt included for MC
   std::vector<snu::KMuon> muons_fake = GetMuons(muid,false);
-  if(muons_fake.size()==2)    FillHist("Z_mm", 0., 1., 0., 2, 2);
 
+  if(muons_fake.size()==2)    {
+    if (muons_fake[0].IsHighPt() && muons_fake[1].IsHighPt()){
+      FillHist("Z_mm", 0., 1., 0., 2, 2);
+    }
+  }
   if(SameCharge(muons_fake))FillHist("Z_ss_mm", 0., 1., 0., 2, 2);
 
   std::vector<snu::KMuon> muons_loose = GetMuons(_m_looseid,true);
