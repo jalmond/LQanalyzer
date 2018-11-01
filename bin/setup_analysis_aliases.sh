@@ -34,7 +34,8 @@ then
 
 else
     export OBJ=obj/cms2
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms2/
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21$LIBTAG/
+    export LQANALYZER_BATCHLIB_PATH=${LQANALYZER_DIR}/LQLib/batch/
 
 fi
 

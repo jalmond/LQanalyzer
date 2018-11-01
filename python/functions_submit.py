@@ -1,6 +1,34 @@
 import os 
 isKisti = ("ui" in str(os.getenv("HOSTNAME")))
 
+def   GetMonth(imonth):
+    if imonth == 1:
+        return "Jan"
+    if imonth == 2:
+        return "Feb"
+    if imonth == 3:
+        return "Mar"
+    if imonth == 4:
+        return "Apr"
+    if imonth == 5:
+        return "May"
+    if imonth == 6:
+        return "June"
+    if imonth == 7:
+        return "July"
+    if imonth == 8:
+        return "Aug"
+    if imonth == 9:
+        return "Sep"
+    if imonth == 10:
+        return "Oct"
+    if imonth == 11:
+        return "Nov"
+    if imonth == 12:
+        return "Dec"
+    else:
+        return "Dec"
+
 
 
 def InputFileName(ktag, is_signal):
@@ -360,13 +388,15 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
     if isKisti:
         return 1
 
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
         return 1000.
 
     nit=2
     if "SKTreeMaker" in defcycle:
         nit=0
     avg_time=-999.
+
+    import datetime
     checkdate = datetime.datetime.now()
     tmpday=int(checkdate.strftime("%d"))
     diff = datetime.timedelta(days=(tmpday+1))
@@ -425,12 +455,14 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
     if isKisti:
         return 1.
 
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
         return 1000.
 
 
     nit=2
     avg_time=-999.
+
+    import datetime
     checkdate = datetime.datetime.now()
     tmpday=int(checkdate.strftime("%d"))
     diff = datetime.timedelta(days=(tmpday+1))
@@ -539,8 +571,10 @@ def FreeSpaceInQueue(jobqueue, deftagger):
 
     an_jobpre="/data2/"   ####  pre-path for job output                                                                                                                                                    
 
+    if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)):
+        an_jobpre="/data7/DATA/"
 
-    path_clust_check_njobs=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
+    path_clust_check_njobs=an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
     os.system("qstat -f   > " +  path_clust_check_njobs)
     file_clust_check_njobs=open(path_clust_check_njobs ,"r")
     fastq_ninqueue=0.
@@ -601,7 +635,11 @@ def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger, rundebug):
         file_debug.write("queue ok\n")
 
 
-    path_clust_check_njobs=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
+    an_jobpre="/data2/"
+    if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)):
+        an_jobpre="/data7/DATA/"
+
+    path_clust_check_njobs=an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
     os.system("qstat -f   > " +  path_clust_check_njobs)
     file_clust_check_njobs=open(path_clust_check_njobs ,"r")
     fastq_ninqueue=0.
@@ -749,7 +787,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
 
     if rundebug:
         file_debug.write("deftagger " + deftagger + " defsample = " + defsample + " defskim = " + defskim + " defqueue = " + defqueue + "\n")
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
         return 20
 
     if ncores_job == 0:
@@ -1072,7 +1110,7 @@ def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
         newformat=NewForat(cattag)
 
         #info_file_master = path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"                                                              
-        info_file= path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
+        info_file= "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
 
         #os.system("cp " + info_file_master + " " + info_file)                                                                                                                                              
         read_info_file = open(info_file,"r")
@@ -1157,18 +1195,21 @@ def SendEmail(jobsummary, deftagger, e_subject, email_user, sendplots, plotlist)
     isKisti = ("ui" in str(os.getenv("HOSTNAME")))
 
     if isKisti:
-        an_jonpre="/cms/scratch/SNU/CATAnalyzer/"
+        an_jobpre="/cms/scratch/SNU/CATAnalyzer/"
+
+    if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)):
+        an_jobpre="/data7/DATA/"
 
 
-    path_file_email=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.sh"
+    path_file_email=an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.sh"
     file_email=open(path_file_email,"w")
     if not sendplots:
-        file_email.write('cat '+an_jonpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
+        file_email.write('cat '+an_jobpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
     else:
-        file_email.write('cat '+an_jonpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail  '+ plotstring+' -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
+        file_email.write('cat '+an_jobpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail  '+ plotstring+' -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
     file_email.close()
 
-    filejobsummary = open(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.txt","w")
+    filejobsummary = open(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.txt","w")
     for eline in jobsummary:
         filejobsummary.write(eline)
     filejobsummary.close()
@@ -1366,28 +1407,29 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
     isKisti = ("ui" in str(os.getenv("HOSTNAME")))
 
     if isKisti:
-        an_jonpre="/cms/scratch/SNU/CATAnalyzer/"
+        an_jobpre="/cms/scratch/SNU/CATAnalyzer/"
 
-
+    if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)):
+        an_jobpre="/data7/DATA/"
 
     if "SKTreeMaker" in defcycle:
         if ismc:
             if defskim == "DiLep":
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCTriLep/"+defsample+"/"
+                return an_jobpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCTriLep/"+defsample+"/"
 
             elif "FatJet" in defcycle:
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFatJet/"+defsample+"/"
+                return an_jobpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFatJet/"+defsample+"/"
 
             elif "Fake" in defcycle:
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFake/"+defsample+"/"
+                return an_jobpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFake/"+defsample+"/"
 
             elif defskim == "Lepton":
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
+                return an_jobpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
             else:
                 if defcycle == "SKTreeMakerNoCut":
-                    return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCNoCut/"+defsample+"/"
+                    return an_jobpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCNoCut/"+defsample+"/"
                 else:
-                    return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+defsample+"/"
+                    return an_jobpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+defsample+"/"
 
     return outsamplename
 
@@ -1553,11 +1595,14 @@ def GetRunning(tagger, rsample):
     isKisti = ("ui" in str(os.getenv("HOSTNAME")))
 
     if isKisti:
-        an_jonpre="/cms/scratch/SNU/CATAnalyzer/"
+        an_jobpre="/cms/scratch/SNU/CATAnalyzer/"
 
+
+    if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)):
+        an_jobpre="/data7/DATA/"
 
     while jobid_exists:
-        path_job_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "jobid.txt"
+        path_job_check=an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "jobid.txt"
         if  os.path.exists(path_job_check):
             jobid_exists=False
 
@@ -1571,7 +1616,7 @@ def GetRunning(tagger, rsample):
     nqueue=0.
     njobs_in_total=0.  ### should equal three above                                                                                                                                                        \
                                                                                                                                                                                                             
-    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
+    path_clust_check=an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
 
     if not isKisti:
         os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
@@ -1612,7 +1657,7 @@ def GetRunning(tagger, rsample):
         if not job_inqueue:
             njobs_finished=njobs_finished+1.
         file_clust_check.close()
-    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
+    path_clust_check=an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
     os.system("rm " + path_clust_check)
 
     if njobs_in_total == 0:

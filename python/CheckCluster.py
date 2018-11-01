@@ -1,11 +1,11 @@
 import os,sys,getpass
 
-path_jobpre="/data2/"
+path_jobpre="/data1/"
 
 isKisti = ("ui" in str(os.getenv("HOSTNAME")))
 
 if not isKisti:
-    path_jobpre="/data2/"
+    path_jobpre="/data1/"
 else:
     path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
 

@@ -174,7 +174,6 @@ if not cycle == "SKTreeMaker":
 
 
 output_mounted="/data2"
-sktreeoutput="/xrootd/store/user/jalmond/"
 
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     output_mounted="/data4"
@@ -422,15 +421,18 @@ while inDS == "":
             sys.exit()
 
 
-if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    inDS=inDS.replace("/data2/","/data4")
-    inDS = "/data7/DATA/"+inDS
+if not "ui" in str(os.getenv("HOSTNAME")):
+    if mc:
+        inDS = "/data2/DATA/" + inDS
+    else:
+        inDS = "/data7/DATA/"+inDS
 else:
     inDS = "/xrootd/store/user/jalmond/"+inDS
 
 InputDir = inDS
 
 listOfFile = os.listdir(inDS)
+
 InputDirList =[]
 
 for entry in listOfFile:

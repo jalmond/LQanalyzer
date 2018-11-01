@@ -44,7 +44,7 @@ class AnalyzerCore : public LQCycleBase {
 
   // SetUpEvent CORE function: accesses event in ntuple
   void SetUpEvent(Long64_t entry, float ev_weight) throw( LQError );
-  void EndEvent()throw( LQError );
+  void EndEvent() throw( LQError );
   void WriteHistograms()throw( LQError );
 
 

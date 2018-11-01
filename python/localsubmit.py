@@ -523,6 +523,8 @@ for line in fr:
     if nfiles < files_torun:
         if nfiles == 0 :
 
+            
+            
             countstr=''
             if count < 10:
                 countstr = '00'+str(count)
@@ -530,6 +532,9 @@ for line in fr:
                 countstr = '0'+str(count)
             else:
                 countstr = str(count)
+
+            if not isKisti:
+                countstr=str(count)
 
             runscript = output+ "Job_" + str(count) + "/runJob_" + countstr + ".C"
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
@@ -540,7 +545,11 @@ for line in fr:
 
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,runtau, skflag,tagger,useskim, countstr)) #job, input, sample, ver, output
+            if isKisti:
+                configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,runtau, skflag,tagger,useskim, countstr)) #job, input, sample, ver, output
+            else:
+                configfile.write(makeConfigFileSNU(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,runtau, skflag,tagger,useskim, countstr)) #job, input, sample, ver, output
+
             configfile.close()
             if DEBUG == "True":
                 print "Making file : " + printedrunscript
@@ -568,7 +577,10 @@ for line in fr:
                     countstr = '0'+str(count)
                 else:
                     countstr = str(count)
-           
+
+                if not isKisti:
+                    countstr=str(count)
+
                 if  isKisti:
                     runscript = output+ "Job_000/runJob_" + countstr + ".C"
                     filelist = output+ "Job_000/" + sample + "_%s" % (count) + ".txt"
@@ -578,7 +590,11 @@ for line in fr:
 
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf,runtau, skflag,tagger,useskim,countstr))
+                if isKisti:
+                    configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf,runtau, skflag,tagger,useskim,countstr))
+                else:
+                    configfile.write(makeConfigFileSNU(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,runtau, skflag,tagger,useskim, countstr)) #job, input, sample, ver, output                              
+
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -738,10 +754,13 @@ for i in range(0,number_of_batch_jobs):
             if  isKisti:
                 runcommand = "condor_submit " + kisti_batchscript + "&>" + log   
             else:
-                runcommand = "qsub -V " + queue_command +" "+ batchscript   + "&>" + log 
+                runcommand = "qsub -V " + batchscript   + "&>" + log 
         else:
             if  isKisti:
                 runcommand = "condor_submit " + kisti_batchscript + "&>" + log
+            else:
+                runcommand = "qsub -V  " + queue_command +" " + batchscript   + "&>" + log
+
 
     jobID=0
     first_jobid=0

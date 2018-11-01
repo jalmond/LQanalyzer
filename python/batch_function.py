@@ -134,9 +134,9 @@ def CheckRunningSNUBatch(filename, array_batchjobs, output):
     check_cluster="_"
 
     running = 0
-    #sys.stdout.write('\r TEST: running on  tamsa ibatch machine....')
-    os.system("condor_q "+ str(os.getenv("USER")) +" > " + filename)
-    #sys.stdout.write('\r TEST: log sent to ' + filename)
+    
+    os.system("qstat -u '*' > " +  filename)
+
     
     for line in open(filename, 'r'):
         for job_id in array_batchjobs:

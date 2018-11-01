@@ -717,6 +717,7 @@ function runlist
 {
     
     prefix_sample="/data2/DATA/"
+
     if [ $HOSTNAME == "ui10.sdfarm.kr" ];
         then
         prefix_sample="/xrootd/store/user/jalmond/"
@@ -2198,10 +2199,7 @@ if [[ $MakeFullLists == "true" ]];
 	    then	
 	    
 	    checkline=$SKTREE_MC${iclist}"/SKTrees/MC/"
-	    if [[ ${iclist} == *"v7-4-4"* ]];
-                then
-                checkline=$SKTREE_MC${iclist}"/SKTrees/Sep15/MC/"
-            fi
+
 
             if [[ $line == *$checkline* ]];
 		then
@@ -2213,6 +2211,7 @@ if [[ $MakeFullLists == "true" ]];
 		    then
 		    sline=${sline:2}
 		fi
+		
 		
 		isDuplicate=false
 		for il in  ${FULLLISTOFSAMPLESLEPTON[@]};
@@ -2275,132 +2274,7 @@ if [[ $MakeFullLists == "true" ]];
 		fi
 	    fi
 	fi    
-        if [[ $job_skim == "SKTree_HNDiLepSkim" ]];
-            then
-            checkline=$SKTREE_MC${iclist}"/SKTrees/MCHNDiLep"
-            if [[ ${iclist} == *"v7-4-4"* ]];
-                then
-                checkline=$SKTREE_MC${iclist}"/SKTrees/Sep15/MCDiLep"
-            fi
-
-
-            if [[ $line == *$checkline* ]];
-                then
-                sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
-
-                prefix="SK"
-                suffixhn="_hndilep"
-                if [[ $sline == *${prefix}* ]];
-                    then
-                    sline=${sline:2}
-                fi
-                if [[ $sline == *${suffixhn}* ]];
-                    then
-                    sline=${sline%$suffixhn}
-                fi
-
-                isDuplicate=false
-                for il in  ${FULLLISTOFSAMPLESHNDILEP[@]};
-                do
-                  if [[ $sline == $il ]];
-                      then
-                      isDuplicate=true
-                  fi
-                done
-                if [[ $isDuplicate == "false" ]];
-                    then
-                    if [[ -d "${sline2}" ]]; then
-                        if test "$(ls -A "$sline2")"; then
-                            FULLLISTOFSAMPLESHNDILEP+=(${sline})
-                        fi
-                    fi
-                fi
-            fi
-        fi
 	
-	if [[ $job_skim == "SKTree_HNFakeSkim" ]];
-        then
-            checkline=$SKTREE_MC${iclist}"/SKTrees/MCHNFake/"
-
-
-
-            if [[ $line == *$checkline* ]];
-                then
-                sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
-
-                prefix="SK"
-                suffixhnfake="_hnfake"
-                if [[ $sline == *${prefix}* ]];
-                    then
-                    sline=${sline:2}
-                fi
-                if [[ $sline == *${suffixhnfake}* ]];
-                    then
-                    sline=${sline%$suffixhnfake}
-                fi
-
-                isDuplicate=false
-                for il in  ${FULLLISTOFSAMPLESHNFAKE[@]};
-                do
-                  if [[ $sline == $il ]];
-                      then
-                      isDuplicate=true
-                  fi
-                done
-                if [[ $isDuplicate == "false" ]];
-                    then
-                    if [[ -d "${sline2}" ]]; then
-                        if test "$(ls -A "$sline2")"; then
-                            FULLLISTOFSAMPLESHNFAKE+=(${sline})
-                        fi
-                    fi
-                fi
-            fi
-        fi
-
-        if [[ $job_skim == "SKTree_HNFatJetSkim" ]];
-        then
-            checkline=$SKTREE_MC${iclist}"/SKTrees/MCHNFatJet/"
-
-
-
-            if [[ $line == *$checkline* ]];
-                then
-                sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
-
-                prefix="SK"
-                suffixhnfatjet="_hnfatjet"
-                if [[ $sline == *${prefix}* ]];
-                    then
-                    sline=${sline:2}
-                fi
-                if [[ $sline == *${suffixhnfatjet}* ]];
-                    then
-                    sline=${sline%$suffixhnfatjet}
-                fi
-
-                isDuplicate=false
-                for il in  ${FULLLISTOFSAMPLESHNFATJET[@]};
-                do
-                  if [[ $sline == $il ]];
-                      then
-                      isDuplicate=true
-                  fi
-                done
-                if [[ $isDuplicate == "false" ]];
-                    then
-                    if [[ -d "${sline2}" ]]; then
-                        if test "$(ls -A "$sline2")"; then
-                            FULLLISTOFSAMPLESHNFATJET+=(${sline})
-                        fi
-                    fi
-                fi
-            fi
-        fi
-
 	if [[ $job_skim == "SKTree_TriLepSkim" ]];
 	    then
 	    checkline=$SKTREE_MC${iclist}"/SKTrees/MCTriLep"
@@ -2444,49 +2318,6 @@ if [[ $MakeFullLists == "true" ]];
 		fi
 	    fi
 	fi
-	if [[ $job_skim == "SKTree_SSLepSkim" ]];
-        then
-            checkline=$SKTREE_MC${iclist}"/SKTrees/MCSS"
-            if [[ ${iclist} == *"v7-4-4"* ]];
-                then
-                checkline=$SKTREE_MC${iclist}"/SKTrees/Sep15/MCSS"
-            fi
-
-
-            if [[ $line == *$checkline* ]];
-                then
-                sline=$(echo $line | head -n1 | awk '{print $1}')
-                sline2=$prefix_sample$(echo $line | head -n1 | awk '{print $6}')
-
-                prefix="SK"
-                suffix="_SSlep"
-                if [[ $sline == *${prefix}* ]];
-                    then
-                    sline=${sline:2}
-                fi
-                if [[ $sline == *${suffix}* ]];
-                    then
-                    sline=${sline%$suffix}
-                fi
-
-                isDuplicate=false
-                for il in  ${FULLLISTOFSAMPLESSS[@]};
-                  do
-                  if [[ $sline == $il ]];
-                          then
-                      isDuplicate=true
-                  fi
-                done
-                if [[ $isDuplicate == "false" ]];
-                    then
-                    if [[ -d "${sline2}" ]]; then
-                        if test "$(ls -A "$sline2")"; then
-                            FULLLISTOFSAMPLESSS+=(${sline})
-                        fi
-                    fi
-                fi
-            fi
-        fi
 
       done < ${TXTPATH}"CAT_mc_"${iclist}".txt"
     done
