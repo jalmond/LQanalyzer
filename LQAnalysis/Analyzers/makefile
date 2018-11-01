@@ -9,11 +9,9 @@ INCDIR  = include
 # Include the generic compilation rules
 include $(LQANALYZER_DIR)/Makefile.common
 
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/SKTree/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Ntuplecore/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Selection/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Plotting/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
 INCLUDES += -I${BTAGDIR}
 INCLUDES += -I$(LQANALYZER_DIR)/LQAnalysis/AnalyzerTools/
 INCLUDES += -I$(LQANALYZER_DIR)/LQAnalysis/AnalyzerTools/include/

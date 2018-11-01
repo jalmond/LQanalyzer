@@ -17,7 +17,7 @@
 using namespace std;
 
 Reweight::Reweight(TString filename){
-  
+
   std::cout << "Initialising Reweight class " << std::endl;
 
   TDirectory* origDir = gDirectory;
@@ -31,36 +31,17 @@ Reweight::Reweight(TString filename){
   tempDir->cd();
   
   h_Data_ = 0;
-  h_Data_0j = 0;
-  h_Data_1j = 0;
   
   h_Data_ = dynamic_cast<TH1D*>((fileData_->Get("Nvtx_nocut_data"))->Clone());;
-  h_Data_0j = dynamic_cast<TH1D*>((fileData_->Get("Nvtx_0j_nocut_data"))->Clone());;
-  h_Data_1j = dynamic_cast<TH1D*>((fileData_->Get("Nvtx_1j_nocut_data"))->Clone());;
-  
 
 
   h_MCmod_ = (TH1D*)fileMC_->Get("Nvtx_nocut_mc");
-  h_MCmod_0j = (TH1D*)fileMC_->Get("Nvtx_0j_nocut_mc");
-  h_MCmod_1j = (TH1D*)fileMC_->Get("Nvtx_1j_nocut_mc");
 
   double int_MC_ = h_MCmod_->Integral();
   double int_Data_ = h_Data_->Integral();
 
   h_Data_->Divide(h_MCmod_);
   h_Data_->Scale(int_MC_ / int_Data_);
-
-  double int_MC_0j = h_MCmod_0j->Integral();
-  double int_Data_0j = h_Data_0j->Integral();
-
-  h_Data_0j->Divide(h_MCmod_0j);
-  h_Data_0j->Scale(int_MC_0j / int_Data_0j);
-
-  double int_MC_1j = h_MCmod_1j->Integral();
-  double int_Data_1j = h_Data_1j->Integral();
-
-  h_Data_1j->Divide(h_MCmod_1j);
-  h_Data_1j->Scale(int_MC_1j / int_Data_1j);
 
   
   fileData_->Close();
@@ -72,7 +53,48 @@ Reweight::Reweight(TString filename){
   origDir->cd();
   
 
+}
 
+
+Reweight::Reweight(std::vector< float > MC_distr, 
+		   std::vector< float > Lumi_distr){
+  
+  std::cout << "Initialising Reweight class " << std::endl;
+
+  Int_t NBins = MC_distr.size();
+  
+  TDirectory* origDir = gDirectory;
+  
+  TDirectory* tempDir = getTemporaryDirectory();
+  tempDir->cd();
+  
+  MC_distr_ = new TH1F("MC_distr","MC dist",NBins,0.0, float(NBins)) ;
+  Data_distr_ = new TH1F("Data_distr","Data dist",NBins, 0.0, float(NBins)) ;
+  weights_ =   new TH1F("luminumer","luminumer",NBins,0.0, float(NBins)) ;
+  TH1* den = new TH1F("lumidenom","lumidenom",NBins,0.0, float(NBins)) ;
+  for(int ibin = 1; ibin<NBins+1; ++ibin ) {
+    weights_->SetBinContent(ibin, Lumi_distr[ibin-1]);
+    Data_distr_->SetBinContent(ibin, Lumi_distr[ibin-1]);
+    den->SetBinContent(ibin,MC_distr[ibin-1]);
+    MC_distr_->SetBinContent(ibin,MC_distr[ibin-1]);
+  }
+  float deltaH = weights_->Integral();
+  if(fabs(1.0 - deltaH) > 0.02 ) { //*OOPS*...
+    weights_->Scale( 1.0/ weights_->Integral() );
+    Data_distr_->Scale( 1.0/ Data_distr_->Integral() );
+  }
+  
+  float deltaMC = den->Integral();
+  if(fabs(1.0 - deltaMC) > 0.02 ) {
+    den->Scale(1.0/ den->Integral());
+    MC_distr_->Scale(1.0/ MC_distr_->Integral());
+  }
+  
+  weights_->Divide( den );  // so now the average weight should be 1.0    
+  
+  
+  
+  origDir->cd();
 }
 
 Reweight::~Reweight(){
@@ -82,13 +104,16 @@ Reweight::~Reweight(){
 }
 
 
-double Reweight::GetWeight(Int_t nvtx, TString version, int njet){
-
-  if (njet < 0)   return h_Data_->GetBinContent( h_Data_->FindBin(nvtx)  );
-  else if(njet ==0)   return h_Data_0j->GetBinContent( h_Data_0j->FindBin(nvtx)  );
-  else return h_Data_1j->GetBinContent( h_Data_1j->FindBin(nvtx)  );
-
+double Reweight::GetUserWeight(Int_t nvtx){
   return h_Data_->GetBinContent( h_Data_->FindBin(nvtx)  );
+
+
+}
+
+double Reweight::GetWeight(Int_t nvtx){
+
+  int bin = weights_->GetXaxis()->FindBin( nvtx );
+  return weights_->GetBinContent( bin );
   
 }
 

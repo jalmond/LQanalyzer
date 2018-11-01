@@ -20,7 +20,7 @@ using namespace std;
 
 #include <map>
 
-#include "SampleMap.C"
+#include "SampleMap_kisti.C"
 
 float GetEventsProcessed(std::string file);
 float GetEventsPassed(std::string file);
@@ -46,8 +46,8 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
   bool NewList(true);
   if (path_of_list.Contains(string(getenv("LQANALYZER_DATASET_DIR")) +"/ca")) NewList=false;
 
-  if (NewList) cout << "New list " << endl;
-  else cout <<"Not new list" << endl;
+  if (NewList) cout << "Not a new list " << endl;
+  else cout <<"New list" << endl;
 
   if(CheckMaps(path_of_list)) return;
   TString def_version = TString(getenv("CATVERSION"));
@@ -235,7 +235,7 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
 		
 		system("root -l -b -q \'CountGenWeights.C(\"/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first+ "\",\""+filelist.at(i)+"\",\""+ "hist" + TString(istr) +".root\")\'");
 	      }
-	      sleep(5);
+	      sleep(15);
 	      nsubmits++;
 	      break;
 	  }
@@ -320,6 +320,10 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
     lumi_file << "#######################" << endl;
     lumi_file << "" << endl;
     lumi_file << "" << endl;
+    lumi_file << "kisti_cat /xrootd/store/user/jalmond/" << endl;
+    lumi_file << "tamsa_cat /data7/DATA/" << endl;
+  
+
     lumi_file << "#######################################################################################################################################" << endl;
     lumi_file << "# sample     Nevents  Sum(GenWeights)  xsec*Eff   Effective lumi    LocalPath #####################################################################################" << endl;
     lumi_file << "#######################################################################################################################################" << endl;
@@ -331,9 +335,7 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
       std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);    
       std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);    
       std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);    
-      if(!cluster)lumi_file <<  mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << "  /xrootd_user/jalmond/xrootd/cattoflat/MC/" << version <<"/"  << mit->first << "/" <<endl;
-      else lumi_file <<  mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << "  /data4/DATA/FlatCatuples/MC/" << version <<"/"  << mit->first << "/" <<endl;
-      
+      lumi_file <<  mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << "  cattoflat/MC/" << version <<"/"  << mit->first << "/" <<endl;      
     }
     
     lumi_file << "" << endl;
@@ -344,72 +346,10 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
       std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
       std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
       std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-      if(cluster)lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data4/LocalNtuples/SKTrees13TeV/" + string(version.Data()) +"/SKTrees/MC/" << mit2->second << "/" <<endl;
-      else lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MC/" << mit2->second << "/" <<endl;
+     lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " CatNtuples/" + string(version.Data()) +"/SKTrees/MC/" << mit2->second << "/" <<endl;
       
     }
-    
-    
-    lumi_file << "" << endl;
-    lumi_file << "" << endl;
-    lumi_file << "#### Dilepton_skims:_SKTrees" << endl;
-    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
-      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-      
-      lumi_file <<  "SK" << mit2->second << "_dilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MCDiLep/" <<  mit2->second << "/" <<endl;
-    }
-    lumi_file << "" << endl;
-    lumi_file << "" << endl;
-    lumi_file << "#### HNDilepton_skims:_SKTrees" << endl;
-    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
-      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
 
-      lumi_file <<  "SK" << mit2->second << "_hndilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MCDiLep/" <<  mit2->second << "/" <<endl;
-    }
-    
-    lumi_file << "" << endl;
-    lumi_file << "#### HNFake_skims:_SKTrees" << endl;
-
-    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
-      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-      
-      lumi_file <<  "SK" << mit2->second << "_hnfake  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MCHNFake/" <<  mit2->second << "/" <<endl;
-    }
-
-
-    lumi_file << "" << endl;
-    lumi_file << "" << endl;
-    lumi_file << "#### Trilepton_skims:_SKTrees" << endl;
-    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
-      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-      std::map<TString, TString>::iterator check_trilep= trilepmap.find(mit->first);
-      //if(check_trilep != trilepmap.end())
-     lumi_file <<  "SK" << mit2->second << "_trilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MCTriLep/" <<  mit2->second << "/" <<endl;
-    }
-    
-    
-    lumi_file << "" << endl;
-    lumi_file << "#### NoCut skims: SKTrees" << endl;
-    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
-      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-      lumi_file <<  "SK" << mit2->second << "_nocut  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MCNoCut/" <<  mit2->second << "/" <<endl;
-    }
-    
     lumi_file << "" << endl;
     lumi_file << "##################################################################" << endl;
     lumi_file << "#### Missing/Not produced samples in this version are listed below " << endl;

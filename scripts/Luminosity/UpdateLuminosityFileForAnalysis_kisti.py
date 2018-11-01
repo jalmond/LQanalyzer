@@ -246,7 +246,7 @@ def CheckFileFormat(filepath):
     for line in file_fulllist:
         if not "END" in line:
             splitline = line.split()
-            if not len(splitline) == 4:
+            if not len(splitline) == 5:
                 print "Error reading file " + filepath + " too many parts of line :"
                 print line
                 sys.exit()
@@ -514,8 +514,8 @@ if os.path.exists(path_full_sample_list):
             os.system("chmod 777 " + newsamplelist)
             os.system("rm " + newsamplelist)   
         
-        print "Running runInputListMaker.sh: Note this may take several minutes..."    
-        os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
+        print "Running runInputListMaker_kisti.sh: Note this may take several minutes..."    
+        os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker_kisti.sh")
         ##### now check file has no duplicates
         CheckForDuplicates(1)
         CheckForDuplicates(2)
@@ -539,12 +539,12 @@ if os.path.exists(path_full_sample_list):
             file_userlist.write(addstring)
             file_userlist.close()
 
-            os.system("python UpdateSIGFormat.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")             
+            os.system("python UpdateSIGFormat_kisti.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")             
                         
             os.system("mv " +  os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh")
 
         else:
-            os.system("python UpdateSIGFormat.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")
+            os.system("python UpdateSIGFormat_kisti.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")
                         
 
 
@@ -595,32 +595,28 @@ else:
     if not os.path.exists(lqdir+"/scripts/Luminosity/log"):
         os.system("mkdir "+ lqdir+"/scripts/Luminosity/log")
  
-    print "source " + lqdir+"/scripts/Luminosity/runGetEffLumi_kisti.sh " + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt"
+    print "source " + lqdir+"/scripts/Luminosity/runGetEffLumiKisti.sh " + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt"
     
     #### runGetEffLumi.sh creates dataset input list for analysis
     ### This takes the list of datasets created above
     ### It collects samples at SNU and counts events to calculate effective luminosity of each sample
-    os.system("source " + lqdir+"/scripts/Luminosity/runGetEffLumi_kisti.sh " + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt")
+    os.system("source " + lqdir+"/scripts/Luminosity/runGetEffLumiKisti.sh " + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt")
 
     print "Finished GetEff"
     if os.path.exists(lqdir+"/scripts/Luminosity/log"):
         os.system("rm -r "+lqdir+"/scripts/Luminosity/log")
 
-    print "Running scripts/runInputListMaker.sh"
+    print "Running scripts/runInputListMaker_kisti.sh"
     if os.path.exists(lqdir+"/scripts/Luminosity/inputlist_efflumi.txt"):
         os.system("rm " + lqdir+"/scripts/Luminosity/inputlist_efflumi.txt")
     
-    os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
+    os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker_kisti.sh")
 
     os.system("cp " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_v8-0-X.txt " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt")
     os.system("cp " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_v8-0-X.txt " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")
     os.system("python UpdateSIGFormat.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")        
 
     
-    os.system('bash ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
-    os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
-    os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerTriLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
-
     EmailNewList(catversion)    
 
 

@@ -1535,7 +1535,7 @@ double MCDataCorrections::ElectronRecoScaleFactor(vector<snu::KElectron> el, int
 float MCDataCorrections::UserPileupWeight(snu::KEvent ev, int nj){
   
   if(corr_isdata) return 1.;
-  return reweightPU->GetWeight(ev.nVertices(),TString(getenv("CATVERSION")), nj);
+  return reweightPU->GetUserWeight(ev.nVertices());
 }
 
 
