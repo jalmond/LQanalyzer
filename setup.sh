@@ -85,7 +85,14 @@ python ${LQANALYZER_DIR}/python/BackUpDirectory.py
 python ${LQANALYZER_DIR}/python/SetupEmailList.py
 
 # CHeck onroot area and other paths
- 
+if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+then
+    cp ${LQANALYZER_DIR}/bin/Make/Makefile Makefile
+else
+    cp ${LQANALYZER_DIR}/bin/Make/Makefile_root5 Makefile
+
+fi 
+
 
 if [ -z ${ROOTSYS} ] ; then
     echo "Warning: ROOT environment doesn't seem to be configured!"

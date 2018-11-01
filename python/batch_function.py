@@ -257,7 +257,7 @@ def CheckPercentComplete(isKisti,number_of_cores,output,outsamplename, array_bat
             nevent_processed+=nevent_processed_i                
             nevents_total+=nevents_total_i
     results_complete.append(nevent_processed)
-    results_complete.append(nevent_total)
+    results_complete.append(nevents_total)
     return results_complete
 
 

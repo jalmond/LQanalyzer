@@ -864,7 +864,7 @@ doMerge=False
 print "Checking Job status:"
 
 if singlejob:    
-    check_outfile = outputdir + outsamplename +  "_1.root"
+    check_outfile = outputdir + outsamplename +  "_0.root"
     if (os.path.exists(check_outfile)):
         JobSuccess=True;
 else:        
@@ -914,7 +914,7 @@ while not JobSuccess:
     if not running == 1:
 
         ###  if running = False, then jobs should be finished and output files should exist
-        check_outfile = outputdir + outsamplename +  "_1.root"
+        check_outfile = outputdir + outsamplename +  "_0.root"
         sys.stdout.write('\r check_outfile = ' + check_outfile + '\n')
 
 
@@ -1134,8 +1134,13 @@ while not JobSuccess:
 if not JobOutput:
 
     if not running_batch:
-        failed_macro = GetFailedMacroName(isKisti, output, 0)
-        failed_log   = GetFailedLogName(isKisti, outsamplename, 1, array_batchjob)
+        if isKisti:
+            failed_macro = output+ "Job_0/runJob_0.C"
+            failed_log   = outsamplename+ "_Job_" + str(0)+".log"
+        else:
+            failed_macro = output+ "Job_0/runJob_0.C"
+            failed_log   = outsamplename+ "_Job_" + str(0)+".log"
+
         
    
     print ""
@@ -1214,7 +1219,7 @@ else:
             outfile = cycle + "_" + outsamplename + ".root"
         if number_of_cores == 1 and setnumber_of_cores:
             if not isKisti:
-                os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
+                os.system("mv " + outputdir + outsamplename + "_0.root " + Finaloutputdir + outfile )
             else:
                 os.system("mv " + outputdir + outsamplename + "_0.root " + Finaloutputdir + outfile )
             os.system("ls -lh " + Finaloutputdir +   outfile + " > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
@@ -1229,8 +1234,8 @@ else:
             os.system("rm " + Finaloutputdir + "/*.root")
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
             os.system("chmod -R 777 " + Finaloutputdir )
-            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
-            f = ROOT.TFile(Finaloutputdir +  outsamplename + "_1.root")
+            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_0.root > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
+            f = ROOT.TFile(Finaloutputdir +  outsamplename + "_0.root")
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
             t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
             memoryusage_v=(t.GetBinContent(8)/ number_of_cores)
@@ -1257,7 +1262,7 @@ else:
             print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + outsamplename + ".root -->" + Finaloutputdir
         else:
             if number_of_cores == 1:
-                print "All sampless finished: OutFiles "+ outsamplename + "_1.root -->" + Finaloutputdir + outfile
+                print "All sampless finished: OutFiles "+ outsamplename + "_0.root -->" + Finaloutputdir + outfile
             else:
                 print "All sampless finished: OutFiles "+ outsamplename + "*.root -->" + Finaloutputdir
             

@@ -24,7 +24,7 @@ Reweight::Reweight(TString filename){
   
   fileData_ = TFile::Open(filename, "READ");
   
-  fileMC_   = new TFile("/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Pileup/MCPileUp2016Moriond.root", "READ");
+  fileMC_   = new TFile("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Pileup/MCPileUp2016Moriond.root", "READ");
 
   
   TDirectory* tempDir = getTemporaryDirectory();
