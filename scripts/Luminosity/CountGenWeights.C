@@ -6,7 +6,7 @@ void CountGenWeights(std::string outdir,std::string filename, std::string  histf
 
   TFile* file = TFile::Open(filename.c_str());
 
-  TDirectory * dir = (TDirectory*)file->Get(TString(filename) + ":/ntuple");
+  TDirectory * dir = (TDirectory*)file->Get("ntuple");
   TTree * tree;
   dir->GetObject("event",tree);
 

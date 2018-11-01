@@ -3,6 +3,11 @@
 
 #include <stdlib.h>
 #include <iostream>
+#include  <numeric>
+
+/// local includes                                                                                                                                                                                          
+#include "Reweight.h"
+
 
 using namespace snu;
 using namespace std;
@@ -11,10 +16,45 @@ using namespace std;
 SKTreeFiller::SKTreeFiller() :Data() {
   
   TString fitParametersFile = "";
+
+
+  std::vector<double> pileupMC = GetWeights("2016_25ns_Moriond17MC") ;
+  std::vector<double> pileupRD = GetWeights("Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON");
+  std::vector<double> pileupUp = GetWeights("Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON_Up");
+  std::vector<double> pileupDn = GetWeights("Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON_Dn"); 
+
+  std::vector<float> pileupMCTmp;
+  std::vector<float> pileupRDTmp;
+  std::vector<float> pileupUpTmp, pileupDnTmp;
+
+
+  const double sumWMC = std::accumulate(pileupMC.begin(), pileupMC.end(), 0.);
+  const double sumWRD = std::accumulate(pileupRD.begin(), pileupRD.end(), 0.);
+  const double sumWUp = std::accumulate(pileupUp.begin(), pileupUp.end(), 0.);
+  const double sumWDn = std::accumulate(pileupDn.begin(), pileupDn.end(), 0.);
+
+
+  for ( int i=0, n=min(pileupMC.size(), pileupRD.size()); i<n; ++i )
+    {
+      pileupMCTmp.push_back(pileupMC[i]/sumWMC);
+      pileupRDTmp.push_back(pileupRD[i]/sumWRD);
+      pileupUpTmp.push_back(pileupUp[i]/sumWUp);
+      pileupDnTmp.push_back(pileupDn[i]/sumWDn);
+    }
+  
+  
+  reweightPU = new Reweight(pileupMCTmp, pileupRDTmp);
+  reweightPU_up = new Reweight(pileupMCTmp, pileupUpTmp);
+  reweightPU_down = new Reweight(pileupMCTmp, pileupDnTmp);
+  
 };
 
 
-SKTreeFiller::~SKTreeFiller() {};
+SKTreeFiller::~SKTreeFiller() {
+  delete reweightPU;
+  delete reweightPU_up;
+  delete reweightPU_down;
+};
 
 
 bool SKTreeFiller::SkipTrigger(TString tname){
@@ -23,6 +63,8 @@ bool SKTreeFiller::SkipTrigger(TString tname){
   
   return false;
 }
+
+
 
 
 snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
@@ -334,7 +376,11 @@ m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
     kevent.SetAltPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
     
     kevent.SetPeriodPileupWeight(double(puWeightGoldB),double(puWeightGoldC),double(puWeightGoldD),double(puWeightGoldE),double(puWeightGoldF),double(puWeightGoldG),double(puWeightGoldH));
+    
+    double pu_weight = reweightPU->GetWeight(nTrueInteraction);
+    m_logger << INFO << "pu_weight  = " << pu_weight << " " <<   double(puWeightGold) << LQLogger::endmsg;                                                                                                                            
   }
+  
   if(isData){
     kevent.SetLumiMask(snu::KEvent::silver, 1);
     kevent.SetLumiMask(snu::KEvent::gold,   1);
@@ -1795,4 +1841,326 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
   }
   
   return vtruth;
+}
+
+
+std::vector<double>  SKTreeFiller::GetWeights(TString tag){
+  
+  std::vector<double> weights_pileup;
+
+  if(tag=="2016_25ns_Moriond17MC"){
+
+    // from SimGeneral/MixingModule/python/mix_2016_25ns_Moriond17MC_PoissonOOTPU_cfi.py
+    
+    weights_pileup.push_back(1.78653e-05);
+    weights_pileup.push_back(2.56602e-05);
+    weights_pileup.push_back(5.27857e-05);
+    weights_pileup.push_back(8.88954e-05);
+    weights_pileup.push_back(0.000109362);
+    weights_pileup.push_back(0.000140973);
+    weights_pileup.push_back(0.000240998);
+    weights_pileup.push_back(0.00071209 );
+    weights_pileup.push_back(0.00130121 );
+    weights_pileup.push_back(0.00245255 );
+    weights_pileup.push_back(0.00502589 );
+    weights_pileup.push_back(0.00919534 );
+    weights_pileup.push_back(0.0146697  );
+    weights_pileup.push_back(0.0204126  );
+    weights_pileup.push_back(0.0267586  );
+    weights_pileup.push_back(0.0337697  );
+    weights_pileup.push_back(0.0401478  );
+    weights_pileup.push_back(0.0450159  );
+    weights_pileup.push_back(0.0490577  );
+    weights_pileup.push_back(0.0524855  );
+    weights_pileup.push_back(0.0548159  );
+    weights_pileup.push_back(0.0559937  );
+    weights_pileup.push_back(0.0554468  );
+    weights_pileup.push_back(0.0537687  );
+    weights_pileup.push_back(0.0512055  );
+    weights_pileup.push_back(0.0476713 );
+    weights_pileup.push_back(0.0435312 );
+    weights_pileup.push_back(0.0393107  );
+    weights_pileup.push_back(0.0349812  );
+    weights_pileup.push_back(0.0307413  );
+    weights_pileup.push_back(0.0272425  );
+    weights_pileup.push_back(0.0237115  );
+    weights_pileup.push_back(0.0208329  );
+    weights_pileup.push_back(0.0182459  );
+    weights_pileup.push_back(0.0160712  );
+    weights_pileup.push_back(0.0142498 );
+    weights_pileup.push_back(0.012804   );
+    weights_pileup.push_back(0.011571   );
+    weights_pileup.push_back(0.010547   );
+    weights_pileup.push_back(0.00959489 );
+    weights_pileup.push_back(0.00891718 );
+    weights_pileup.push_back(0.00829292 );
+    weights_pileup.push_back(0.0076195  );
+    weights_pileup.push_back(0.0069806  );
+    weights_pileup.push_back(0.0062025  );
+    weights_pileup.push_back(0.00546581 );
+    weights_pileup.push_back(0.00484127 );
+    weights_pileup.push_back(0.00407168 );
+    weights_pileup.push_back(0.00337681 );
+    weights_pileup.push_back(0.00269893 );
+    weights_pileup.push_back(0.00212473 );
+    weights_pileup.push_back(0.00160208 );
+    weights_pileup.push_back(0.00117884 );
+    weights_pileup.push_back(0.000859662);
+    weights_pileup.push_back(0.000569085);
+    weights_pileup.push_back(0.000365431);
+    weights_pileup.push_back(0.000243565);
+    weights_pileup.push_back(0.00015688 );
+    weights_pileup.push_back(9.88128e-05);
+    weights_pileup.push_back(6.53783e-05);
+    weights_pileup.push_back(3.73924e-05);
+    weights_pileup.push_back(2.61382e-05);
+    weights_pileup.push_back(2.0307e-05 );
+    weights_pileup.push_back(1.73032e-05);
+    weights_pileup.push_back(1.435e-05  );
+    weights_pileup.push_back( 1.36486e-05);
+    weights_pileup.push_back(1.35555e-05);
+    weights_pileup.push_back(1.37491e-05);
+    weights_pileup.push_back(1.34255e-05);
+    weights_pileup.push_back(1.33987e-05);
+    weights_pileup.push_back(1.34061e-05);
+    weights_pileup.push_back(1.34211e-05);
+    weights_pileup.push_back(1.34177e-05);
+    weights_pileup.push_back(1.32959e-05);
+    weights_pileup.push_back(1.33287e-05);
+    return  weights_pileup;
+    
+  }
+  
+  if(tag=="Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON"){
+
+
+    //#pileupCalc.py -i /CATTools/CatProducer/data/LumiMask/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt --inputLumiJSON /CATTools/CatProducer/data/LumiMask/pileup_latest.txt --minBiasXsec 69200 --calcMode true --maxPileupBin 75 --numPileupBins 75 PileUpData.root 
+
+    
+    weights_pileup.push_back(2.387970e+05); 
+    weights_pileup.push_back(8.375429e+05); 
+    weights_pileup.push_back(2.308427e+06);
+    weights_pileup.push_back(3.124754e+06);
+    weights_pileup.push_back(4.476191e+06);
+    weights_pileup.push_back(5.995911e+06);
+    weights_pileup.push_back(7.000896e+06); 
+    weights_pileup.push_back(1.289165e+07);
+    weights_pileup.push_back(3.526173e+07); 
+    weights_pileup.push_back(7.870123e+07); 
+    weights_pileup.push_back(1.769458e+08); 
+    weights_pileup.push_back(3.600895e+08); 
+    weights_pileup.push_back(6.027665e+08); 
+    weights_pileup.push_back(8.765194e+08); 
+    weights_pileup.push_back(1.174474e+09); 
+    weights_pileup.push_back(1.489059e+09); 
+    weights_pileup.push_back(1.759352e+09); 
+    weights_pileup.push_back(1.943926e+09); 
+    weights_pileup.push_back(2.049172e+09); 
+    weights_pileup.push_back(2.101582e+09); 
+    weights_pileup.push_back(2.132787e+09); 
+    weights_pileup.push_back(2.149099e+09); 
+    weights_pileup.push_back(2.128986e+09); 
+    weights_pileup.push_back(2.062649e+09); 
+    weights_pileup.push_back(1.962884e+09); 
+    weights_pileup.push_back(1.841872e+09); 
+    weights_pileup.push_back(1.704136e+09); 
+    weights_pileup.push_back(1.554523e+09); 
+    weights_pileup.push_back(1.399489e+09); 
+    weights_pileup.push_back(1.243533e+09); 
+    weights_pileup.push_back(1.088821e+09); 
+    weights_pileup.push_back(9.373048e+08); 
+    weights_pileup.push_back(7.920441e+08); 
+    weights_pileup.push_back(6.567177e+08); 
+    weights_pileup.push_back(5.344668e+08); 
+    weights_pileup.push_back(4.271268e+08); 
+    weights_pileup.push_back(3.351056e+08); 
+    weights_pileup.push_back(2.577246e+08); 
+    weights_pileup.push_back(1.937514e+08); 
+    weights_pileup.push_back(1.418309e+08); 
+    weights_pileup.push_back(1.006714e+08); 
+    weights_pileup.push_back(6.901386e+07); 
+    weights_pileup.push_back(4.554008e+07); 
+    weights_pileup.push_back(2.884748e+07); 
+    weights_pileup.push_back(1.750632e+07); 
+    weights_pileup.push_back(1.016264e+07); 
+    weights_pileup.push_back(5.637781e+06); 
+    weights_pileup.push_back(2.987282e+06); 
+    weights_pileup.push_back(1.512002e+06); 
+    weights_pileup.push_back(7.318454e+05); 
+    weights_pileup.push_back(3.398220e+05); 
+    weights_pileup.push_back(1.525454e+05); 
+    weights_pileup.push_back(6.740482e+04); 
+    weights_pileup.push_back(3.048969e+04);
+    weights_pileup.push_back(1.515211e+04); 
+    weights_pileup.push_back(8.975911e+03); 
+    weights_pileup.push_back(6.496155e+03); 
+    weights_pileup.push_back(5.434805e+03); 
+    weights_pileup.push_back(4.889958e+03); 
+    weights_pileup.push_back(4.521716e+03); 
+    weights_pileup.push_back(4.208464e+03); 
+    weights_pileup.push_back(3.909763e+03); 
+    weights_pileup.push_back(3.614274e+03); 
+    weights_pileup.push_back(3.320722e+03); 
+    weights_pileup.push_back(3.031096e+03); 
+    weights_pileup.push_back(2.748237e+03); 
+    weights_pileup.push_back(2.474977e+03); 
+    weights_pileup.push_back(2.213817e+03); 
+    weights_pileup.push_back(1.966815e+03); 
+    weights_pileup.push_back(1.735546e+03); 
+    weights_pileup.push_back(1.521109e+03); 
+    weights_pileup.push_back(1.324149e+03); 
+    weights_pileup.push_back(1.144898e+03); 
+    weights_pileup.push_back(9.832202e+02); 
+    weights_pileup.push_back(8.386676e+02);
+    
+    return  weights_pileup;
+
+  }
+
+  if(tag=="Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON_Up"){
+    
+    //#pileupCalc.py -i /CATTools/CatProducer/data/LumiMask/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt --inputLumiJSON /CATTools/CatProducer/data/LumiMask/pileup_latest.txt --minBiasXsec 72383 --calcMode true --maxPileupBin 75 --numPileupBins 75 PileUpData_Up.root 
+
+    weights_pileup.push_back(2.387970e+05);
+    weights_pileup.push_back(8.375429e+05);
+    weights_pileup.push_back(2.308427e+06);
+    weights_pileup.push_back(3.124754e+06);
+    weights_pileup.push_back(4.476191e+06);
+    weights_pileup.push_back(5.995911e+06);
+    weights_pileup.push_back(7.000896e+06);
+    weights_pileup.push_back(1.289165e+07);
+    weights_pileup.push_back(3.526173e+07);
+    weights_pileup.push_back(7.870123e+07);
+    weights_pileup.push_back(1.769458e+08);
+    weights_pileup.push_back(3.600895e+08);
+    weights_pileup.push_back(6.027665e+08);
+    weights_pileup.push_back(8.765194e+08);
+    weights_pileup.push_back(1.174474e+09);
+    weights_pileup.push_back(1.489059e+09);
+    weights_pileup.push_back(1.759352e+09);
+    weights_pileup.push_back(1.943926e+09);
+    weights_pileup.push_back(2.049172e+09);
+    weights_pileup.push_back(2.101582e+09);
+    weights_pileup.push_back(2.132787e+09);
+    weights_pileup.push_back(2.149099e+09);
+    weights_pileup.push_back(2.128986e+09);
+    weights_pileup.push_back(2.062649e+09);
+    weights_pileup.push_back(1.962884e+09);
+    weights_pileup.push_back(1.841872e+09);
+    weights_pileup.push_back(1.704136e+09);
+    weights_pileup.push_back(1.554523e+09);
+    weights_pileup.push_back(1.399489e+09);
+    weights_pileup.push_back(1.243533e+09);
+    weights_pileup.push_back(1.088821e+09);
+    weights_pileup.push_back(9.373048e+08);
+    weights_pileup.push_back(7.920441e+08);
+    weights_pileup.push_back(6.567177e+08);
+    weights_pileup.push_back(5.344668e+08);
+    weights_pileup.push_back(4.271268e+08);
+    weights_pileup.push_back(3.351056e+08 );
+    weights_pileup.push_back(2.577246e+08);
+    weights_pileup.push_back(1.937514e+08);
+    weights_pileup.push_back(1.418309e+08);
+    weights_pileup.push_back(1.006714e+08);
+    weights_pileup.push_back(6.901386e+07);
+    weights_pileup.push_back(4.554008e+07);
+    weights_pileup.push_back(2.884748e+07);
+    weights_pileup.push_back(1.750632e+07);
+    weights_pileup.push_back(1.016264e+07);
+    weights_pileup.push_back(5.637781e+06);
+    weights_pileup.push_back(2.987282e+06);
+    weights_pileup.push_back(1.512002e+06);
+    weights_pileup.push_back(7.318454e+05);
+    weights_pileup.push_back(3.398220e+05);
+    weights_pileup.push_back(1.525454e+05);
+    weights_pileup.push_back(6.740482e+04);
+    weights_pileup.push_back(3.048969e+04);
+    weights_pileup.push_back(1.515211e+04);
+    weights_pileup.push_back(8.975911e+03);
+    weights_pileup.push_back(6.496155e+03);
+    weights_pileup.push_back(5.434805e+03);
+    weights_pileup.push_back(4.889958e+03);
+    weights_pileup.push_back(4.521716e+03);
+    weights_pileup.push_back(4.208464e+03 );
+    weights_pileup.push_back(3.909763e+03);
+    weights_pileup.push_back(3.614274e+03);
+    weights_pileup.push_back(3.320722e+03);
+    weights_pileup.push_back(3.031096e+03);
+    weights_pileup.push_back(2.748237e+03);
+    weights_pileup.push_back(2.474977e+03);
+    weights_pileup.push_back(2.213817e+03);
+    weights_pileup.push_back(1.966815e+03);
+    weights_pileup.push_back(1.735546e+03);
+    weights_pileup.push_back(1.521109e+03);
+    weights_pileup.push_back(1.324149e+03);
+    weights_pileup.push_back(1.144898e+03);
+    weights_pileup.push_back(9.832202e+02);
+    weights_pileup.push_back(8.386676e+02);
+
+    return  weights_pileup;
+
+  }
+
+
+  if(tag=="Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON_Dn"){
+
+    //#pileupCalc.py -i /CATTools/CatProducer/data/LumiMask/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt --inputLumiJSON /CATTools/CatProducer/data/LumiMask/pileup_latest.txt --minBiasXsec 66016 --calcMode true --maxPileupBin 75 --numPileupBins 75 PileUpData_Dn.root 
+
+    weights_pileup.push_back(2.474113e+05); 
+    weights_pileup.push_back(1.069278e+06); 
+    weights_pileup.push_back(2.428277e+06); 
+    weights_pileup.push_back(3.566992e+06); 
+    weights_pileup.push_back(4.991832e+06); 
+    weights_pileup.push_back(6.593141e+06); 
+    weights_pileup.push_back(8.097305e+06); 
+    weights_pileup.push_back(1.996320e+07); 
+    weights_pileup.push_back(5.191520e+07); 
+    weights_pileup.push_back(1.197807e+08); 
+    weights_pileup.push_back(2.727752e+08); 
+    weights_pileup.push_back(5.131701e+08); 
+    weights_pileup.push_back(8.023341e+08); 
+    weights_pileup.push_back(1.118763e+09); 
+    weights_pileup.push_back(1.462995e+09); 
+    weights_pileup.push_back(1.780219e+09); 
+    weights_pileup.push_back(2.005191e+09); 
+    weights_pileup.push_back(2.135073e+09); 
+    weights_pileup.push_back(2.198487e+09); 
+    weights_pileup.push_back(2.233964e+09); 
+    weights_pileup.push_back(2.252561e+09); 
+    weights_pileup.push_back(2.229714e+09); 
+    weights_pileup.push_back(2.154206e+09); 
+    weights_pileup.push_back(2.041681e+09); 
+    weights_pileup.push_back(1.905607e+09); 
+    weights_pileup.push_back(1.751084e+09); 
+    weights_pileup.push_back(1.584596e+09); 
+    weights_pileup.push_back(1.413602e+09); 
+    weights_pileup.push_back(1.242528e+09); 
+    weights_pileup.push_back(1.073635e+09); 
+    weights_pileup.push_back(9.097710e+08); 
+    weights_pileup.push_back(7.551027e+08); 
+    weights_pileup.push_back(6.138886e+08); 
+    weights_pileup.push_back(4.891245e+08); 
+    weights_pileup.push_back(3.819822e+08); 
+    weights_pileup.push_back(2.920568e+08); 
+    weights_pileup.push_back(2.180117e+08); 
+    weights_pileup.push_back(1.582197e+08); 
+    weights_pileup.push_back(1.111016e+08); 
+    weights_pileup.push_back(7.513638e+07); 
+    weights_pileup.push_back(4.874432e+07); 
+    weights_pileup.push_back(3.023911e+07); 
+    weights_pileup.push_back(1.789611e+07); 
+    weights_pileup.push_back(1.008679e+07); 
+    weights_pileup.push_back(5.408384e+06); 
+    weights_pileup.push_back(2.757256e+06); 
+    weights_pileup.push_back(1.336896e+06); 
+    weights_pileup.push_back(6.175226e+05); 
+    weights_pileup.push_back(2.730083e+05); weights_pileup.push_back(1.168838e+05); weights_pileup.push_back(4.983506e+04); weights_pileup.push_back(2.245556e+04); weights_pileup.push_back(1.173965e+04); weights_pileup.push_back(7.637138e+03); weights_pileup.push_back(6.017980e+03); weights_pileup.push_back(5.280664e+03); weights_pileup.push_back(4.837353e+03); weights_pileup.push_back(4.483816e+03); weights_pileup.push_back(4.153851e+03); weights_pileup.push_back(3.828857e+03); weights_pileup.push_back(3.506027e+03); weights_pileup.push_back(3.187482e+03); weights_pileup.push_back(2.876619e+03); weights_pileup.push_back(2.576851e+03); weights_pileup.push_back(2.291178e+03); weights_pileup.push_back(2.022034e+03); weights_pileup.push_back(1.771241e+03); weights_pileup.push_back(1.540024e+03); weights_pileup.push_back(1.329043e+03); weights_pileup.push_back(1.138448e+03); weights_pileup.push_back(9.679458e+02); weights_pileup.push_back(8.168710e+02); weights_pileup.push_back(6.842602e+02); weights_pileup.push_back(5.689249e+02); weights_pileup.push_back(4.695210e+02);
+    
+    
+    return  weights_pileup;
+
+  }
+  return  weights_pileup;
+
+
 }

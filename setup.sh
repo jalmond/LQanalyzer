@@ -86,9 +86,28 @@ python ${LQANALYZER_DIR}/python/SetupEmailList.py
 
 # CHeck onroot area and other paths
  
+
+if [ -z ${ROOTSYS} ] ; then
+    echo "Warning: ROOT environment doesn't seem to be configured!"
+    echo "Add these lines to your ~/.bashrc file to remove this warning in future."
+    echo ""
+    echo "source /usr/local/bin/thisroot.sh"
+    echo ""
+    export ROOTSYS=/usr/local
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib/root:
+    if [ -z ${ROOTSYS} ] ; then
+	echo "Error: ROOT environment cannot be configured!"
+    else echo "Setup root enviroment for user."
+    fi
+fi
+
+export LD_TMP_LIBRARY_PATH=${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${LQANALYZER_LIB_PATH}:${LD_LIBRARY_PATH}
+
 export PATH=${LQANALYZER_BIN_PATH}:${PATH}
 export PYTHONPATH=${LQANALYZER_DIR}/python:${PYTHONPATH}
 export PAR_PATH=./:${LQANALYZER_LIB_PATH}
+
 
 python ${LQANALYZER_DIR}/python/local_check.py
 

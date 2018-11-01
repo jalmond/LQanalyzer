@@ -7,6 +7,8 @@
 // SKTree
 #include "KParticle.h"
 
+class Reweight;
+
 //class KMuon;
 #include "KMuon.h"
 #include "KElectron.h"
@@ -36,12 +38,20 @@ class SKTreeFiller : public Data, public AnalysisBase {
   snu::KEvent GetEventInfo();
   snu::KTrigger GetTriggerInfo(std::vector<TString> triglist);
   std::vector<snu::KTruth>  GetTruthParticles(int np=30);
+
+  std::vector<double>  GetWeights(TString tag);
+
   void ERRORMessage(TString comment);
   snu::KParticle::PartType partType;
 
   bool SkipTrigger(TString trigname);
   Int_t VertexN;
   Bool_t *goodVerticies;
+
+  Reweight *reweightPU;
+  Reweight *reweightPU_up;
+  Reweight *reweightPU_down;
+
   
   static bool isHigherPt(snu::KParticle p1, snu::KParticle p2){ return (p1 > p2);}
 
