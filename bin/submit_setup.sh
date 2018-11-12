@@ -718,7 +718,7 @@ function runlist
     
     prefix_sample="/data2/DATA/"
 
-    if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+    if [[ $HOSTNAME == "ui"* ]];
         then
         prefix_sample="/xrootd/store/user/jalmond/"
     fi
@@ -2119,7 +2119,7 @@ if [[ $MakeFullLists == "true" ]];
       #### LOOP OVER INPUT TXT FILE AND CHECK FOR AVAILABLE SAMPLES
 
       prefix_sample="/data2/DATA/"
-      if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+      if [[ $HOSTNAME == "ui"* ]];
       then
           prefix_sample="/xrootd/store/user/jalmond/"
       fi

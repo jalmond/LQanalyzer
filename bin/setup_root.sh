@@ -1,5 +1,5 @@
 #! /bin/sh                                                                                                                                                                                                                                                                      
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [[ $HOSTNAME == "ui"* ]];
 then
 
     python python/CheckProxy.py -x "setup"

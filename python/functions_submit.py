@@ -246,7 +246,7 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
                 os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_"+defoutput_file_skim_tag+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
                 os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root")
 
-                hist_pre =  "/data2/CAT_SKTreeOutput/"
+                hist_pre =  "/data2/DATA/CAT_SKTreeOutput/"
 
                 if isKisti:
                     hist_pre ="/cms/scratch/SNU/CATAnalyzer/"
@@ -324,7 +324,7 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
                 os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_data" + versiontag+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
                 os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data" + versiontag+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+ versiontag+deftmp_filename+".root")
 
-                hist_pre =  "/data2/CAT_SKTreeOutput/"
+                hist_pre =  "/data2/DATA/CAT_SKTreeOutput/"
                 if isKisti:
                     hist_pre ="/cms/scratch/SNU/CATAnalyzer/"
 
@@ -569,7 +569,7 @@ def FreeSpaceInQueue(jobqueue, deftagger):
     if not is_allowed_queue:
         return 1000.
 
-    an_jobpre="/data2/"   ####  pre-path for job output                                                                                                                                                    
+    an_jobpre="/data2/DATA/"   ####  pre-path for job output                                                                                                                                                    
 
     if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)):
         an_jobpre="/data7/DATA/"
@@ -635,7 +635,7 @@ def ChangeQueue(job_summary, jobqueue, ncores_job, deftagger, rundebug):
         file_debug.write("queue ok\n")
 
 
-    an_jobpre="/data2/"
+    an_jobpre="/data2/DATA/"
     if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)):
         an_jobpre="/data7/DATA/"
 
@@ -1191,7 +1191,7 @@ def SendEmail(jobsummary, deftagger, e_subject, email_user, sendplots, plotlist)
         plotstring = plotstring+" -a " + x + " "
 
 
-    an_jobpre="/data2/"   ####  pre-path for job output                                                                                                                                                    
+    an_jobpre="/data2/DATA/"   ####  pre-path for job output                                                                                                                                                    
     isKisti = ("ui" in str(os.getenv("HOSTNAME")))
 
     if isKisti:
@@ -1403,7 +1403,7 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             outsamplename=defcycle +"_"+tmpname + ".root"
 
 
-    an_jobpre="/data2/"   ####  pre-path for job output                                                                                                                                                    
+    an_jobpre="/data2/DATA/"   ####  pre-path for job output                                                                                                                                                    
     isKisti = ("ui" in str(os.getenv("HOSTNAME")))
 
     if isKisti:
@@ -1591,7 +1591,7 @@ def GetRunning(tagger, rsample):
     jobid_exists=True
 
 
-    an_jobpre="/data2/"   ####  pre-path for job output                                                                                                                                                    
+    an_jobpre="/data2/DATA/"   ####  pre-path for job output                                                                                                                                                    
     isKisti = ("ui" in str(os.getenv("HOSTNAME")))
 
     if isKisti:

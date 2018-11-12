@@ -65,7 +65,7 @@ if not os.path.exists(tag_dir):
         os.system("mkdir  " +libpath)
     os.system("mkdir " + tag_dir)
     
-    if  "ui10.sdfarm.kr" in str(os.getenv("HOSTNAME")):
+    if  "ui" in str(os.getenv("HOSTNAME")):
         if not os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")):
             os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH"))
             
@@ -77,7 +77,7 @@ if not os.path.exists(tag_dir):
         if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
             os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
     
-    if  "ui10.sdfarm.kr" in str(os.getenv("HOSTNAME")):
+    if  "ui" in str(os.getenv("HOSTNAME")):
         if  not os.path.exists("/cms/scratch/SNU/CATAnalyzer/" + os.getenv("USER")):
             os.system("mkdir " + "/cms/scratch/SNU/CATAnalyzer/" + os.getenv("USER"))
         if  not os.path.exists("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/" + os.getenv("USER")):
@@ -125,11 +125,9 @@ if not os.path.exists(tag_dir):
     old_out=os.getenv("LQANALYZER_DIR")+"/data/output/CAT/"
 
     
-    mount_name="/data2"
-    if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-        mount_name="/data4"
+    mount_name="/data2/DATA/"
 
-    if  "ui10.sdfarm.kr" in str(os.getenv("HOSTNAME")):
+    if  "ui" in str(os.getenv("HOSTNAME")):
         mount_name="/cms/scratch/SNU/CATAnalyzer"
 
 

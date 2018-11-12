@@ -23,7 +23,7 @@ def SendEmail(localsummary, mastersummary):
     email_user=email_user[:-1]
 
 
-    hist_pre =  "/data2/CAT_SKTreeOutput/"
+    hist_pre =  "/data2/DATA/CAT_SKTreeOutput/"
     isKisti = ("ui" in str(os.getenv("HOSTNAME")))
     if isKisti:
         hist_pre ="/cms/scratch/SNU/CATAnalyzer/"

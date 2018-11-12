@@ -1,10 +1,8 @@
 import os
 
 path_jobpre="/data1/"
-if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    path_jobpre="/data2/"
 
-an_jonpre="/data2/"
+an_jonpre="/data2/DATA/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     an_jonpre="/data4/"
 

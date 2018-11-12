@@ -3,7 +3,7 @@ from CleanUp import *
 
 path_jobpre="/data1/"
 
-if  "ui10.sdfarm.kr"  in str(os.getenv("HOSTNAME")):
+if  "ui"  in str(os.getenv("HOSTNAME")):
     path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
 
 LQANALYZER_DIR= str(os.getenv("LQANALYZER_DIR"))
@@ -43,7 +43,9 @@ if not LQANALYZER_DIR == "None" :
 	if os.getenv("HOSTNAME") == "cms.snu.ac.kr":
             CleanUpLogs(path_jobpre+"CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs("/data2/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs("/data2/DATA/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs("/data7/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs("/data7/DATA/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs("/data8/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs("/data8/DATA/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs("/data7/DATA/CAT_SKTreeOutput/" + getpass.getuser()+ "/")

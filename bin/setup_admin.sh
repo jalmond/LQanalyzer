@@ -5,7 +5,7 @@ then
     export LQANALYZER_MOD="/data2/LQAnalyzer_rootfiles_for_analysis/CATMOD/"
 fi
 
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [[ $HOSTNAME == "ui"* ]];
 then
     export LQANALYZER_MOD="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATMOD/"
 fi
@@ -19,7 +19,7 @@ source $LQANALYZER_DIR/bin/CheckTag.sh
 
 #### check for buggy tags                                                                                                                                                                                                                                                       
 buglist=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [[ $HOSTNAME == "ui"* ]];
 then
     buglist=/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
 fi
@@ -33,3 +33,5 @@ do
     fi
 done < $buglist
 
+
+#  LocalWords:  fi

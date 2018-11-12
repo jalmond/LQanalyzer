@@ -9,8 +9,6 @@ from optparse import OptionParser
 
 
 path_jobpre="/data1/"
-if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    path_jobpre="/data2/"
 
 
 if  "ui" in str(os.getenv("HOSTNAME")):
@@ -173,7 +171,7 @@ if not cycle == "SKTreeMaker":
                         print "You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
 
 
-output_mounted="/data2"
+output_mounted="/data2/DATA"
 
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     output_mounted="/data4"
@@ -419,6 +417,7 @@ while inDS == "":
         if iversion == len(catversions):
             print "LQAnalyzer :: ERROR :: Input dataset is not available: Exiting"
             sys.exit()
+
 
 
 if not "ui" in str(os.getenv("HOSTNAME")):

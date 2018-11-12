@@ -9,7 +9,7 @@ from functions_submit import *
 from functions_config import *
 
 path_jobpre="/data1/"  ###  pre-path for input files for job runnig
-an_jobpre="/data2/"   ####  pre-path for job output
+an_jobpre="/data2/DATA/"   ####  pre-path for job output
 
 isKisti = ("ui" in str(os.getenv("HOSTNAME")))
     
