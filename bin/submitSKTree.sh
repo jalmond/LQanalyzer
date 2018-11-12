@@ -1,7 +1,7 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [[ $HOSTNAME == "ui"* ]];
 then
     source    /cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${CATVERSION}.sh
 else
@@ -21,7 +21,7 @@ declare -a queueoptions=("allq" "fastq" "longq"  "None")
 
 python $LQANALYZER_DIR/python/CheckSelection.py
 export workpath="/data2/"
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [[ $HOSTNAME == "ui"* ]];
 then
     export workpath="/cms/scratch/SNU/CATAnalyzer/"
     
@@ -108,7 +108,7 @@ set_sktreemaker_debug=false
 FLATCAT_MC="cattoflat/MC/"
 SKTREE_MC="CatNtuples/"
 
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [[ $HOSTNAME == "ui"* ]];
 then
     TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
 fi
@@ -118,7 +118,7 @@ is_mc=""
 ### Get predefined lists
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
 ### setup list of samples and other useful functions
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if[ [ $HOSTNAME == "ui"* ]];
 then
     TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_nonsig_"
     OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"

@@ -75,14 +75,13 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
   
   for(std::map<TString, Double_t>::iterator mit =dirmap.begin(); mit != dirmap.end();++mit){
 
-    TString path_file="/xrootd_user/jalmond/xrootd/cattoflat/MC/";
+    TString path_file="/xrootd/store/user/jalmond/cattoflat/MC/";
 
     ///   IF NEED LATER TO REDICE DISK SPACE CAN MAKE GENSKIM TO REPLACE CATTUPLE
     //    if(mit->first.Contains("amcatnlo")) path_file="/data2/DATA/cattoflat/genskim/";
       
     TString dir = "ls "+path_file + version + "/"+ mit->first + "/*.root > inputlist_efflumi.txt";
-    if(cluster) dir = "ls /data4/DATA/FlatCatuples/MC/" + version + "/"+ mit->first + "/*.root > inputlist_efflumi.txt";
-    
+      
     bool use_sum_genweight(false);
     cout << "Checking " << mit->first << endl;
     if(mit->first.Contains("amcatnlo")) use_sum_genweight=true;
@@ -120,19 +119,9 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
     float number_events_passed(0.);
     float sum_of_weights(0.);
     
-    if(!use_sum_genweight) {
-      while ( fin >> word ) {
-	number_events_processed+= GetEventsProcessed(word);
-	number_events_passed+= GetEventsPassed(word);
-      }
-      sum_of_weights = number_events_processed;
-      if(number_events_processed ==0 ) {
-	missing_samples.push_back(mit->first);
-	missing_samples2.push_back(mit->second);
-	continue;
-      }
-    }
-    else{
+    if(!use_sum_genweight)  continue;
+
+    if(use_sum_genweight) {
       std::vector<std::string> filelist;
       while ( finbatch >> word ) {
 	number_events_processed+= GetEventsProcessed(word);;
@@ -158,33 +147,48 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
       cout << "Running " << command2b.Data() << endl;
       system(command2b.Data());
       
-      for(unsigned int i=0; i < filelist.size(); i++){
-	std::string istr;
-	std::stringstream out;
-	out << i;
-	istr = out.str();
-	
-	string lqdir = getenv("LQANALYZER_DIR");
-
+      if (mit->first.Contains("DY") || mit->first.Contains("TT")  || mit->first.Contains("WJetsToLNu")){
+	for(unsigned int i=0; i < filelist.size(); i++){
+	  std::string istr;
+	  std::stringstream out;
+	  out << i;
+	  istr = out.str();
+	  
+	  string lqdir = getenv("LQANALYZER_DIR");
+	  
+	  ofstream outputFileSH;
+	  cout << istr << endl;
+	  if (i < 10){
+	    outputFileSH.open(("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_00"+TString(istr)+".sh"));
+	    cout << "/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_00"+TString(istr)+".sh" <<endl;
+	  }
+	  else if (i < 100){
+	    outputFileSH.open(("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_0"+TString(istr)+".sh"));
+	    cout << "/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_0"+TString(istr)+".sh" <<endl;
+	  }
+	  else{
+	    outputFileSH.open(("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_"+TString(istr)+".sh"));
+	    
+	  }
+	  outputFileSH << "root -l -b -q \'CountGenWeights.C(\"/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first+ "\",\""+ filelist.at(i)+"\",\""+ "hist" + TString(istr) +".root\")\' \n"  << endl;
+	  
+	}
+      }
+      else{
 	ofstream outputFileSH;
-	cout << istr << endl;
-	if (i < 10){
-          outputFileSH.open(("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_00"+TString(istr)+".sh"));
-          cout << "/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_00"+TString(istr)+".sh" <<endl;
-	}
-        else if (i < 100){
-	  outputFileSH.open(("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_0"+TString(istr)+".sh"));
-	  cout << "/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_0"+TString(istr)+".sh" <<endl;
-	}
-	else{
-	  outputFileSH.open(("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_"+TString(istr)+".sh"));
 
-	}
-	outputFileSH << "root -l -b -q \'CountGenWeights.C(\"/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first+ "\",\""+ filelist.at(i)+"\",\""+ "hist" + TString(istr) +".root\")\' \n"  << endl;
+	outputFileSH.open(("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_000.sh"));
+	cout << "/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/RunJob_000.sh" <<endl;
+
+	TString batchpath_file="root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jalmond/cattoflat/MC/";
+
+	TString filedir=batchpath_file + version + "/"+ mit->first;
+	outputFileSH << "root -l -b -q \'CountGenWeights_sig.C(\"/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first+ "\",\""+ filedir +"\", "+filelist.size()+",\""+ "hist0.root\")\' \n"  << endl;
 	
       }
-
-      TString command4b="cp CountGenWeights.C /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first ;
+    
+      
+      TString command4b="cp CountGenWeights*.C /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first ;
       system(command4b.Data());
 
       system("python make_batchfile.py -x /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/");
@@ -197,50 +201,177 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
       outputFileJDS << "executable = RunJob.sh"<< endl;
       outputFileJDS << "universe   = vanilla"<< endl;
       outputFileJDS << "arguments  = $(Process)"<< endl;
-      outputFileJDS << "requirements = OpSysMajorVer == 6"<< endl;
       outputFileJDS << "log = condor.log"<< endl;
       outputFileJDS << "getenv     = True"<< endl;
       outputFileJDS << "should_transfer_files = YES"<< endl;
       outputFileJDS << "when_to_transfer_output = ON_EXIT"<< endl;
       outputFileJDS << "output = job_$(Process).log"<< endl;
       outputFileJDS << "error = job_$(Process).err"<< endl;
+      outputFileJDS << "accounting_group=group_cms"<< endl;
+      outputFileJDS << "+SingularityImage = \"/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest\""<< endl;
+      outputFileJDS << "+SingularityBind = \"/cvmfs, /cms, /share\""<< endl;
       outputFileJDS << "transfer_input_files = /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/"+TString(getenv("USER")) + "/"+mit->first+"/runFile.tar.gz"<< endl;
       outputFileJDS << "use_x509userproxy = true"<< endl;
       outputFileJDS << "transfer_output_remaps = \"hists.root = /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/"+TString(getenv("USER")) + "/"+mit->first+"/hists_$(Process).root\""<< endl;
-      outputFileJDS << "queue "<< filelist.size()<< endl;
+      if (mit->first.Contains("DY") || mit->first.Contains("TT")|| mit->first.Contains("WJetsToLNu")){
+	outputFileJDS << "queue "<< filelist.size()<< endl;
+      }else{
+	outputFileJDS << "queue 1" << endl;
+
+      }
+    
       
-      
+
+
       system("python run_kisti_lumi.py -x /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/");
 
+    }
+  }
+  for(std::map<TString, Double_t>::iterator mit =dirmap.begin(); mit != dirmap.end();++mit){
 
-      system("condor_q jalmond > logqstat");
+    TString path_file="/xrootd/store/user/jalmond/cattoflat/MC/";
 
-      cout << "Checking if job is complete...." << endl;
-      bool jobComplete=false;
-      int nsubmits=0;
-      while (!jobComplete){
-	jobComplete=true;
-	for(unsigned int i=0; i < filelist.size(); i++){
-	  std::string istr;
-	  std::stringstream out;
-	  out << i;
+    ///   IF NEED LATER TO REDICE DISK SPACE CAN MAKE GENSKIM TO REPLACE CATTUPLE                                                                                                                           
+    //    if(mit->first.Contains("amcatnlo")) path_file="/data2/DATA/cattoflat/genskim/";                                                                                                                   
 
-	  istr = out.str();
-	  cout << "Checking /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root" << endl;
-	  std::ifstream infile("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root");
-	  if(!infile.good()) {
+    TString dir = "ls "+path_file + version + "/"+ mit->first + "/*.root > inputlist_efflumi.txt";
+
+    bool use_sum_genweight(false);
+    cout << "Checking " << mit->first << endl;
+    if(mit->first.Contains("amcatnlo")) use_sum_genweight=true;
+    else if(mit->first.Contains("_Schannel_")){
+      if(mit->first.Contains("HN")|| mit->first.Contains("HeavyNeutrino") || mit->first.Contains("Majorana")|| mit->first.Contains("WR") )  use_sum_genweight=true;
+    }
+    else if(mit->first.Contains("Zprime")){
+      if(mit->first.Contains("HN")|| mit->first.Contains("HeavyNeutrino") || mit->first.Contains("Majorana")|| mit->first.Contains("WR") )  use_sum_genweight=true;
+    }
+    else if(mit->first.Contains("_Tchannel_")){
+      if(mit->first.Contains("HeavyNeutrino") || mit->first.Contains("HNDilepton")  || mit->first.Contains("HN") || mit->first.Contains("Majorana") || mit->first.Contains("WR") )  use_sum_genweight=true;
+
+    }
+
+    else if(mit->first.Contains("eavyNeutrino_trilepton")){
+      use_sum_genweight=true;
+    }
+    else if (mit->first.Contains("HeavyNeutrino")){
+      use_sum_genweight=true;
+    }
+    else use_sum_genweight=false;
+
+    if(use_sum_genweight) cout << "use_sum_genweight = true" << endl;
+    cout << "Running " << dir << endl;
+    system(dir.Data());
+
+    cout << "Finished Running " << dir << endl;
+
+    system("python fix_list.py -x inputlist_efflumi.txt");
+    std::ifstream fin("inputlist_efflumi.txt");
+    std::ifstream finbatch("inputlist_efflumi_batch.txt");
+    std::string word;
+
+    float number_events_processed(0.);
+    float number_events_passed(0.);
+    float sum_of_weights(0.);
+
+    if(!use_sum_genweight) {
+      while ( fin >> word ) {
+        number_events_processed+= GetEventsProcessed(word);
+        number_events_passed+= GetEventsPassed(word);
+      }
+      sum_of_weights = number_events_processed;
+      if(number_events_processed ==0 ) {
+        missing_samples.push_back(mit->first);
+        missing_samples2.push_back(mit->second);
+        continue;
+      }
+    }
+    else{
+      std::vector<std::string> filelist;
+      while ( finbatch >> word ) {
+        number_events_processed+= GetEventsProcessed(word);;
+        number_events_passed+= GetEventsPassed(word);
+        filelist.push_back(word);
+      }
+      if(number_events_processed ==0 ) {
+        missing_samples.push_back(mit->first);
+        missing_samples2.push_back(mit->second);
+        continue;
+      }
+
+      if (mit->first.Contains("DY") || mit->first.Contains("TT")|| mit->first.Contains("WJetsToLNu")){
+
+	cout << "Checking if job is complete...." << endl;
+	bool jobComplete=false;
+	int nsubmits=0;
+	bool submit_override=false;
+	while (!jobComplete){
+	  jobComplete=true;
+	  for(unsigned int i=0; i < filelist.size(); i++){
+	    std::string istr;
+	    std::stringstream out;
+	    out << i;
+	    
+	    istr = out.str();
+	    cout << "Checking /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root" << endl;
+	    std::ifstream infile("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root");
+	    if(!infile.good()) {
 	      jobComplete=false;
-	      if(nsubmits>200){
+	      if(nsubmits>100){
 		cout << "File /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root does not exist" << endl;  
 		
 		system("root -l -b -q \'CountGenWeights.C(\"/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first+ "\",\""+filelist.at(i)+"\",\""+ "hist" + TString(istr) +".root\")\'");
+		submit_override=true;
 	      }
-	      sleep(15);
+	      sleep(5);
 	      nsubmits++;
 	      break;
+	    }
 	  }
 	}
+	
+	if(submit_override)system("python check_kisti_lumi.py -x /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/");
       }
+      else{
+	for(unsigned int i=0; i < 1; i++){
+          cout << "Checking if job is complete...." << endl;
+          bool jobComplete=false;
+          int nsubmits=0;
+	  bool submit_override=false;
+          while (!jobComplete){
+            jobComplete=true;
+	    for(unsigned int i=0; i < 1; i++){
+	      std::string istr;
+	      std::stringstream out;
+              out << i;
+	      
+              istr = out.str();
+              cout << "Checking /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist0.root" << endl;
+	      std::ifstream infile("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist0.root");
+              if(!infile.good()) {
+                jobComplete=false;
+                if(nsubmits>100){
+		  cout << "File /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root does not exist" << endl;
+		  
+		  
+		  TString batchpath_file="root://cms-xrdr.sdfarm.kr:1094///xrd/store/user/jalmond/cattoflat/MC/";
+
+		  TString filedir=batchpath_file + version + "/"+ mit->first;
+
+                  system("root -l -b -q \'CountGenWeights_sig.C(\"/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first+ "\",\""+ filedir +"\", "+filelist.size()+"\",\""+ "hist0.root\")\' \n");
+		  submit_override=true;
+                }
+                sleep(5);
+                nsubmits++;
+                break;
+              }
+            }
+          }
+
+          if(submit_override) system("python check_kisti_lumi.py -x /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first+"/");
+
+	}
+      }// end of fast process  
+    
       cout << "Job complete" << endl;
 
       
@@ -257,8 +388,8 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
 	if(TString(filen).Contains(".root"))counter++;
       }
       if(debug){
-	if(!cluster)cout << "Number of files in "+path_file + version + "/"+  mit->first + "/ = " << counter << endl;
-	else cout << "Number of files in //data4/DATA/FlatCatuples/MC/" + version + "/"+  mit->first + "/ = " << counter << endl;
+	cout << "Number of files in "+path_file + version + "/"+  mit->first + "/ = " << counter << endl;
+
       }
       bool JobDone=false;
       while (JobDone==false){
@@ -273,10 +404,18 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
 	  name_countedfile >> filen;
 	  if(TString(filen).Contains(".root"))counter_counted++;
 	}
-	if(counter_counted == counter) JobDone=true;
+	if (mit->first.Contains("DY") || mit->first.Contains("TT")|| mit->first.Contains("WJetsToLNu")){
+	  if(counter_counted == counter) JobDone=true;
+	}
+	else JobDone=true;
       }
       TString haddcommand = "hadd   /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first + "/output/Output.root  /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first + "/output/*.root ";
-      system(haddcommand.Data());
+      if (mit->first.Contains("DY") || mit->first.Contains("TT")|| mit->first.Contains("WJetsToLNu")){
+	system(haddcommand.Data());
+      }
+      else{
+	system("mv /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first + "/output/hist0.root /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first + "/output/Output.root");
+      }
       TFile* file = TFile::Open(( "/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first + "/output/Output.root").Data());
       TH1F*  SumWCounter = (TH1F*) (file ->Get("sumweight"));
       sum_of_weights = SumWCounter->Integral();
@@ -384,57 +523,27 @@ void GetEffectiveLuminosity_kisti(TString path_of_list,  TString tag,TString ver
       std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
       std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
       std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-      if(!cluster)lumi_file <<  mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << "  /xrootd_user/jalmond/xrootd/cattoflat/MC/" << version <<"/"  << mit->first << "/" <<endl;
-      else lumi_file <<  mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << "  /data4/DATA/FlatCatuples/MC/" << version <<"/"  << mit->first << "/" <<endl;
-
-    }
-
-    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
-      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-      if(cluster)lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data4/LocalNtuples/SKTrees13TeV/" + string(version.Data()) +"/SKTrees/MC/" << mit2->second << "/" <<endl;
-      else lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MC/" << mit2->second << "/" <<endl;
-
-    }
-    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
-      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-
-      lumi_file <<  "SK" << mit2->second << "_dilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MCDiLep/" <<  mit2->second << "/" <<endl;
-    }
-    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
-      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-
-      lumi_file <<  "SK" << mit2->second << "_trilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MCTriLep/" <<  mit2->second << "/" <<endl;
-    }
-    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
-      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
-      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
+      lumi_file <<  mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << "  cattoflat/MC/" << version <<"/"  << mit->first << "/" <<endl;
       
-      lumi_file <<  "SK" << mit2->second << "_hndilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MCHNDiLep/" <<  mit2->second << "/" <<endl;
-																					       
     }
-    
+
+    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
+      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
+      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
+      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
+      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
+      lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " CatNtuples/" + string(version.Data()) +"/SKTrees/MC/" << mit2->second << "/" <<endl;
+
+    }
     for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
       std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
       std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
       std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
       std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
 
-      lumi_file <<  "SK" << mit2->second << "_hnfake  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /xrootd_user/jalmond/xrootd/CatNtuples/" + string(version.Data()) +"/SKTrees/MCHNFake/" <<  mit2->second << "/" <<endl;
+      lumi_file <<  "SK" << mit2->second << "_dilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " CatNtuples/" + string(version.Data()) +"/SKTrees/MCDiLep/" <<  mit2->second << "/" <<endl;
     }
-
   }
-
 
   string lqdir = getenv("LQANALYZER_DIR");
   string lfile2 =  lqdir + "/LQRun/txt/datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";

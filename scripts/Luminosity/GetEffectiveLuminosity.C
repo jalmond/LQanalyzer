@@ -213,7 +213,7 @@ void GetEffectiveLuminosity(TString path_of_list,  TString tag,TString version="
 	  std::ifstream infile("/data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root");
 	  if(!infile.good()) {
 	      jobComplete=false;
-	      if(nsubmits>200){
+	      if(nsubmits>100){
 		cout << "File /data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root does not exist" << endl;  
 		
 		system("root -l -b -q \'CountGenWeights.C(\"/data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first+ "\",\""+filelist.at(i)+"\",\""+ "hist" + TString(istr) +".root\")\'");

@@ -27,7 +27,7 @@ if [[ $1 != "" ]];then
         if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
         then
             source /data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
-        elif [ $HOSTNAME == "ui10.sdfarm.kr" ];
+        elif [ $HOSTNAME == "ui"* ];
         then
             source /cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
         else

@@ -351,7 +351,7 @@ if os.path.exists(path_full_sample_list):
             if len(splitline) == 1:
                 ### we want to consider only lines with split size of 4 and remove size 1
                 continue
-            if len(splitline) == 4:
+            if len(splitline) == 5:
                 xsec=float(splitline[2])
                 sample1=splitline[0]
                 ### set alias and xsec from master list
@@ -361,7 +361,7 @@ if os.path.exists(path_full_sample_list):
                 ### we want to consider only lines with split size of 4 and remove size 1 
                 if len(splitcline) == 1:
                     continue
-                if len(splitcline) == 4:
+                if len(splitcline) == 5:
                     xsec_2=float(splitcline[2])
                     sample2=splitcline[0]
                 ### check if alias' are the same and then compare xsec's    
@@ -384,7 +384,7 @@ if os.path.exists(path_full_sample_list):
             splitline=line.split()
             if len(splitline) == 1:
                 continue
-            if len(splitline) == 4:
+            if len(splitline) == 5:
                 sample1=splitline[0]
 
             file_cat = open(path_full_sample_list,"r")
@@ -392,7 +392,7 @@ if os.path.exists(path_full_sample_list):
                 splitcline=cline.split()
                 if len(splitcline) == 1:
                     continue
-                if len(splitcline) == 4:
+                if len(splitcline) == 5:
                     sample2=splitcline[0]
                 if sample1 == sample2:
                     line_exists=True
@@ -525,7 +525,7 @@ if os.path.exists(path_full_sample_list):
             file_newlist = open(path_newfile3,"r")
             for line in file_newlist:
                 sline = line.split()
-                if len(sline) == 4:
+                if len(sline) == 5:
                     list_new.append(sline[0])
             file_newlist.close()                                                                                                      
             os.system("cp " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh")
@@ -614,7 +614,7 @@ else:
 
     os.system("cp " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_v8-0-X.txt " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt")
     os.system("cp " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_v8-0-X.txt " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")
-    os.system("python UpdateSIGFormat.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")        
+    os.system("python UpdateSIGFormat_kisti.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")        
 
     
     EmailNewList(catversion)    

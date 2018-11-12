@@ -11,8 +11,6 @@ def GetListOfDataSets(catversion, sample_type):
         url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTWct60gAWZoN7tmVAw_WJmQmDWdrpXluF1xz8cn4sL8NCll3Vb8ppN2254P10zmnZ_oqF1f8XSHuav/pub?gid=602011091&single=true&output=csv'
     
 
-
-
     import csv
 
     from urllib import urlopen
@@ -35,9 +33,6 @@ def GetListOfDataSets(catversion, sample_type):
                 else:
                     dlist.append([row[1],row[2],row[3],row[0]])
                 
-
-                
-        
     return dlist
     
 
@@ -48,9 +43,11 @@ catversion=str(os.getenv("CATVERSION"))
 
 #### Get list of samples from google doc
 datasetlist=GetListOfDataSets(catversion,"mc")
-datasetlist_signal=GetListOfDataSets(catversion,"signal")
 
-datasetlist=datasetlist+datasetlist_signal
+addSignal=True
+if addSignal:
+    datasetlist_signal=GetListOfDataSets(catversion,"signal")
+    datasetlist=datasetlist+datasetlist_signal
 
 path_full_sample_list_user=os.getenv("LQANALYZER_DATASET_DIR") + "/" + os.getenv("USER")+"/cattuplist_"+catversion+ os.getenv("USER")+".txt"
 
@@ -92,7 +89,7 @@ for x in datasetlist:
         print "Alias not found in file " + str(x)
         sys.exit()
 
-    cattuple_path="/xrootd_user/"+user+"/xrootd/cattoflat/MC/"+catversion
+    cattuple_path="/xrootd/store/user/"+user+"/cattoflat/MC/"+catversion
     if not os.path.exists(cattuple_path+"/"+part_datasetname):
         missing_sample.append(part_datasetname)
     else:

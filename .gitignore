@@ -1,6 +1,7 @@
 # Ignore for commits
 */*/*/*.pcm
 bin/catconfig
+LQRun/txt/
 LQanalyzer/LQRun/txt
 LQRun/*/job_output/
 LQLib/

@@ -422,9 +422,12 @@ while inDS == "":
             sys.exit()
 
 
-if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    inDS=inDS.replace("/data2/","/data4")
-    inDS = "/data7/DATA/"+inDS
+
+if not "ui" in str(os.getenv("HOSTNAME")):
+    if mc:
+        inDS = "/data2/DATA/" +inDS
+    else:
+        inDS = "/data7/DATA/"+inDS
 else:
     inDS = "/xrootd/store/user/jalmond/"+inDS
 

@@ -5,7 +5,7 @@ export LQANALYZER_DATASET_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetL
 export LQANALYZER_SKTreeLOG_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
 export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
 
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [[ $HOSTNAME == "ui"* ]];
 then
     export LQANALYZER_FILE_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/"
     export LQANALYZER_DATASETFILE_DIR="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
@@ -26,7 +26,7 @@ export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 export BTAGDIR=${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/BTag/BTagC11/
 export ROCHDIR=${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/rochcor2016/
 
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [[ $HOSTNAME == "ui"* ]];
 then
     export OBJ=obj/kisti$LIBTAG
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/kisti$LIBTAG/
@@ -57,7 +57,7 @@ export LQANALYZER_OUTPUT_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyz
 export LQANALYZER_LOG_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
 export LQANALYZER_LOG_8TeV_PATH=${LQANALYZER_DIR}/data/logfiles/
 
-if [ $HOSTNAME == "ui10.sdfarm.kr" ];
+if [[ $HOSTNAME == "ui"* ]];
 then
     export LQANALYZER_OUTPUT_PATH=/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
     export LQANALYZER_LOG_PATH=/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/

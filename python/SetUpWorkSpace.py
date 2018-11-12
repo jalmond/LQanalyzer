@@ -3,7 +3,7 @@ from CleanUp import *
 
 path_jobpre="/data1/"
 
-if  "ui10.sdfarm.kr"  in str(os.getenv("HOSTNAME")):
+if  "ui"  in str(os.getenv("HOSTNAME")):
     path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
 
 LQANALYZER_DIR= str(os.getenv("LQANALYZER_DIR"))
