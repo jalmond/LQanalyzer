@@ -233,12 +233,17 @@ while inDS == "":
         sample_catversion = catversion
         output_catversion = catversion
 
+    host_tag="snu"
+    if isKisti:
+        host_tag="kisti"
+        
+
     print "Using CAT " +sample_catversion + " ntuples"
     if mc:
         filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/'+datasetfile +sample_catversion +  '.txt'
 
     else:
-        filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT'+ktag+'_data_'  +sample_catversion +'.txt'
+        filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_'+host_tag+'_CAT'+ktag+'_data_'  +sample_catversion +'.txt'
 
              
 
@@ -855,8 +860,8 @@ if running_batch:
 check_log= os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/"
 if number_of_cores > 1:
     if (os.path.exists(check_log)):
-        if sum(1 for item in os.listdir(check_log) if isfile(join(check_log, item))) > 0:
-            os.system("rm " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/*.o*")
+        #if sum(1 for item in os.listdir(check_log) if isfile(join(check_log, item))) > 0:
+        os.system("rm " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/*.o*")
 
 if DEBUG == "True":
     print "Waiting for all jobs to finish before Merging."
@@ -908,7 +913,8 @@ while not JobSuccess:
 
         ### check in batch_function CheckRunningKistiBatch, checks if jobs are running on batch and if HELD deletes all jobs
         running =CheckRunningKistiBatch(filename,  array_batchjobs[0],output, -100, "initial")
-        sys.stdout.write('\r running = ' + str(running) + '\n')
+        if DEBUGMODE:
+            sys.stdout.write('\r running = ' + str(running) + '\n')
 
     else:
 

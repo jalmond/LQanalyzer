@@ -1422,7 +1422,12 @@ while [ "$1" != "" ]; do
 				;;
         -SIG | --submitall)     shift
                                 RUNSIG="true"
-				TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_sig_"
+				if [[ $HOSTNAME == "ui"* ]];
+				then
+				    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_kisti_sig_"
+				else
+				    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_sig_"
+				fi
 				;;
 #	-sktree | --usesktrees )shift
 #                                submit_skinput="$1"

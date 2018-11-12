@@ -33,10 +33,14 @@ def   GetMonth(imonth):
 
 def InputFileName(ktag, is_signal):
     
+    host_tag="snu"
+    if isKisti:
+        host_tag="kisti"
+
     if is_signal:
-        return "datasets_snu_sig_CAT"+ktag+"_mc_"
+        return "datasets_"+host_tag+"_sig_CAT"+ktag+"_mc_"
     else:
-        return "datasets_snu_nonsig_CAT"+ktag+"_mc_"
+        return "datasets_"+host_tag+"_nonsig_CAT"+ktag+"_mc_"
 
 
 
@@ -709,11 +713,12 @@ def ChangeQueue(job_summary, jobqueue, ncores_job, deftagger, rundebug):
                 file_debug.close()
             return jobqueue
         else:
-            if (float(fastq_ninqueue) / float(fastq_nallowedinqueue)) < 0.9:
-                if rundebug:
-                    file_debug.write("fastq2, return " + jobqueue+ "\n")
-                    file_debug.close()
-                return jobqueue
+            if fastq_nallowedinqueue > 0:
+                if (float(fastq_ninqueue) / float(fastq_nallowedinqueue)) < 0.9:
+                    if rundebug:
+                        file_debug.write("fastq2, return " + jobqueue+ "\n")
+                        file_debug.close()
+                    return jobqueue
             else:
                 if ncores_job < (longq_nallowedinqueue-longq_ninqueue):
                     job_summary.append("########################################")
