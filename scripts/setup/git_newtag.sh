@@ -23,13 +23,19 @@ then
     return
 fi
 
+LatestTagPath="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt"
+if [[ $HOSTNAME == "ui"* ]];
+then
+    LatestTagPath="/cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt"
+fi
+
 notnew_tag=False
 while read line
 do
     if [[ $line  == *$tagname* ]]; then
 	notnew_tag=True
     fi	
-done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
+done  < $LatestTagPath
 
 if [[ $notnew_tag == "False" ]];then
     echo "$tagname (HEAD)" >> LatestTag80X.txt
@@ -43,8 +49,8 @@ if [[ $notnew_tag == "False" ]];then
 	    sline=${line%$suffix}
 	    echo "$sline" >> LatestTag80X.txt
 	fi
-    done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
-    mv LatestTag80X.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
+    done  < $LatestTagPath
+    mv LatestTag80X.txt $LatestTagPath
 else
     echo "Not adding a new tag"
 fi
