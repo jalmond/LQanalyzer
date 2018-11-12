@@ -617,7 +617,7 @@ def FreeSpaceInQueue(jobqueue, deftagger):
 
 
 
-def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger, rundebug):
+def ChangeQueue(job_summary, jobqueue, ncores_job, deftagger, rundebug):
 
 
     isKisti = ("ui" in str(os.getenv("HOSTNAME")))
@@ -1409,7 +1409,7 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
     if isKisti:
         an_jobpre="/cms/scratch/SNU/CATAnalyzer/"
 
-    if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)):
+    if not ismc:
         an_jobpre="/data7/DATA/"
 
     if "SKTreeMaker" in defcycle:
@@ -1598,7 +1598,7 @@ def GetRunning(tagger, rsample):
         an_jobpre="/cms/scratch/SNU/CATAnalyzer/"
 
 
-    if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)):
+    if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):
         an_jobpre="/data7/DATA/"
 
     while jobid_exists:

@@ -20,7 +20,6 @@ plotting::
 
 selection::
 	(cd LQCore/Selection; make)
-	(python python/PCM.py -x LQCore/Selection/src/Selection_Dict_rdict.pcm)
 analysis::
 	(cd LQAnalysis/AnalyzerTools; make)
 	(cd LQAnalysis/Analyzers; make)

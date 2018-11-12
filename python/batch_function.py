@@ -178,7 +178,7 @@ def CHECK_OUTLOGFILE(isKisti, output, i, outsamplename, array_batchjobs):
     
     check_outfile=""
     if not isKisti:
-        check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
+        check_outfile = output + "/Job" +  "_" +  str(i-1) + "/" + outsamplename + "_Job_"+ str(i-1) +".o"+array_batchjobs[i-1]
     else:
         check_outfile = output + "/Job_000/job_"+str(i-1)+".log"
 
@@ -209,7 +209,7 @@ def GetFailedMacroName(isKisti, output, i):
         return output+ "Job_000/runJob_000.C"
 
 
-def GetFailedLogName(isKisti, outsamplename, i, array_batchjob):
+def GetFailedLogName(isKisti, outsamplename, i, array_batchjobs):
     if not isKisti:
         return outsamplename+ "_Job_" + str(i)+".o"+str(array_batchjobs[i-1])
     else:
@@ -229,9 +229,9 @@ def CheckPercentComplete(isKisti,number_of_cores,output,outsamplename, array_bat
     
 
     for i in range(1,number_of_cores+1):
-            check_outfile = output + "/Job" +  "_" +  str(i) + "/runJob_"+ str(i) +".log"
+            check_outfile = output + "/Job" +  "_" +  str(i-1) + "/runJob_"+ str(i-1) +".log"
             if running_batch == True:
-                check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
+                check_outfile = output + "/Job" +  "_" +  str(i-1) + "/" + outsamplename + "_Job_"+ str(i-1) +".o"+array_batchjobs[i-1]
 
             os.system('tail -100 ' + check_outfile + ' > ' + local_sub_dir + '/outlog.txt')
             nevent_processed_i=0.

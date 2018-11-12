@@ -103,15 +103,17 @@ else:
 Printuseskinput(cycle, useskinput)
 
 
-workoutput_mounted="/data2"
-sktreeoutput=workoutput_mounted + "/DATA"
+workoutput_mounted="/data7/DATA"
+sktreeoutput=workoutput_mounted 
 if len(sample)>1:
     if  sample == "H_v2" or sample == "H_v3":
         workoutput_mounted="/data7/DATA"
         sktreeoutput= "/data7/DATA"
+    else:
+        workoutput_mounted="/data2/DATA"
+        sktreeoutput= "/data2/DATA"
 
 merge_mounted="/data8/DATA"
-
  
 
 if isKisti:
@@ -836,6 +838,7 @@ if running_batch:
         file_jobids.write(ijob + "\n")
         print "Job ["+str(ijob)+"] added to list......."
     file_jobids.close()    
+    print "Added list of batch ids to " + path_jobids
     print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     print "In case user wants to kill job do : source " + output+ "JobKill.sh"
     print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
@@ -944,7 +947,7 @@ while not JobSuccess:
                     if not start_running_time == 0.:
                         job_time = time.time()
                         checkJob=False
-            check_outfile = outputdir + outsamplename +  "_" +  str(i) + ".root"   
+            check_outfile = outputdir + outsamplename +  "_" +  str(i-1) + ".root"   
             if isKisti:
                 check_outfile = outputdir + outsamplename +  "_" + str(i-1)+".root"
 
@@ -952,8 +955,8 @@ while not JobSuccess:
             if (os.path.exists(check_outfile)):
                 CompletedJobs.append(i)
                 ncomplete_files+=1
-                files_done.append("Job [" + str(i) + "] completed. Output ="  + check_outfile)
-                sys.stdout.write('\r Job [' + str(i) + '] completed. Output ='  + check_outfile + '\n')
+                files_done.append("Job [" + str(i-1) + "] completed. Output ="  + check_outfile)
+                sys.stdout.write('\r Job [' + str(i-1) + '] completed. Output ='  + check_outfile + '\n')
 
 
     if DEBUGMODE:
@@ -1018,6 +1021,7 @@ while not JobSuccess:
                             job_time = time.time()
                             checkJob=False
                     time.sleep(1.)
+
             if ncycle == 0:
                 UpdateJobsRunnigFirstRun(clear_line, number_of_cores)
 
@@ -1034,7 +1038,6 @@ while not JobSuccess:
                 running_status = CheckRunningBatch(isKisti, filename, array_batchjobs, i, output) 
                 job_id_c=array_batchjobs[i-1]
 
-                sys.stdout.write('\r running = ' + str(running_status) + '\n')
 
                 if running_status == 2:
                     number_of_cores=0
@@ -1050,12 +1053,12 @@ while not JobSuccess:
                     sys.stdout.flush()
                     print "job id not in batch output. Check if rootfile is missing. If so kill job"
                 
-                    check_outfile = outputdir + outsamplename +  "_" + str(i)+".root"
+                    check_outfile = outputdir + outsamplename +  "_" + str(i-1)+".root"
                     if isKisti:
                         check_outfile = outputdir + outsamplename +  "_" + str(i-1)+".root"
                         sys.stdout.write('\r check_outfile = ' + check_outfile + ' i = ' + str(i-1) + ' str(job_id_c) = ' + str(job_id_c) + '\n')
-
-
+                                                
+                                                
                     it_file_check=0
                     while not (os.path.exists(check_outfile)):
                         it_file_check=it_file_check+1
@@ -1098,7 +1101,6 @@ while not JobSuccess:
                         print "Run in non-batch mode by setting njobs = 1 in submit.sh file and retry" 
                         JobCrash=True
                         
-            os.system("rm  " + local_sub_dir + "/log")
             
         ##### Run over log to get % completion                    
 
@@ -1171,7 +1173,7 @@ else:
     
     if "SKTreeMaker" in cycle:
         from sktree_submitfunction import *
-        Finaloutputdir = SetupSKTree(isKisti,sktreeoutput, workoutput_mounted, sample_catversion, mc,original_channel, cycle)
+        Finaloutputdir = SetupSKTree(isKisti,sktreeoutput, workoutput_mounted, sample_catversion, mc,original_channel, cycle,original_sample)
         doMerge=False
                 
         if not os.path.exists(Finaloutputdir):

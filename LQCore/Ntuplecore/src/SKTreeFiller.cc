@@ -378,7 +378,6 @@ m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
     kevent.SetPeriodPileupWeight(double(puWeightGoldB),double(puWeightGoldC),double(puWeightGoldD),double(puWeightGoldE),double(puWeightGoldF),double(puWeightGoldG),double(puWeightGoldH));
     
     double pu_weight = reweightPU->GetWeight(nTrueInteraction);
-    m_logger << INFO << "pu_weight  = " << pu_weight << " " <<   double(puWeightGold) << LQLogger::endmsg;                                                                                                                            
   }
   
   if(isData){

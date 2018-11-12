@@ -19,7 +19,7 @@ def initiate_sktreemaker(isKisti,sktreeoutput, workoutput_mounted, sample_catver
 
 
 
-def SetupSKTree(isKisti,sktreeoutput, workoutput_mounted, sample_catversion, mc,original_channel, cycle):
+def SetupSKTree(isKisti,sktreeoutput, workoutput_mounted, sample_catversion, mc,original_channel, cycle,original_sample):
 
     SKTreeOutput = initiate_sktreemaker(isKisti,sktreeoutput, workoutput_mounted, sample_catversion)
 
@@ -34,8 +34,7 @@ def SetupSKTree(isKisti,sktreeoutput, workoutput_mounted, sample_catversion, mc,
         cycle_tag="TriLep"
 
     Finaloutputdir=""
-    if not os.path.exists(SKTreeOutput):
-        os.system("mkdir  " + SKTreeOutput)
+    if not mc:
         Finaloutputdir = SKTreeOutput + "Data"+cycle_tag+"/"
         
         if not os.path.exists(Finaloutputdir):
