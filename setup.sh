@@ -31,6 +31,8 @@ source bin/setup_root.sh
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
 
+#### admin setup for analyzer
+source bin/setup_admin.sh
 
 python ${LQANALYZER_DIR}/scripts/CheckEmailIsSetup.py
 cat_email="NULL"
@@ -50,8 +52,6 @@ then
     return 1
 fi
 
-#### admin setup for analyzer 
-source bin/setup_admin.sh
 ###  print git tag info
 source bin/check_tag.sh
 
