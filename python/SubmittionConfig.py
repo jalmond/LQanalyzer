@@ -184,6 +184,7 @@ stdscr.addstr(list4,box_shift,  "Job Status (Summary of latest background proces
 stdscr.addstr(list3, box_shift,  "Job Terminal Output: (will be deleted "+ future +")" ,curses.A_UNDERLINE)
 stdscr.addstr(list3b, box_shift,  "Log Files: (will be deleted "+ future_week +")" ,curses.A_UNDERLINE)
 stdscr.addstr(list3c, box_shift,  "Output Files:" ,curses.A_UNDERLINE)
+stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
 stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L185" ,curses.A_STANDOUT)
 
 
@@ -291,6 +292,7 @@ islongjob = []
 isvfastjob = []
 queuelist = []
 for s in sample:
+    stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
     stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L292" ,curses.A_STANDOUT)
 
 
@@ -328,6 +330,7 @@ nmediumjobs=0
 job_summary=[]
 
 for nsample in range(0, len(sample)):
+    stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
     stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L329" ,curses.A_STANDOUT)
 
     s=sample[nsample]
@@ -406,6 +409,7 @@ for nsample in range(0, len(sample)):
 
 for nsample in range(0, len(sample)):
     
+    stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
     stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L407" ,curses.A_STANDOUT)
     
     s=sample[nsample]
@@ -532,6 +536,7 @@ for nsample in range(0, len(sample)):
 
     runningData= not isMC
     
+    stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
     stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L533" ,curses.A_STANDOUT)
 
 
@@ -542,6 +547,7 @@ for nsample in range(0, len(sample)):
         UpdateOutput(output_bkg,an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")    
     #### if sample is submitted this for loop will check job process on cluster and update the screen/terminal
     for x in range(0, len(sample)):
+        stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
         stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L543" ,curses.A_STANDOUT)
 
         if run_in_bkg:
@@ -580,6 +586,7 @@ for nsample in range(0, len(sample)):
             #### in case the job id file is not yet filled add while condition
             jobid_exists=True
             while jobid_exists:        
+                stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
                 stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L581" ,curses.A_STANDOUT)
 
                 if rundebug:
@@ -593,7 +600,8 @@ for nsample in range(0, len(sample)):
                 file_debug = open("debug.txt","a")
                 file_debug.write(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt exists\n")
                 file_debug.close()
-        
+                
+            stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
             stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L595" ,curses.A_STANDOUT)
 
 
@@ -668,6 +676,7 @@ for nsample in range(0, len(sample)):
                     if not job_in_queue:
                         njobs_finished=njobs_finished+1.
 
+            stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
             stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L669" ,curses.A_STANDOUT)
             stdscr.refresh()
 
@@ -772,6 +781,7 @@ for nsample in range(0, len(sample)):
                 path_job=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
                 ismerging=True
             
+                stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
                 stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L755 "+ path_job ,curses.A_STANDOUT)
                 stdscr.refresh()
 
@@ -814,6 +824,7 @@ for nsample in range(0, len(sample)):
 
                     continue
                 
+                stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
                 stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L811" ,curses.A_STANDOUT)
                 stdscr.refresh()
 
@@ -923,8 +934,11 @@ for nsample in range(0, len(sample)):
             stdscr.addstr(int(x)+istatus_message, summary_block7,"|    ")
             stdscr.refresh()
             
+            stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
             stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L920" ,curses.A_STANDOUT)
             stdscr.refresh()
+        
+    stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
     stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L922" ,curses.A_STANDOUT)
     stdscr.refresh()
 
@@ -958,7 +972,7 @@ for nsample in range(0, len(sample)):
     stdscr.refresh()
 
     while checkqueue:
-
+        stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
         stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L962 checking batch queue for "+ s ,curses.A_STANDOUT)
         
         stdscr.refresh()
@@ -967,6 +981,7 @@ for nsample in range(0, len(sample)):
 
         if not os.path.exists(an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER") +"/"+tagger):
             stdscr.addstr(list4+1, box_shift,  "Queue busy.. please wait")
+            stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
             stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L970 Queue busy.. please wait "+ s ,curses.A_STANDOUT)
 
             stdscr.refresh()
@@ -1008,6 +1023,7 @@ for nsample in range(0, len(sample)):
                 else:
                     os.system("condor_q " + os.getenv("USER") + " > " +  path_clust_check)
 
+                stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
                 stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1011 "+ s+ " checking " + sample[x] ,curses.A_STANDOUT)
     
                 ijob=0
@@ -1067,7 +1083,8 @@ for nsample in range(0, len(sample)):
 
                     file_clust_check.close()
 
-                    
+
+                stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)                    
                 stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1062" ,curses.A_STANDOUT)
                 
                 stdscr.refresh()
@@ -1164,6 +1181,7 @@ for nsample in range(0, len(sample)):
                     
         else:
 
+            stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
             stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1167 Submitting sample to queue  " + s ,curses.A_STANDOUT)
 
             stdscr.refresh()
@@ -1190,6 +1208,7 @@ for nsample in range(0, len(sample)):
             stdscr.addstr(int(isample)+istatus_message, summary_block6,"| Running[---------]   Complete[----------]   ")
             stdscr.addstr(int(isample)+istatus_message, summary_block7,"|    ")
 
+            stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
             stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1193 " +  an_jobpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + s+".txt" ,curses.A_STANDOUT)
             stdscr.refresh()
             os.system(command2_background)
@@ -1200,6 +1219,7 @@ for nsample in range(0, len(sample)):
                     output_bkg.append(stdscr.instr(out_x, 0))
                     UpdateOutput(output_bkg,an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
+stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
 stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1203 All samples submitted" ,curses.A_STANDOUT)
 
 stdscr.refresh()
@@ -1208,6 +1228,7 @@ StillRunning=True
 while StillRunning:
     StillRunning=False
 
+    stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
     stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1211" ,curses.A_STANDOUT)
     
     stdscr.refresh()
@@ -1228,6 +1249,7 @@ while StillRunning:
         ## Need to sleep here so that cursor is not moving on screen too fast
         time.sleep(2.)
         
+        stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
         stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1220" ,curses.A_STANDOUT)
         
         stdscr.refresh()
@@ -1251,6 +1273,7 @@ while StillRunning:
                 backgroundsamples=True
         if backgroundsamples:
 
+            stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
             stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1243" ,curses.A_STANDOUT)
             
             stdscr.refresh()
@@ -1258,6 +1281,7 @@ while StillRunning:
             jobid_exists=True
             while jobid_exists:
                 path_job_check=an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"
+                stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
                 stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1248 : Checking " + path_job_check + " exists" ,curses.A_STANDOUT)
                 stdscr.refresh()
         
@@ -1266,6 +1290,7 @@ while StillRunning:
 
 
             len_blank = len(path_job_check)
+            stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
             stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1254" + " "*(len_blank +20) ,curses.A_STANDOUT)
             stdscr.refresh()
 
@@ -1337,6 +1362,7 @@ while StillRunning:
                     
                 file_clust_check.close()
 
+            stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
             stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1324" ,curses.A_STANDOUT)
             stdscr.refresh()
 
@@ -1443,6 +1469,7 @@ while StillRunning:
                 ismerging=True
                 
                 while not os.path.exists(path_job):
+                    stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
                     stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1430" + path_job ,curses.A_STANDOUT)
                     
                     stdscr.refresh()
@@ -1591,6 +1618,7 @@ while StillRunning:
                     UpdateOutput(output_bkg,an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
 
+    stdscr.addstr(python_logger, summary_block2, " "*50  ,curses.A_STANDOUT)
     stdscr.addstr(python_logger, summary_block2, "SubmittionConfig.py L1578" ,curses.A_STANDOUT)
             
     stdscr.refresh()

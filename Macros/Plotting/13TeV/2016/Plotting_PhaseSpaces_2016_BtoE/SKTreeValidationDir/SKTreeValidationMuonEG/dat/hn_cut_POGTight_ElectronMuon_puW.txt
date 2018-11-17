@@ -1,2 +1,0 @@
-ElectronMuon_puWPOGTight
-END

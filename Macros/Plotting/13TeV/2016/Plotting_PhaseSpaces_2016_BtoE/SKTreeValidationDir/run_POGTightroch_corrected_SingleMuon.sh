@@ -1,9 +1,0 @@
-cd SKTreeValidationSingleMuon/ 
-./MakeDataMCCompPlots Config/hnplots_periodCtoD_POGTightroch_corrected_SingleMuon.txt 
-./MakeDataMCCompPlots Config/hnplots_periodCtoD_POGTightroch_corrected_SingleMuon_noW.txt 
-./MakeDataMCCompPlots Config/hnplots_periodCtoD_POGTightroch_corrected_SingleMuon_IDW.txt 
-./MakeDataMCCompPlots Config/hnplots_periodCtoD_POGTightroch_corrected_SingleMuon_puW.txt 
-./MakeDataMCCompPlots Config/hnplots_periodCtoD_POGTightroch_corrected_SingleMuon_Trigger.txt 
-./MakeDataMCCompPlots Config/hnplots_periodCtoD_POGTightroch_corrected_SingleMuon_Wregion.txt 
-./MakeDataMCCompPlots Config/hnplots_periodCtoD_POGTightroch_corrected_SingleMuon_dijet.txt 
-cd -

@@ -1,6 +1,15 @@
 import os,getpass,filecmp
 from CleanUp import *
 
+def MakeDirectory(dirpath):
+    predir=dirpath
+    predir=predir.replace(os.getenv("yeartag"),"")
+    if not os.path.exists(predir):
+        os.system("mkdir " + predir)
+    if not os.path.exists(dirpath):
+        os.system("mkdir " + dirpath)
+
+
 path_jobpre="/data1/"
 
 if  "ui"  in str(os.getenv("HOSTNAME")):
@@ -12,28 +21,19 @@ LQANALYZER_LOG= str(os.getenv("LQANALYZER_LOG_PATH"))
 if not LQANALYZER_DIR == "None" :
 	datadir = LQANALYZER_DIR + "/data/"	
 	if not (os.path.exists(datadir)):
-		print "This is the first time running LQAnalyzer in this location"
-		print "Making data directory in $LQANALYZER_DIR"
-		os.system("mkdir " + datadir)
-        
+            print "This is the first time running LQAnalyzer in this location"
+            print "Making data directory in $LQANALYZER_DIR"
+            os.system("mkdir " + datadir)
+            
 	outfiledir= LQANALYZER_DIR +"/data/output/"
+
+        MakeDirectory(LQANALYZER_DIR +"/data/Luminosity/")
 	lumifiledir= LQANALYZER_DIR +"/data/Luminosity/"+ str(os.getenv("yeartag"))
-	if not os.path.exists(LQANALYZER_DIR +"/data/Luminosity/"):
-		os.system("mkdir " +LQANALYZER_DIR +"/data/Luminosity/")
-	if not os.path.exists(lumifiledir):
-		os.system("mkdir " + lumifiledir)
-	btagfiledir = LQANALYZER_DIR +"/data/BTag/"+ str(os.getenv("yeartag"))
-	if not os.path.exists(LQANALYZER_DIR +"/data/BTag/"):
-		os.system("mkdir " +LQANALYZER_DIR +"/data/BTag/")
-	if not os.path.exists(btagfiledir):
-		os.system("mkdir " + btagfiledir)
-
-	if not (os.path.exists(outfiledir)):
-		os.system("mkdir " + outfiledir)
-		print "Making data/output directory in $LQANALYZER_DIR"
-
-
-	 
+        MakeDirectory(lumifiledir)
+        MakeDirectory(LQANALYZER_DIR +"/data/BTag/")
+        MakeDirectory(LQANALYZER_DIR +"/data/BTag/"+ str(os.getenv("yeartag")))
+        MakeDirectory(outfiledir)
+        
 	if os.path.exists(os.getenv("LQANALYZER_DIR")+ "/nohup.out"):
 		os.system("rm " +os.getenv("LQANALYZER_DIR")+ "/nohup.out")
 
@@ -54,32 +54,25 @@ if not LQANALYZER_DIR == "None" :
             CleanUpLogs(path_jobpre+"CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs(os.getenv("LQANALYZER_BATCHLIB_PATH"))
 
-        localfiledir = os.getenv("LQANALYZER_FILE_DIR")
-	datasetfiledir = os.getenv("LQANALYZER_DATASETFILE_DIR")
-	txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
-	cltxtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/Cluster/"
-	seldir =os.getenv("LQANALYZER_DIR")+  "/CATConfig/SelectionConfig/"
-	os.system("cp " + localfiledir + "/Luminosity/triggers_catversion_"+str(os.getenv("CATVERSION"))+"* "  + lumifiledir)
-	os.system("cp " + localfiledir + "/Luminosity/lumi_catversion_"+str(os.getenv("CATVERSION"))+".txt "  + lumifiledir)
-	os.system("cp " + datasetfiledir + "/list_all_mc_"+str(os.getenv("CATVERSION"))+".sh " + txtfiledir)
-        if os.getenv("HOSTNAME") == "cms.snu.ac.kr":
-            list_sel= ["muons","electrons","jets","fatjets"]
-            for x in list_sel:
-                if not filecmp.cmp(localfiledir + "/Selection/"+str(x)+".sel",seldir+"/"+str(x)+".sel"):
-                    print "#"*50
-                    print "File "+str(x)+".sel is out of date...... Updating "
-                    print "Differences are:"
 
-                    os.system("diff " + localfiledir + "/Selection/"+str(x)+".sel " + seldir+"/"+str(x)+".sel")
-                    os.system("cp " + localfiledir + "/Selection/"+str(x)+".sel " + seldir)
-                    print "#"*50
-#        else:
-#            os.system("rm " + seldir  +"/electrons.sel") 
-#            while not os.path.exists(seldir  +"/electrons.sel"):
-#                os.system("scp 147.47.242.42:/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Selection/*.sel  " + seldir)
-                
-	#os.system("cp " + localfiledir + "/*.csv " + btagfiledir)
-	#os.system("source " +  os.getenv("LQANALYZER_DIR") + "/bin/IncludePrivateSamples.sh")
+
+        yeartags = ["80X", "94X"]
+
+        for yt in yeartags:
+            samples_version = str(os.getenv("CATVERSION"))
+            localfiledir = os.getenv("LQANALYZER_FILE_DIR")
+            datasetfiledir = os.getenv("LQANALYZER_DATASETFILE_DIR")
+            if yt == "94X":
+                localfiledir = os.getenv("LQANALYZER_FILE2017_DIR")
+                datasetfiledir = os.getenv("LQANALYZER_DATASETFILE2017_DIR")
+                samples_version = "v9-4-9v2"
+            
+            txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
+            os.system("cp " + localfiledir + "/Luminosity/triggers_catversion_"+str(os.getenv("CATVERSION"))+"* "  + lumifiledir)
+            os.system("cp " + localfiledir + "/Luminosity/lumi_catversion_"+str(os.getenv("CATVERSION"))+".txt "  + lumifiledir)
+            os.system("cp " + datasetfiledir + "/list_all_mc_"+samples_version+ ".sh " + txtfiledir)
+
+        
 else:
 	print "Area is not setup. Cannot make directories needed for analysis"
 

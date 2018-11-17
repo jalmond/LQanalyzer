@@ -1,4 +1,0 @@
-nopurw
-purw
-altpurw
-END

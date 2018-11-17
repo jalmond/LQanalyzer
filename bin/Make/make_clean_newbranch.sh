@@ -1,2 +1,4 @@
-make distclean
-make
+make_80x_fullclean
+make_80x
+make_94x_fullclean
+make_94x

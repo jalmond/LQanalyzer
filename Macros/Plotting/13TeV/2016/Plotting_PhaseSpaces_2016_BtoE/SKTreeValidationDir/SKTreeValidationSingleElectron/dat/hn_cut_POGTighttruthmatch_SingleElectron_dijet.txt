@@ -1,2 +1,0 @@
-SingleElectron_dijetPOGTighttruthmatch
-END

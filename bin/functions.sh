@@ -33,6 +33,8 @@ run_in_bkg="False"
 drawhists="False"
 setnjobs="False"
 submitallfiles="False"
+#treename="recoTree/SKFlat"
+run2017="True"
 function makeParseVariable() {
     if ! [ -z ${2} ] 
         then
