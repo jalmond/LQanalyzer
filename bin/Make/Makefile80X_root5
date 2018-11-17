@@ -1,0 +1,63 @@
+ # $Id: Makefile
+ ###########################################################################
+ # @Project: LQAnalyzer - ROOT-based analysis framework for Korea CMS      #
+ #                                                                         #
+ # @author John Almond       jalmond@cern.ch>           - SNU              #
+ # Top level Makefile for compiling all the LQAnalyer code                #
+ #                                                                         #
+ ###########################################################################
+
+all: tagcheck btag roch fakes Ntuplecore plotting selection analysis 
+
+Ntuplecore::
+	(cd LQCore/80X/Ntuplecore; make)
+
+roch::
+	(bash bin/Make/make_rocher_lib.sh 80X; cd ${LQANALYZER_DIR} )
+
+plotting::
+	(cd LQCore/80X/Plotting; make)
+
+selection::
+	(cd LQCore/80X/Selection; make)
+analysis::
+	(cd LQAnalysis/80X/AnalyzerTools; make)
+	(cd LQAnalysis/80X/Analyzers; make)
+	(cd LQAnalysis/80X/SKTreeMaker; make)
+	(cd LQAnalysis/80X/Validation; make)
+
+fakes::
+	(cd ${LQANALYZER_DIR}/LQAnalysis/80X/AnalyzerTools/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB80X_PATH} ;rm libHNCommonLeptonFakes80X.so ; cp ${LQANALYZER_DIR}/LQAnalysis/80X/AnalyzerTools/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes80X.so .; cd ${LQANALYZER_DIR} )
+
+
+btag::  
+	(bash bin/Make/make_btag_lib.sh 80X; cd ${LQANALYZER_DIR} )	
+
+tagcheck::
+	(source bin/CheckNewTagCompiler.sh ${CHECKTAGFILE})
+
+clean::
+	(cd LQCore/80X/Ntuplecore; make clean)
+	(cd LQCore/80X/Plotting; make clean)
+	(cd LQCore/80X/Selection; make clean)
+	(cd LQAnalysis/80X/AnalyzerTools; make clean)
+	(cd LQAnalysis/80X/Analyzers; make clean)
+	(cd LQAnalysis/80X/SKTreeMaker; make clean)
+	(cd LQAnalysis/80X/Validation; make clean)
+	(bash bin/Clean/clean_fake.sh 80X)
+	(bash bin/Clean/clean_rochor.sh 80X)
+	(bash bin/Clean/clean_btag.sh 80X)
+
+distclean::
+	(cd LQCore/80X/Ntuplecore; make distclean)
+	(cd LQCore/80X/Plotting; make distclean)
+	(cd LQCore/80X/Selection; make distclean)
+	(cd LQAnalysis/80X/AnalyzerTools; make distclean)
+	(cd LQAnalysis/80X/Analyzers; make distclean)
+	(cd LQAnalysis/80X/SKTreeMaker; make distclean)
+	(cd LQAnalysis/80X/Validation; make distclean)
+
+	(bash bin/Clean/clean_fake.sh 80X)
+	(bash bin/Clean/clean_rochor.sh 80X)
+	(bash bin/Clean/clean_btag.sh 80X)
+

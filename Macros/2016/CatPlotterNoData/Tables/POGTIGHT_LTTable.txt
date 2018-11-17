@@ -1,0 +1,24 @@
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lr@{\hspace{0.5mm}}c@{\hspace{0.5mm}}c@{\hspace{0.5mm}}l}
+\hline
+\hline
+Source & \multicolumn{4}{c}{} \\
+\hline
+DY&4856.9& $\pm$& 284.0&$^{+728.5}_{-728.5}$\\
+QCD&10707.1& $\pm$& 4328.3&$^{+2945.6}_{-2945.6}$\\
+Top&2788.9& $\pm$& 33.0&$^{+557.8}_{-557.8}$\\
+W+Jets&3185.9& $\pm$& 974.2&$^{+637.2}_{-637.2}$\\
+qcdbc&4118.4& $\pm$& 1818.2&$^{+1429.9}_{-1429.9}$\\
+\hline
+Total&25657.2& $\pm$&4803.2&$^{+3459.7}_{-3459.7}$\\
+\hline
+Data&  \multicolumn{4}{c}{$19046.0$}\\
+\hline
+Signficance&  \multicolumn{4}{c}{$-1.1\sigma$}\\
+\hline
+\hline
+\end{tabular}
+\caption{ Number of events with two opposite sign electrons (POG tight) with Z peak removed.}
+\end{center}
+\end{table}

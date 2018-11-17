@@ -1,0 +1,11 @@
+sktreemaker -a SKTreeMaker -S DATADILEP   -c v8-0-8 -m "808 samples"
+sktreemaker -a SKTreeMakerDiLep -S DATADILEP   -c v8-0-8  -m "808 samples"
+sktreemaker -a SKTreeMaker -S SinglePhoton  -n 300 -c v8-0-8 -m "808 samples" 
+sktreemaker -a SKTreeMaker -S SingleMuon  -n 300 -c v8-0-8 -m "808 samples" 
+sktreemaker -a SKTreeMaker -S SingleElectron  -n 300 -c v8-0-8 -m "808 samples" 
+#sktreemaker -a SKTreeMaker -S JetHT  -n 300 -c v8-0-8 -m "808 samples" 
+
+#sktreemaker -a SKTreeMaker -S SingleMuon  -n 300 -c v8-0-7 -m "remove trigger veto"
+#sktreemaker -a SKTreeMakerDiLep -S SingleMuon  -n 300 -c v8-0-7 -m "remove trigger veto" 
+#sktreemaker -a SKTreeMaker -S DoubleEG  -n 300 -c v8-0-7 -m "remove trigger veto"
+#sktreemaker -a SKTreeMakerDiLep -S DoubleEG  -n 300 -c v8-0-7 -m "remove trigger veto"

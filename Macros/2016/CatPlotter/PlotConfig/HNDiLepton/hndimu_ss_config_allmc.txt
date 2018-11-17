@@ -1,0 +1,4 @@
+## alias                 |   Legend                                            |  Legend alias     |  Color  | uncert. |
+DoubleMuon_SKnonprompt    |   Misid. Lepton Background                          |  DoubleMuon_SKnonprompt | 870  | 0.3 |
+MC   |  Diboson                                                |  diboson             |  kGreen     | 0.20     |
+END

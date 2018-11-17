@@ -1,0 +1,23 @@
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lr@{\hspace{0.5mm}}c@{\hspace{0.5mm}}c@{\hspace{0.5mm}}l}
+\hline
+\hline
+Source & \multicolumn{4}{c}{} \\
+\hline
+DY$\rightarrow$ ll; 10 < m(ll) < 50&19134.1& $\pm$& 249.1&$^{+3826.8}_{-3826.8}$\\
+DY$\rightarrow$ ll; m(ll) > 50&700513.1& $\pm$& 420.3&$^{+140102.6}_{-140102.6}$\\
+WZ,ZZ,WW&1245.1& $\pm$& 9.9&$^{+134.7}_{-134.7}$\\
+t$\bar{t}$,t/$\bar{t}$,t/$\bar{t}$W,t$\bar{t}$V&6278.7& $\pm$& 32.8&$^{+1436.4}_{-1436.4}$\\
+\hline
+Total&727171.0& $\pm$&489.8&$^{+140162.3}_{-140162.3}$\\
+\hline
+Data&  \multicolumn{4}{c}{$704606.0$}\\
+\hline
+Signficance&  \multicolumn{4}{c}{$-0.2\sigma$}\\
+\hline
+\hline
+\end{tabular}
+\caption{Number of events containing two prompt electrons and two jets, with Z peak removed, in 19 fb$^{-1}$ of CMS data at 8~TeV}
+\end{center}
+\end{table}

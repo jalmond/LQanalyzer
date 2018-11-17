@@ -1,0 +1,23 @@
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lr@{\hspace{0.5mm}}c@{\hspace{0.5mm}}c@{\hspace{0.5mm}}l}
+\hline
+\hline
+Source & \multicolumn{4}{c}{} \\
+\hline
+Diboson&897.0& $\pm$& 15.6&$^{+164.2}_{-164.2}$\\
+Higgs&0.5& $\pm$& 0.0&$^{+0.1}_{-0.1}$\\
+Misid. Lepton Background&62.9& $\pm$& 3.0&$^{+21.4}_{-21.4}$\\
+Triboson&10.2& $\pm$& 0.5&$^{+2.1}_{-2.1}$\\
+\hline
+Total&970.6& $\pm$&15.9&$^{+165.6}_{-165.6}$\\
+\hline
+Data&  \multicolumn{4}{c}{$939.0$}\\
+\hline
+Signficance&  \multicolumn{4}{c}{$-0.2\sigma$}\\
+\hline
+\hline
+\end{tabular}
+\caption{ Number of events with two opposite sign muons.}
+\end{center}
+\end{table}

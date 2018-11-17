@@ -1,0 +1,25 @@
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lr@{\hspace{0.5mm}}c@{\hspace{0.5mm}}c@{\hspace{0.5mm}}l}
+\hline
+\hline
+Source & \multicolumn{4}{c}{} \\
+\hline
+DY$\rightarrow$ ee&22.6& $\pm$& -99999.0&$^{+3.4}_{-3.4}$\\
+DY$\rightarrow$ ee&22.6& $\pm$& -99999.0&$^{+3.4}_{-3.4}$\\
+Diboson&732.8& $\pm$& 67.4&$^{+98.2}_{-98.2}$\\
+Higgs&0.7& $\pm$& -99999.0&$^{+0.1}_{-0.1}$\\
+Top&108.1& $\pm$& 2.8&$^{+14.9}_{-14.9}$\\
+Triboson&22.6& $\pm$& 1.0&$^{+3.9}_{-3.9}$\\
+\hline
+Total&909.4& $\pm$&173203.4&$^{+99.5}_{-99.5}$\\
+\hline
+Data&  \multicolumn{4}{c}{$1430.0$}\\
+\hline
+Signficance&  \multicolumn{4}{c}{$+0.0\sigma$}\\
+\hline
+\hline
+\end{tabular}
+\caption{ Number of events with two same-sign muon and two jets.}
+\end{center}
+\end{table}
