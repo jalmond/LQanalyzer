@@ -14,9 +14,9 @@ list_nonsig=options.z
 
 
 if list_master=="":
-    list_master =os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_snu_CAT_mc_v8-0-8.txt"
-    list_sig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_snu_sig_CAT_mc_v8-0-8.txt"                                                                                                    
-    list_nonsig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_snu_nonsig_CAT_mc_v8-0-8.txt"                                                                                                 
+    list_master =os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_kisti_CAT_mc_v8-0-8.txt"
+    list_sig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_kisti_sig_CAT_mc_v8-0-8.txt"                                                                                                    
+    list_nonsig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_kisti_nonsig_CAT_mc_v8-0-8.txt"                                                                                                 
 
 arr_master=[]
 arr_sig=[]
@@ -77,8 +77,8 @@ for r in arr_master:
 
 
 
-newlist_sig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_snu_sig_CAT_mc_v8-0-8new.txt"                                                                                                 
-newlist_nonsig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_snu_nonsig_CAT_mc_v8-0-8new.txt"
+newlist_sig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_kisti_sig_CAT_mc_v8-0-8new.txt"                                                                                                 
+newlist_nonsig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_kisti_nonsig_CAT_mc_v8-0-8new.txt"
 
 
 r_newlist_sig=open(newlist_sig,"w")
@@ -181,9 +181,9 @@ for s in arrns_flat:
     print s
 
 
-mainlist_sig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_snu_sig_CAT_mc_v8-0-8.txt"                                                                                                    
+mainlist_sig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_kisti_sig_CAT_mc_v8-0-8.txt"                                                                                                    
 
-mainlist_nonsig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_snu_nonsig_CAT_mc_v8-0-8.txt"
+mainlist_nonsig=os.getenv("LQANALYZER_DATASET_DIR")+"/AnalysisFiles/datasets_kisti_nonsig_CAT_mc_v8-0-8.txt"
 
 
 print "Change in " + mainlist_sig +":"

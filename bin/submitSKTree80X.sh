@@ -4,13 +4,14 @@
 if [[ $HOSTNAME == "ui"* ]];
 then
     source    /cms/scratch/SNU/CATAnalyzer/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${CATVERSION}.sh
+    cp $LQANALYZER_DATASETFILE_DIR/datasets_kisti* $LQANALYZER_DIR/LQRun/txt/
+    cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
+
 else
     source    /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${CATVERSION}.sh
+    cp $LQANALYZER_DATASETFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
+    cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 fi
-
-cp $LQANALYZER_DATASETFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
-cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
-
 
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim"  "SKTree_HNDiLepSkim" "SKTree_HNFakeSkim" "SKTree_HNFatJetSkim"  "SKTree_TriLepSkim" "SKTree_SSLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton" "JetHT")
@@ -120,15 +121,13 @@ source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
 ### setup list of samples and other useful functions
 if [[ $HOSTNAME == "ui"* ]];
 then
-    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_nonsig_"
-    OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
+    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_kisti_nonsig_"
+    OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_kisti_"
 else
     TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_nonsig_"
     OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
 fi
 source submit_setup80X.sh
-
-
 
 
 if [[ $submit_sampletag  == "" ]];

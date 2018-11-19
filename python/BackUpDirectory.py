@@ -4,8 +4,6 @@ from datetime import timedelta
 path_admin = os.getenv("LQANALYZER_MOD")+"/config.txt"
 
 path_jobpre="/data1/"
-if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    path_jobpre="/data2/"
 
 def checkLumiFile(backupdir,backup_datelist):
     
@@ -23,9 +21,15 @@ def checkLumiFile(backupdir,backup_datelist):
 
     catversion=os.getenv("CATVERSION")
     lumidir=os.getenv("LQANALYZER_DATASETFILE_DIR")
-    currentfile=lumidir+"/datasets_snu_CAT_mc_" + catversion+".txt"
+
+    host_tag="snu"
+    isKisti = ("ui" in str(os.getenv("HOSTNAME")))
+    if isKisti:
+        host_tag="kisti"
+
+    currentfile=lumidir+"/datasets_"+host_tag+"_CAT_mc_" + catversion+".txt"
     
-    backupfile = lumidir+"/BackUp/"+backup_datelist[len(backup_datelist)-1] + "/datasets_snu_CAT_mc_" + catversion+".txt"
+    backupfile = lumidir+"/BackUp/"+backup_datelist[len(backup_datelist)-1] + "/datasets_"+host_tag+"_CAT_mc_" + catversion+".txt"
     if not os.path.exists( currentfile):
         print currentfile + " does not exist"
 

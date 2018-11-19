@@ -11,34 +11,34 @@ all: tagcheck btag roch fakes Ntuplecore plotting selection analysis
 
 Ntuplecore::
 	(cd LQCore/80X/Ntuplecore; make)
-	(python python/PCM.py -x LQCore/80X/Ntuplecore/src/Ntuplecore_Dict_rdict.pcm)
+	(python python/PCM.py -x LQCore/80X/Ntuplecore/src/Ntuplecore80X_Dict_rdict.pcm)
 
 roch::
 	(bash bin/Make/make_rocher_lib.sh 80X; cd ${LQANALYZER_DIR} )
 
 plotting::
 	(cd LQCore/80X/Plotting; make)
-	(python python/PCM.py -x LQCore/80X/Plotting/src/Plotting_Dict_rdict.pcm)
+	(python python/PCM.py -x LQCore/80X/Plotting/src/Plotting80X_Dict_rdict.pcm)
 
 selection::
 	(cd LQCore/80X/Selection; make)
-	(python python/PCM.py -x LQCore/80X/Selection/src/Selection_Dict_rdict.pcm)
+	(python python/PCM.py -x LQCore/80X/Selection/src/Selection80X_Dict_rdict.pcm)
 analysis::
 	(cd LQAnalysis/80X/AnalyzerTools; make)
 	(cd LQAnalysis/80X/Analyzers; make)
 	(cd LQAnalysis/80X/SKTreeMaker; make)
 	(cd LQAnalysis/80X/Validation; make)
-	(python python/PCM.py -x LQAnalysis/80X/AnalyzerTools/src/AnalyzerTools_Dict_rdict.pcm)
-	(python python/PCM.py -x LQAnalysis/80X/Analyzers/src/LQAnalysis_Dict_rdict.pcm)
-	(python python/PCM.py -x LQAnalysis/80X/SKTreeMaker/src/SKTreeMaker_Dict_rdict.pcm)
-	(python python/PCM.py -x LQAnalysis/80X/Validation/src/Validation_Dict_rdict.pcm)
+	(python python/PCM.py -x LQAnalysis/80X/AnalyzerTools/src/AnalyzerTools80X_Dict_rdict.pcm)
+	(python python/PCM.py -x LQAnalysis/80X/Analyzers/src/LQAnalysis80X_Dict_rdict.pcm)
+	(python python/PCM.py -x LQAnalysis/80X/SKTreeMaker/src/SKTreeMaker80X_Dict_rdict.pcm)
+	(python python/PCM.py -x LQAnalysis/80X/Validation/src/Validation80X_Dict_rdict.pcm)
 
 fakes::
-	(cd ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
+	(cd ${LQANALYZER_DIR}/LQAnalysis/80X/AnalyzerTools/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/LQAnalysis/80X/AnalyzerTools/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes80X.so .; cd ${LQANALYZER_DIR} )
 
 
 btag::  
-	(bash bin/Make/make_btag_lib.sh; cd ${LQANALYZER_DIR} )	
+	(bash bin/Make/make_btag_lib.sh 80X; cd ${LQANALYZER_DIR} )	
 
 tagcheck::
 	(source bin/CheckNewTagCompiler.sh ${CHECKTAGFILE})

@@ -37,14 +37,14 @@ def CheckRunningKistiBatch(filename,job_id, output,i,  messagelog):
     
     
     
-    sys.stdout.write('\r ' + job_id  + '\n')
+    #sys.stdout.write('\r ' + job_id  + '\n')
     job_id_global   = job_id.replace("."," ")
     sjob_id_global  = job_id_global.split()
     job_id_global   = sjob_id_global[0]
     n_held=11
     for line in open(filename, 'r'):
         if job_id_global  in line:
-            sys.stdout.write('\r ' + job_id_global + ' : ' + line + '\n')
+            #sys.stdout.write('\r ' + job_id_global + ' : ' + line + '\n')
             running = 1
             entries = line.split()
                 #### check if job is held, if so kill job

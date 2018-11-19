@@ -10,7 +10,6 @@ from optparse import OptionParser
 
 path_jobpre="/data1/"
 
-
 isKisti = ("ui" in str(os.getenv("HOSTNAME")))
 
 if isKisti:
@@ -341,10 +340,15 @@ catversions = ["v8-0-8"]
 
 sample_catversion = ""
 output_catversion=os.getenv("CATVERSION")
+
+host_tag="snu"
+if isKisti:
+    host_tag="kisti"
+
 if "HeavyNeutrino" in sample or "Majorana" in sample or "HN" in  sample or "CHT" in sample or "TTToH" in sample or "WR" in sample:
-    datasetfile="datasets_snu_sig_CAT_mc_"
+    datasetfile="datasets_"+host_tag+"_sig_CAT_mc_"
 else:
-    datasetfile="datasets_snu_nonsig_CAT_mc_"
+    datasetfile="datasets_"+host_tag+"_nonsig_CAT_mc_"
 
 
 
@@ -365,12 +369,12 @@ while inDS == "":
         if mc:
             filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/'+datasetfile +sample_catversion +  '.txt'
             if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_mc_' +sample_catversion +  '.txt'
+                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_"+host_tag+"_cluster_CAT_mc_' +sample_catversion +  '.txt'
 
         else:
-            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
+            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_'+host_tag+'_CAT_data_'  +sample_catversion +'.txt'
             if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_data_'  +sample_catversion +'.txt'
+                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_'+host_tag+'_cluster_CAT_data_'  +sample_catversion +'.txt'
     else:
         filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
 

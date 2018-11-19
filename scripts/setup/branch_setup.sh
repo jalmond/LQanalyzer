@@ -106,6 +106,7 @@ python ${LQANALYZER_DIR}/python/BackUpDirectory.py
 ### setup email list 
 python ${LQANALYZER_DIR}/python/SetupEmailList.py
 
+
 if [ -z ${ROOTSYS} ] ; then
     echo "Warning: ROOT environment doesn't seem to be configured!"
     echo "Add these lines to your ~/.bashrc file to remove this warning in future."
