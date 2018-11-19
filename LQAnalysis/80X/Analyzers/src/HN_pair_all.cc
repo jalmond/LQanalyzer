@@ -239,7 +239,7 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
 	    snu::KParticle ll = muons[0] + muons[1];
             double M_ll = ll.M();
             if(fabs(ll.M() - 90.1) < 10.){
-              float ee_weight = ev_weight* MMWeight(muons, "EL_HN_NN_Tight");
+              float ee_weight = ev_weight* MMWeight(muons, "MUON_HN_NN_HighPt_TrkIso", true);
               counter("ZCR_HNPair", ev_weight);
 
               FillCLHist(sighist_ee, "ZCR_HNPair", eventbase->GetEvent(), muons, electrons,jets, alljets, fatjets, ee_weight);
@@ -255,7 +255,7 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
 	    snu::KParticle ll = muons[0] + muons[1];
             double M_ll = ll.M();
             if(fabs(ll.M()) > 55.){
-              float ee_weight = ev_weight* MMWeight(muons, "EL_HN_NN_Tight");
+              float ee_weight = ev_weight* MMWeight(muons, "MUON_HN_NN_HighPt_TrkIso",true);
 
               int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
               float MET = eventbase->GetEvent().PFMET();
@@ -269,10 +269,9 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
         }
       }
 
-    }
   }
-
-
+  
+  return;
   
 }
 

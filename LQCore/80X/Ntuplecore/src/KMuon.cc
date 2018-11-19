@@ -534,7 +534,7 @@ bool KMuon::PassCustomID(TString IDlabel){
   // -- ID HNPair Tight
   else if (CheckIDList(IDlabel , "MUON_HN_NN_HighPt_TrkIso", IDlist)){
     
-    if(!this->PassCustomID("MUON_HNZZ_HighPt"))  pass=false;
+    if(!this->PassCustomID("MUON_HN_NN_HighPt"))  pass=false;
     if(IsoValue("reltrkiso") > GetIDIso(IDlabel,"reltrkiso") )pass=false;                                                                                                                                                                                         
 
     return pass;
@@ -565,7 +565,7 @@ Double_t KMuon::GetIDIso(TString IDlabel, TString isotype){
   ///cutstring can be reliso_03, reliso_04, miniiso_03, miniiso_04 ,reltrkiso
 
   TString cutstring="";
-  if(IDlabel == "HighPt_TrkIso"){
+  if(IDlabel == "MUON_HN_NN_HighPt_TrkIso"){
     cutstring = "reltrkiso";
     if (cutstring != isotype) return 10000000000.;
     return 0.1;

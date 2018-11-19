@@ -53,11 +53,11 @@ export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 ## setup directory to store analysis rootfiles                                                                                                                                                                                                                                  
 export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
-export IDFILEDIR=${LQANALYZER_DIR}/data/ID/${yeartag}/
-export LUMIFILEDIR=${LQANALYZER_DIR}/data/Luminosity/${yeartag}/
-export TRIGGERFILEDIR=${LQANALYZER_DIR}/data/Trigger/${yeartag}/
-export BTAGFILEDIR=${LQANALYZER_DIR}/data/BTag/${yeartag}/
-export PILEUPFILEDIR=${LQANALYZER_DIR}/data/Pileup/${yeartag}/
+export IDFILEDIR=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/ID/
+export LUMIFILEDIR=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/
+export TRIGGERFILEDIR=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Trigger
+export BTAGFILEDIR=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/BTag/
+export PILEUPFILEDIR=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Pileup/
 
 export LQANALYZER_OUTPUT_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
 

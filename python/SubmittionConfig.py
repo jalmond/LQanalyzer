@@ -1760,7 +1760,7 @@ if len(output_warning) > 0:
 
 if runningData and  not "SKTreeMaker" in cycle:
 
-    file_read_counter = open(path_jobpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/Hist.txt","r")
+    file_read_counter = open(an_jobpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/Hist.txt","r")
     nhists=0
     for rc_line in file_read_counter:
 

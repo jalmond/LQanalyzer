@@ -65,13 +65,13 @@ if not os.path.exists(tag_dir):
     yeartags = ["80X", "94X"]
     
     for yt in yeartags:
-        snulumifiledir = os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/"+yeartag
-        snufakefiledir = os.getenv("LQANALYZER_DIR")+ "/data/Fake/"+yeartag
-        snutriggerfiledir = os.getenv("LQANALYZER_DIR")+ "/data/Trigger/"+yeartag
-        snupileupfiledir= os.getenv("LQANALYZER_DIR")+ "/data/Pileup/"+yeartag
-        snuidfiledir= os.getenv("LQANALYZER_DIR")+ "/data/ID/"+yeartag
-        snubtagfiledir = os.getenv("LQANALYZER_DIR")+ "/data/BTag/"+yeartag
-        rochdir=os.getenv("LQANALYZER_DIR")+ "/data/rochester/"+yeartag
+        snulumifiledir = os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/"+yt
+        snufakefiledir = os.getenv("LQANALYZER_DIR")+ "/data/Fake/"+yt
+        snutriggerfiledir = os.getenv("LQANALYZER_DIR")+ "/data/Trigger/"+yt
+        snupileupfiledir= os.getenv("LQANALYZER_DIR")+ "/data/Pileup/"+yt
+        snuidfiledir= os.getenv("LQANALYZER_DIR")+ "/data/ID/"+yt
+        snubtagfiledir = os.getenv("LQANALYZER_DIR")+ "/data/BTag/"+yt
+        rochdir=os.getenv("LQANALYZER_DIR")+ "/data/rochester/"+yt
         localfiledir = os.getenv("LQANALYZER_FILE_DIR")
         samples_version = str(os.getenv("CATVERSION"))
 
