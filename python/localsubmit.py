@@ -1054,6 +1054,8 @@ while not JobSuccess:
                     number_of_cores=0
                     JobSuccess=True
                     JobOutput=False
+                    sys.stdout.write('\r running_status == 2 \n')
+                                            
                 if running_status == 1:
                     job_finished = False
                     
@@ -1101,7 +1103,7 @@ while not JobSuccess:
                         JobOutput=False
                         print "Job " + str(job_id_c) + " is not running or in queue. Output " + str(check_outfile)+ " is missing."
                         print "Most likely a crash occurred.  So killing all jobs." 
-                        sys.stdout.write('\r check_outfile = ' + check_outfile + ' i = ' + str(i-1) + ' str(job_id_c) = ' + str(job_id_c) + '\n')
+                        sys.stdout.write('\r check_outfile  FAILED = ' + check_outfile + ' i = ' + str(i-1) + ' str(job_id_c) = ' + str(job_id_c) + '\n')
                         
                         os.system("source " + output+ "JobKill.sh")
 

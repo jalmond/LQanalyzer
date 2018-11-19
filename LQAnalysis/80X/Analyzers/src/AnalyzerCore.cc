@@ -2686,7 +2686,7 @@ void AnalyzerCore::TruthPrintOut(snu::KElectron electron){
   m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
 
-  m_logger << INFO<< "electron pt = " << m_logger << INFO<< electron.Pt() << LQLogger::endmsg;
+  m_logger << INFO<< "electron pt = " << electron.Pt() << LQLogger::endmsg;
 
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
 
@@ -4432,7 +4432,7 @@ int AnalyzerCore::GetLeptonType(int TruthIdx, std::vector<snu::KTruth>& TruthCol
   if( !(fabs(TruthColl.at(TruthIdx).PdgId())==11 || fabs(TruthColl.at(TruthIdx).PdgId())==13) ) return 0;
 
 
-  if(Option=="DEBUG") m_logger << DEBUG << "In GetLeptonType function" << LQLogger::endmsg;
+  //  if(Option=="DEBUG") m_logger << DEBUG << "In GetLeptonType function" << LQLogger::endmsg;
 
  
   int LeptonType=0;
@@ -4520,7 +4520,7 @@ int AnalyzerCore::GetLeptonType(snu::KElectron El, std::vector<snu::KTruth>& Tru
 
   
   //// line to stop warning when compiling
-  if(Option=="DEBUG") m_logger << DEBUG << "In GetLeptonType function"<<LQLogger::endmsg;
+  //if(Option=="DEBUG") m_logger << DEBUG << "In GetLeptonType function"<<LQLogger::endmsg;
 
   int LeptonType=0;
   int MatchedTruthIdx = GenMatchedIdx(El,TruthColl);
@@ -4616,7 +4616,7 @@ int AnalyzerCore::GetLeptonType(snu::KMuon Mu, std::vector<snu::KTruth>& TruthCo
 
 
   //// line to stop warning when compiling                                                                                                                                                                  
-  if(Option=="DEBUG") m_logger << DEBUG << "In GetLeptonType function"<<LQLogger::endmsg;
+  //if(Option=="DEBUG") m_logger << DEBUG << "In GetLeptonType function"<<LQLogger::endmsg;
 
   int LeptonType=0;
   int MatchedTruthIdx = GenMatchedIdx(Mu,TruthColl);

@@ -316,24 +316,27 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
         os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir)
         os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.so  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
         #os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.pcm  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
+
+    yeartag="80X"
+
         
     config='   //### Load Libraries\n'
     config+='   R__LOAD_LIBRARY(libPhysics.so);\n'
     config+='   R__LOAD_LIBRARY(libTree.so);\n'
     config+='   R__LOAD_LIBRARY(libHist.so);\n'
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libNtuplecore.so);\n'
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection.so);\n'
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting.so);\n'
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes.so);\n'
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor2016.so);\n'
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTagSFUtil.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libNtuplecore'+yeartag+'.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection'+yeartag+'.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting'+yeartag+'.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes'+yeartag+'.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor'+yeartag+'.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTag'+yeartag+'SFUtil.so);\n'
     for lib in libraries:
         config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/' + lib + ' + .so);\n'
         
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalyzerTools.so);\n'
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libLQAnalysis.so);\n'
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTreeMaker.so);\n'
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libValidation.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalyzerTools'+yeartag+'.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libLQAnalysis'+yeartag+'.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTreeMaker'+yeartag+'.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libValidation'+yeartag+'.so);\n'
     
     config+='   R__LOAD_LIBRARY(libPyROOT.so);\n'
 
