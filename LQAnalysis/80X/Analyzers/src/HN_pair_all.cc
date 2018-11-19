@@ -92,10 +92,7 @@ void HN_pair_all::ExecuteEvents()throw( LQError ){
 
   // -- Set channel 
   _mm_channel =   isData ?  (k_channel.Contains("DoubleMuon")) : true ;
-  _m_channel =   isData ?  (k_channel.Contains("SingleMuon")) : false ;
   _ee_channel =   isData ?  (k_channel.Contains("DoubleEG")) : true ;
-  _e_channel =   isData ?  (k_channel.Contains("SingleElectron")) : false ;
-  _em_channel =   isData ?  (k_channel.Contains("MuonEG")) : true ;
 
   
   // -- call truth particle
@@ -137,11 +134,6 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
   bool mu50_pass = PassTriggerOR(mu50_trignames); // for mumu and emu channel
   bool diele_pass = PassTrigger(diele_trig1); // for ee channel
 
-  /// change weight to scale to trigger lumiOB
-  if(diele_pass) ev_weight = ev_weight*WeightByTrigger(diele_trig1,TargetLumi);
-  else return;
-  
-  counter("HLT_DoublePhoton60_v", ev_weight);
 
 
   // -- Get Veto Electrons, and store number of them
@@ -150,15 +142,17 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
   std::vector<snu::KElectron> electrons        = GetElectrons(TString("EL_HN_NN_Tight"),el_syst,65., 2.5);
   std::vector<snu::KElectron> electrons_all    = GetElectrons(TString(""),el_syst,10., 2.5);
 
-  int N_veto_ele = electrons_veto.size();
-  int N_electron = electrons.size();
+  int N_veto_el = electrons_veto.size();
+  int N_el = electrons.size();
   
   // -- Get Veto Muons, return if there are not exactly two veto muons
 
   std::vector<snu::KMuon> muons_veto = GetMuons("MUON_HN_NN_HighPt", true, mu_syst,10., 2.5);
+  std::vector<snu::KMuon> muons = GetMuons("MUON_HN_NN_HighPt_TrkIso", true, mu_syst,10., 2.5);
   CorrectedMETRochester(muons_veto);
 
   int N_veto_muon = muons_veto.size();
+  int N_muon = muons.size();
 
   
   /// GetJets
@@ -179,46 +173,106 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
   float MET = eventbase->GetEvent().PFMET();
     
 
-  
-  // CR Z  ee
-  if(N_veto_muon == 0 && N_veto_ele == 2 && N_electron == 2){
-    counter("DiEl", ev_weight);
-    if(!SameCharge(electrons)){
-      if(electrons[1].Pt() > 65){
-	snu::KParticle ll = electrons[0] + electrons[1];
-	double M_ll = ll.M();
-	if(fabs(ll.M() - 90.1) < 10.){
-	  float ee_weight = ev_weight* EEWeight(electrons, "EL_HN_NN_Tight");
-	  counter("ZCR_HNPair", ev_weight);
-	  
-	  FillCLHist(sighist_ee, "ZCR_HNPair", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
 
+  /// change weight to scale to trigger lumiOB                                                                                                                                                  
+
+  if(_ee_channel){
+    if(diele_pass){
+      ev_weight = ev_weight*WeightByTrigger(diele_trig1,TargetLumi);
+      counter("HLT_DoublePhoton60_v", ev_weight);
+
+  
+      // CR Z  ee
+      if(N_veto_muon == 0 && N_veto_el == 2 && N_el == 2){
+	counter("DiEl", ev_weight);
+	if(!SameCharge(electrons)){
+	  if(electrons[1].Pt() > 65){
+	    snu::KParticle ll = electrons[0] + electrons[1];
+	    double M_ll = ll.M();
+	    if(fabs(ll.M() - 90.1) < 10.){
+	      float ee_weight = ev_weight* EEWeight(electrons, "EL_HN_NN_Tight");
+	      counter("ZCR_HNPair", ev_weight);
+	      
+	      FillCLHist(sighist_ee, "ZCR_HNPair", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
+	      
+	    }
+	  }
 	}
       }
+      
+      if(N_veto_muon == 0 && N_veto_el == 2 && N_el == 2){
+	if(!SameCharge(electrons)){
+	  if(electrons[1].Pt() > 65){
+	    snu::KParticle ll = electrons[0] + electrons[1];
+	    double M_ll = ll.M();
+	    if(fabs(ll.M()) > 55.){
+	      float ee_weight = ev_weight* EEWeight(electrons, "EL_HN_NN_Tight");
+	      
+	      int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
+	      float MET = eventbase->GetEvent().PFMET();
+	      
+	      if(nbjet > 0 && MET > 40){ 
+		counter("TTCR_HNPair", ev_weight);
+		FillCLHist(sighist_ee, "TTCR_HNPair", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
+	      }
+	    }
+	  }
+	}
+      }
+      
     }
   }
   
-  if(N_veto_muon == 0 && N_veto_ele == 2 && N_electron == 2){
-    if(!SameCharge(electrons)){
-      if(electrons[1].Pt() > 65){
-	snu::KParticle ll = electrons[0] + electrons[1];
-        double M_ll = ll.M();
-        if(fabs(ll.M()) > 55.){
-          float ee_weight = ev_weight* EEWeight(electrons, "EL_HN_NN_Tight");
+  if(_mm_channel){
+    if(mu50_pass);
 
-	  int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
-	  float MET = eventbase->GetEvent().PFMET();
-	  
-	  if(nbjet > 0 && MET > 40){ 
-            counter("TTCR_HNPair", ev_weight);
-	    FillCLHist(sighist_ee, "TTCR_HNPair", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
-	  }
+      ev_weight = ev_weight * max(WeightByTrigger(mu50_trig1,TargetLumi), WeightByTrigger(mu50_trig2,TargetLumi));
+
+      counter("HLT_Mu50_v", ev_weight);
+
+
+      // CR Z  mm                                                                                                                                                                           
+      if(N_veto_el == 0 && N_veto_muon == 2 && N_muon == 2){
+        counter("DiMu", ev_weight);
+        if(!SameCharge(muons)){
+          if(muons[1].Pt() > 65){
+	    snu::KParticle ll = muons[0] + muons[1];
+            double M_ll = ll.M();
+            if(fabs(ll.M() - 90.1) < 10.){
+              float ee_weight = ev_weight* MMWeight(muons, "EL_HN_NN_Tight");
+              counter("ZCR_HNPair", ev_weight);
+
+              FillCLHist(sighist_ee, "ZCR_HNPair", eventbase->GetEvent(), muons, electrons,jets, alljets, fatjets, ee_weight);
+
+            }
+          }
         }
       }
+
+      if(N_veto_el == 0 && N_veto_muon == 2 && N_muon == 2){
+        if(!SameCharge(muons)){
+          if(muons[1].Pt() > 65){
+	    snu::KParticle ll = muons[0] + muons[1];
+            double M_ll = ll.M();
+            if(fabs(ll.M()) > 55.){
+              float ee_weight = ev_weight* MMWeight(muons, "EL_HN_NN_Tight");
+
+              int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
+              float MET = eventbase->GetEvent().PFMET();
+
+              if(nbjet > 0 && MET > 40){
+                counter("TTCR_HNPair", ev_weight);
+                FillCLHist(sighist_ee, "TTCR_HNPair", eventbase->GetEvent(), muons, electrons,jets, alljets, fatjets, ee_weight);
+              }
+            }
+          }
+        }
+      }
+
     }
   }
 
-  
+
   
 }
 
