@@ -8,7 +8,11 @@ def MakeDirectory(dirpath):
     if not os.path.exists(dirpath):
         os.system("mkdir " + dirpath)
 
+
+#### setup env variables
 binDir = os.getenv("LQANALYZER_DIR")+ "/bin/"
+
+### check branch info
 fr = open(binDir + 'Branch.txt', 'r')
 sline=0
 for line in fr:
@@ -19,110 +23,83 @@ for line in fr:
         print "..."
     sline=sline+1
 
-print "Running on tag : " +  os.getenv("CATTAG")    
+print "Running on git tag : " +  os.getenv("CATTAG")    
    
 
-if os.path.exists("LQRun/Macros/"):
-    os.system("rm -r LQRun/Macros/")
-if os.path.exists("LQRun/job_output/"):
-    print "Cleaning up directory that failed to be removed by git merge"
-    os.system("rm -r LQRun/job_output/")
-if os.path.exists("LQRun/runJob_1.C"):
-    print "Cleaning up file that failed to be removed by git merge"
-    os.system("rm LQRun/runJob_1.C")
-if os.path.exists("LQCycle/"):
-    print "Cleaning up directory that failed to be removed by git merge"
-    os.system("rm -r LQCycle/")
-
 tag_dir  = os.getenv("LQANALYZER_LIB_PATH")+ "/" + os.getenv("CATTAG");
-yeartag= str(os.getenv("yeartag"))
 
 localfiledir = os.getenv("LQANALYZER_FILE_DIR")
-snufiledir = os.getenv("FILEDIR")
-snulumifiledir = os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/"+yeartag
-snufakefiledir = os.getenv("LQANALYZER_DIR")+ "/data/Fake/"+yeartag
-snutriggerfiledir = os.getenv("LQANALYZER_DIR")+ "/data/Trigger/"+yeartag
-snupileupfiledir= os.getenv("LQANALYZER_DIR")+ "/data/Pileup/"+yeartag
-snuidfiledir= os.getenv("LQANALYZER_DIR")+ "/data/ID/"+yeartag
-snubtagfiledir = os.getenv("LQANALYZER_DIR")+ "/data/BTag/"+yeartag
-rochdir=os.getenv("LQANALYZER_DIR")+ "/data/rochester/"+yeartag
 
 txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
-old_lib_slc5=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5/"
-old_lib_slc6=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6/"
-old_lib_machine_1=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5_cms2/"
-old_lib_machine_2=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5_cms3/"
-old_lib_machine_3=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5_cms4/"
-old_lib_machine_4=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6_cms5/"
-old_lib_machine_5=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6_cms6/"
-old_lib_machine_6=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6_cms1/"
 
 if not os.path.exists(tag_dir):
 
+    ####  NEW GIT TAG
+    
     libpath=os.getenv("LQANALYZER_LIB_PATH")
+
     if os.path.exists(libpath):
         os.system("rm -r " + libpath)
         os.system("mkdir  " +libpath)
-    os.system("mkdir " + tag_dir)
-    
-    if  "ui" in str(os.getenv("HOSTNAME")):
-        if not os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")):
-            os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH"))
+
+    MakeDirectory(tag_dir)
             
-        
-    if not os.path.exists("/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
-        if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-            os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
-    if not os.path.exists("/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
-        if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-            os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
-    
-    if  "ui" in str(os.getenv("HOSTNAME")):
-        if  not os.path.exists("/cms/scratch/SNU/CATAnalyzer/" + os.getenv("USER")):
-            os.system("mkdir " + "/cms/scratch/SNU/CATAnalyzer/" + os.getenv("USER"))
-        if  not os.path.exists("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/" + os.getenv("USER")):
-            os.system("mkdir /cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/" + os.getenv("USER"))
+    if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        MakeDirectory("/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
+        MakeDirectory("/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
+
+    else:
+        MakeDirectory("/cms/scratch/SNU/CATAnalyzer/" + os.getenv("USER"))
+        MakeDirectory("/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/" + os.getenv("USER"))
+        MakeDirectory(os.getenv("LQANALYZER_BATCHLIB_PATH"))
     
 
     print "Copying all latest rootfiles for use in analysis"
 
+
     if not os.path.exists(os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/80X/") or not os.path.exists(os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/76X/"):
         os.system("rm -r " + os.getenv("LQANALYZER_DIR")+ "/data/")
+
     MakeDirectory((os.getenv("LQANALYZER_DIR")+ "/data/"))
-    MakeDirectory(snulumifiledir)
-    os.system("cp " + localfiledir + "/Luminosity/*"+str(os.getenv("CATVERSION"))+".txt " + snulumifiledir)
-    MakeDirectory(snufakefiledir)
-    os.system("cp " + localfiledir + "/Fake/*.root " + snufakefiledir)
-    MakeDirectory(snutriggerfiledir)
-    os.system("cp " + localfiledir + "/Trigger/*.root " + snutriggerfiledir)
-    os.system("cp " + localfiledir + "/Trigger/*.txt " + snutriggerfiledir)
-    MakeDirectory(snupileupfiledir)
-    os.system("cp " + localfiledir + "/Pileup/*.root "+ snupileupfiledir)
-    MakeDirectory(snuidfiledir)
-    os.system("cp " + localfiledir + "/ID/*.root " + snuidfiledir)
-    if os.path.exists(snubtagfiledir):
-        os.system("rm -r " + snubtagfiledir)
-    MakeDirectory(snubtagfiledir)
-    os.system("cp " + localfiledir + "/BTag/*.csv " + snubtagfiledir)
-    MakeDirectory(rochdir)
-    os.system("cp -r " + localfiledir + "/rochester/rcdata.2016.v3/ " + rochdir) 
+    
+    yeartags = ["80X", "94X"]
+    
+    for yt in yeartags:
+        snulumifiledir = os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/"+yeartag
+        snufakefiledir = os.getenv("LQANALYZER_DIR")+ "/data/Fake/"+yeartag
+        snutriggerfiledir = os.getenv("LQANALYZER_DIR")+ "/data/Trigger/"+yeartag
+        snupileupfiledir= os.getenv("LQANALYZER_DIR")+ "/data/Pileup/"+yeartag
+        snuidfiledir= os.getenv("LQANALYZER_DIR")+ "/data/ID/"+yeartag
+        snubtagfiledir = os.getenv("LQANALYZER_DIR")+ "/data/BTag/"+yeartag
+        rochdir=os.getenv("LQANALYZER_DIR")+ "/data/rochester/"+yeartag
+        localfiledir = os.getenv("LQANALYZER_FILE_DIR")
+        samples_version = str(os.getenv("CATVERSION"))
 
-    if os.path.exists(snufiledir+"/cMVAv2.csv"):
-        os.system("rm  "+snufiledir+"/*.csv")
-    if os.path.exists(snufiledir +"/triggers_catversion2016_802.txt") or os.path.exists(snufiledir +"/lumi_catversion2016_802.txt"):
-        os.system("rm " + snufiledir+"/*.txt")
-    if os.path.exists(snufiledir +"/Luminosity/triggers_catversion2016_802.txt"):
-        os.system("rm " +snufiledir +"/Luminosity/*2016*")
-
-    if os.path.exists(snufiledir):
-        os.system("rm -r " + snufiledir)
+        if yt == "94X":
+            localfiledir = os.getenv("LQANALYZER_FILE2017_DIR")
+            samples_version= "v9-4-9v2"
 
 
-    logdir =  os.getenv("LQANALYZER_LOG_8TeV_PATH")
-    if os.path.exists(logdir):
-        os.system("rm -r "+logdir)
 
-    old_out=os.getenv("LQANALYZER_DIR")+"/data/output/CAT/"
+        MakeDirectory(snulumifiledir)
+        os.system("cp " + localfiledir + "/Luminosity/*"+samples_version+".txt " + snulumifiledir)
+        MakeDirectory(snufakefiledir)
+        os.system("cp " + localfiledir + "/Fake/*.root " + snufakefiledir)
+        MakeDirectory(snutriggerfiledir)
+        os.system("cp " + localfiledir + "/Trigger/*.root " + snutriggerfiledir)
+        os.system("cp " + localfiledir + "/Trigger/*.txt " + snutriggerfiledir)
+        MakeDirectory(snupileupfiledir)
+        os.system("cp " + localfiledir + "/Pileup/*.root "+ snupileupfiledir)
+        MakeDirectory(snuidfiledir)
+        os.system("cp " + localfiledir + "/ID/*.root " + snuidfiledir)
+        if os.path.exists(snubtagfiledir):
+            os.system("rm -r " + snubtagfiledir)
+        MakeDirectory(snubtagfiledir)
+        os.system("cp " + localfiledir + "/BTag/*.csv " + snubtagfiledir)
+        MakeDirectory(rochdir)
+        os.system("cp -r " + localfiledir + "/rochester/rcdata.2016.v3/ " + rochdir) 
+
+
 
     
     mount_name="/data2/DATA/"
@@ -139,35 +116,34 @@ if not os.path.exists(tag_dir):
         os.system("mkdir " + new_out)
 
     if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-        if not os.path.exists("/data7/DATA/CAT_SKTreeOutput/"+os.getenv("USER")):
-            if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
-        if not os.path.exists("/data8/DATA/CAT_SKTreeOutput/"+os.getenv("USER")):
-            if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
-        
+        if "cms.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+            MakeDirectory("/data7/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
+            MakeDirectory("/data8/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
 
     new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/"
     if not os.path.exists(new_out):
-        os.system("mkdir " + new_out)
+        MakeDirectory(new_out)
         new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/"
-        os.system("mkdir " + new_out)
+        MakeDirectory(new_out)
         new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/output/"
-        os.system("mkdir " + new_out)
+        MakeDirectory(new_out)
         new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/output/CAT/"
-        os.system("mkdir " + new_out)
-        
+        MakeDirectory(new_out)
 
     print "using branch for first time: All codes are being recompiled"
     os.system("source bin/Make/make_clean_newbranch.sh")
     
 
 
-
-fakelib = os.getenv("LQANALYZER_LIB_PATH") + "/libHNCommonLeptonFakes.so"
-
+fakelib = os.getenv("LQANALYZER_LIB_PATH") + "/libHNCommonLeptonFakes80X.so"
 if not os.path.exists(fakelib):
-    os.system("source bin/Make/make_fake_lib.sh")
+    print "source bin/Make/make_fake_lib.sh 80X"
+    os.system("source bin/Make/make_fake_lib.sh 80X")
+
+fakelib = os.getenv("LQANALYZER_LIB_PATH") + "/libHNCommonLeptonFakes94X.so"
+if not os.path.exists(fakelib):
+    print "source bin/Make/make_fake_lib.sh 94X"
+    os.system("source bin/Make/make_fake_lib.sh 94X")
 
 
 

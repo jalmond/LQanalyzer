@@ -1,7 +1,10 @@
 #! /bin/sh                                                                                                                                                                                                                                                                      
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/"
+export LQANALYZER_FILE2017_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2017/"
 export LQANALYZER_DATASETFILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
+export LQANALYZER_DATASETFILE2017_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists2017/AnalysisFiles/"
 export LQANALYZER_DATASET_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/"
+export LQANALYZER_DATASET2017_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists2017/"
 export LQANALYZER_SKTreeLOG_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
 export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
 
@@ -23,8 +26,11 @@ export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQAnalysis/Analyzers/src/
 export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQAnalysis/Analyzersinclude/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 
-export BTAGDIR=${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/BTag/BTagC11/
-export ROCHDIR=${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/rochcor2016/
+export BTAGDIR80X=${LQANALYZER_DIR}/LQAnalysis/80X/AnalyzerTools/BTag/BTagC11/
+export BTAGDIR94X=${LQANALYZER_DIR}/LQAnalysis/94X/AnalyzerTools/BTag/BTagC11/
+
+export ROCHDIR80X=${LQANALYZER_DIR}/LQAnalysis/80X/AnalyzerTools/rochcor2016/
+export ROCHDIR94X=${LQANALYZER_DIR}/LQAnalysis/94X/AnalyzerTools/rochcor2016/
 
 if [[ $HOSTNAME == "ui"* ]];
 then

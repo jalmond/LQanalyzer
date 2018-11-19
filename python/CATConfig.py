@@ -11,6 +11,7 @@ from optparse import OptionParser
 path_jobpre="/data1/"
 
 isKisti = ("ui" in str(os.getenv("HOSTNAME")))
+
 if isKisti:
     path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
 
@@ -328,14 +329,14 @@ if platform.system() != "Linux":
 #Find the DS name (and lumi if MC) from txt/datasets.txt                                                                                                                       
 ##################################################################################################################                                                             
 inDS = ""
+inDS_pre = ""
+
 mcLumi = 1.0
 filechannel=""
 
-catversions = ["v7-6-4",
-               "v7-6-3",
-               "v7-6-2",
-               "v7-4-5",
-               "v7-4-4"]
+#catversion= "v9-4-9v2"
+
+catversions = ["v8-0-8"]
 
 sample_catversion = ""
 output_catversion=os.getenv("CATVERSION")
@@ -392,6 +393,12 @@ while inDS == "":
                 if len(entries)==3:
                     if new_channel ==entries[0] and sample == entries[1]:
                         inDS = entries[2]
+                if len(entries)==2:
+                    if "kisti_cat" == entries[0] and isKisti:
+                        inDS_pre= entries[1]
+                    if "tamsa_cat" == entries[0] and not isKisti:
+                        inDS_pre= entries[1]
+
         sample = "period"+sample
         eff_lumi=1.
         tar_lumi=1.
@@ -409,6 +416,14 @@ while inDS == "":
                     if sample == entries[0]:
                         eff_lumi = entries[4]
                         inDS = entries[5]
+
+                if len(entries)==2:
+                    if "kisti_cat" == entries[0] and isKisti:
+                        inDS_pre= entries[1]
+                    if "tamsa_cat" == entries[0] and not isKisti:
+                        inDS_pre= entries[1]
+
+
     iversion = iversion +1
     if inDS == "":
         if catversion != "":
@@ -424,15 +439,7 @@ while inDS == "":
             sys.exit()
 
 
-
-if not "ui" in str(os.getenv("HOSTNAME")):
-    if mc:
-        inDS = "/data2/DATA/" + inDS
-    else:
-        inDS = "/data7/DATA/"+inDS
-else:
-    inDS = "/xrootd/store/user/jalmond/"+inDS
-
+inDS = inDS_pre +  inDS
 InputDir = inDS
 
 listOfFile = os.listdir(inDS)

@@ -1,0 +1,24 @@
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lr@{\hspace{0.5mm}}c@{\hspace{0.5mm}}c@{\hspace{0.5mm}}l}
+\hline
+\hline
+Source & \multicolumn{4}{c}{} \\
+\hline
+DY$\rightarrow$ ee&333.8& $\pm$& 45.0&$^{+45.9}_{-45.9}$\\
+DY$\rightarrow$ ee&363.2& $\pm$& 53.8&$^{+46.1}_{-46.1}$\\
+Diboson&3857.7& $\pm$& 153.8&$^{+500.5}_{-500.5}$\\
+Top&159.9& $\pm$& 4.2&$^{+17.8}_{-17.8}$\\
+Triboson&34.3& $\pm$& 1.2&$^{+5.3}_{-5.3}$\\
+\hline
+Total&4748.9& $\pm$&169.1&$^{+505.1}_{-505.1}$\\
+\hline
+Data&  \multicolumn{4}{c}{$5433.0$}\\
+\hline
+Signficance&  \multicolumn{4}{c}{$+1.3\sigma$}\\
+\hline
+\hline
+\end{tabular}
+\caption{ Number of events with two same-sign muon and two jets.}
+\end{center}
+\end{table}

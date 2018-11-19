@@ -1,0 +1,11 @@
+#  histname          rebin minx maxx xtitle
+#____________________________________________________________________
+## h_llmass          10 0. 400. "ll invariant mass (GeV)"
+## h_leadingLeptonPt  1 10. 200. "Leading lepton p_{T} (GeV)"
+## h_secondLeptonPt   1 5. 100. "Second lepton p_{T} (GeV)"
+## h_LeptonEta        4 -2.5 2.5 "Lepton  #eta"
+## h_Njets            1 0 6      "Number of jets"
+## h_Nbjets_m           1 0 3      "Number of b-jets"
+## h_Nbjets_all_m           1 0 3      "Number of b-jets"
+## h_PFMET            1 0. 300.  "E^{miss}_{T} (GeV)"
+END

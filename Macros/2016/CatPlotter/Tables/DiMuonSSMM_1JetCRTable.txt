@@ -1,0 +1,24 @@
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lr@{\hspace{0.5mm}}c@{\hspace{0.5mm}}c@{\hspace{0.5mm}}l}
+\hline
+\hline
+Source & \multicolumn{4}{c}{} \\
+\hline
+Diboson&70.6& $\pm$& 2.3&$^{+11.4}_{-11.4}$\\
+Misid. Lepton Background&62.6& $\pm$& 3.1&$^{+21.3}_{-21.3}$\\
+Top&2.9& $\pm$& 0.1&$^{+0.4}_{-0.4}$\\
+Triboson&3.5& $\pm$& 0.4&$^{+0.9}_{-0.9}$\\
+Xg&7.9& $\pm$& 7.2&$^{+1.1}_{-1.1}$\\
+\hline
+Total&147.5& $\pm$&8.2&$^{+24.2}_{-24.2}$\\
+\hline
+Data&  \multicolumn{4}{c}{$162.0$}\\
+\hline
+Signficance&  \multicolumn{4}{c}{$+0.5\sigma$}\\
+\hline
+\hline
+\end{tabular}
+\caption{ Number of events with two same-sign muon and two jets.}
+\end{center}
+\end{table}

@@ -39,6 +39,8 @@ queue=$(makeParseVariable 'q' ${queue})
 submitallfiles=$(makeParseVariable 'F' ${submitallfiles})
 tmpfilename=$(makeParseVariable 'g' ${tmpfilename})
 sendemail=$(makeParseVariable 'H' ${sendemail})
+treename=$(makeParseVariable 't' ${treename})
+
 ################                                                                                                                                                
 
 ########## GET EMAIL                                                                                                                                                                                                              
@@ -72,6 +74,7 @@ do
     sample_list_string+="!!"$i 
 done
 samplelist=$sample_list_string
+
 
 
 if [[ $runcommand  == "" ]]; 
@@ -119,7 +122,7 @@ else
         echo "cattag "$CATTAG >> $logfile
         date >> $logfile
         echo "############################" >> $logfile
-        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}  ${queue} ${setnjobs} ${runtau}
+        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}  ${queue} ${setnjobs} ${runtau} #${treename}
 	rm $logfile
         #rm /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${tagger)/${i}clust.txt
     done

@@ -3,8 +3,12 @@ import os
 path_jobpre="/data1/"
 
 an_jonpre="/data2/DATA/"
-if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    an_jonpre="/data4/"
+
+isKisti = ("ui" in str(os.getenv("HOSTNAME")))
+
+if  isKisti:
+    path_jobpre="/cms/scratch/SNU/CATAnalyzer/"
+    an_jonpre="/cms/scratch/SNU/CATAnalyzer/"
 
 
 def SendEmail(cattag, email_user):
@@ -47,4 +51,4 @@ parser.add_option("-t", "--t", dest="t", default="123",help="tag")
 (options, args) = parser.parse_args()
 cattag=options.t
 
-SendEmail(cattag,)
+SendEmail(cattag,"")

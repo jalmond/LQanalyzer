@@ -1,0 +1,30 @@
+// Dear emacs, this is -*- c++ -*-                                              
+// $Id: SPointer.icc 120 2009-08-27 12:02:57Z jalmond $                        
+/***************************************************************************    
+ * @Project: LQanalyzer - ROOT-based analysis framework for CMS
+ * @Package: Core                                                               
+ *                                                                              
+ * @author J. Almond <jalmond@cern.ch> - SNU 
+ *                                                                              
+ ***************************************************************************/
+
+#ifndef SPointer_ICC
+#define SPointer_ICC
+
+template< class T >
+SPointer< T >::SPointer( T* object )
+   : TObject(), m_object( object ) {
+
+}
+
+
+template< class T >
+SPointer< T >::~SPointer() {
+
+   delete m_object;
+
+}
+
+#endif // SFRAME_CORE_SPOINTER_ICC                                              
+
+

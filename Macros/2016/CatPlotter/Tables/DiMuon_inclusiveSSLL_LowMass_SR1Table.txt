@@ -1,0 +1,18 @@
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lr@{\hspace{0.5mm}}c@{\hspace{0.5mm}}c@{\hspace{0.5mm}}l}
+\hline
+\hline
+Source & \multicolumn{4}{c}{} \\
+\hline
+\hline
+Total&0.0& $\pm$&0.0&$^{+0.0}_{-0.0}$\\
+\hline
+Data&  \multicolumn{4}{c}{$0.0$}\\
+\hline
+\hline
+\hline
+\end{tabular}
+\caption{ Number of events with two same-sign muon and two jets.}
+\end{center}
+\end{table}

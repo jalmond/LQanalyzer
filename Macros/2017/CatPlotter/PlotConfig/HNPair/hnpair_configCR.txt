@@ -1,0 +1,15 @@
+###      MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
+#######################################################################################
+#**************************************************************************************
+# cut NontruthmatchedOSMM_Preselection
+# samples HNPair/hndimu_os_config_allmc.txt
+# skim SKTree_LeptonSkim
+# stream SinglePhoton
+# analyzer HN_pair_all
+# periodtag periodBtoH/2018-11-12
+# plottag HN_Z_NPair
+# blinded  false
+# hists: HNPair/hnpair_config_hists.txt
+# caption Number of events with two opposite sign muons...
+# DrawSig HNDiLepton/Sig.txt
+END

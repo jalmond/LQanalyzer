@@ -224,12 +224,13 @@ def make_batch_script(workdir, jname, lqdir, macroname, cluster):
 
 
 def makeConfigFileSNU(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf, runtau, skflag,tmplibdir, nskim, njob):
-
+    
+    yeartag="80X"
 
     if not os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir):
         os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir)
         os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.so  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
-        os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.rootmap  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
+        #os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.rootmap  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
         
     config='{\n'
     config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
@@ -238,19 +239,19 @@ def makeConfigFileSNU(log,sample, input, tree, cycle, ver, output_tmp, output, n
     config+='   gSystem->Load("libPhysics.so");\n'
     config+='   gSystem->Load("libTree.so");\n'
     config+='   gSystem->Load("libHist.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libNtuplecore.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor2016");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTagSFUtil.so");\n'
+    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libNtuplecore'+yeartag+'.so");\n'
+    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection'+yeartag+'.so");\n'
+    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting'+yeartag+'.so");\n'
+    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes'+yeartag+'.so");\n'
+    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor_'+yeartag+'");\n'
+    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTag'+yeartag+'SFUtil.so");\n'
     for lib in libraries:
         config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/' + lib + ' + .so");\n'
         
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalyzerTools.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libLQAnalysis.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTreeMaker.so");\n'
-    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libValidation.so");\n'
+    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libAnalyzerTools'+yeartag+'.so");\n'
+    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libLQAnalysis'+yeartag+'.so");\n'
+    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSKTreeMaker'+yeartag+'.so");\n'
+    config+='   gSystem->Load("'+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libValidation'+yeartag+'.so");\n'
     
     config+='   gSystem->Load("libPyROOT.so");\n'
     config+='   \n'

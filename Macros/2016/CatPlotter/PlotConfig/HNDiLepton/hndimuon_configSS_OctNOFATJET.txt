@@ -1,0 +1,133 @@
+###      MakeCleverHistograms(sighist_mm, "DiMuon_NoFAT_SSPreselection"+dimuonIDs.at(i));
+#**************************************************************************************
+# cut DiMuon_NoFATSSLL_DiJet
+# samples HNDiLepton/hndimu_ss_config_allmc.txt
+# skim SKTree_HNDiLepSkim
+# stream DoubleMuon
+# analyzer HNDiLepton
+# periodtag periodBtoH
+# datetag  2017-10-09
+# plottag oct_dilep
+# caption Number of events with two same-sign muon and two jets...
+# DrawSig HNDiLepton/MixMass.txt
+# blinded  false
+# hists: HNDiLepton/hndimuon_configSS_hists.txt
+#######################################################################################
+# cut DiMuon_NoFATSSLL_Preselection
+# samples HNDiLepton/hndimu_ss_config_allmc.txt
+# skim SKTree_HNDiLepSkim
+# stream DoubleMuon
+# analyzer HNDiLepton
+# periodtag periodBtoH
+# datetag  2017-10-09
+# plottag oct_dilep
+# caption Number of events with two same-sign muon and two jets...
+# DrawSig HNDiLepton/MixMass.txt
+# blinded  false
+# hists: HNDiLepton/hndimuon_configSS_hists.txt
+#######################################################################################
+# cut  DiMuon_NoFATSSLL_1JetCR
+# samples HNDiLepton/hndimu_ss_config_allmc.txt
+# skim SKTree_HNDiLepSkim
+# stream DoubleMuon
+# analyzer HNDiLepton
+# periodtag periodBtoH
+# datetag  2017-10-09
+# plottag oct_dilep
+# caption Number of events with two same-sign muon and two jets...
+# DrawSig HNDiLepton/LowMass.txt
+# blinded  false
+# hists: HNDiLepton/hndimuon_configSS_hists.txt
+#######################################################################################
+# cut DiMuon_NoFATSSLL_HighMass_SR
+# samples HNDiLepton/hndimu_ss_config_allmc.txt
+# skim SKTree_HNDiLepSkim
+# stream DoubleMuon
+# analyzer HNDiLepton
+# periodtag periodBtoH
+# datetag  2017-10-09
+# plottag oct_dilep
+# caption Number of events with two same-sign muon and two jets...
+# DrawSig HNDiLepton/highMass.txt
+# blinded  false
+# hists: HNDiLepton/hndimuon_configSS_hists.txt
+#######################################################################################
+# cut DiMuon_NoFATSSLL_HighMass_SR2
+# samples HNDiLepton/hndimu_ss_config_allmc.txt
+# skim SKTree_HNDiLepSkim
+# stream DoubleMuon
+# analyzer HNDiLepton
+# periodtag periodBtoH
+# datetag  2017-10-09
+# plottag oct_dilep
+# caption Number of events with two same-sign muon and two jets...
+# DrawSig HNDiLepton/highMass.txt
+# blinded  false
+# hists: HNDiLepton/hndimuon_configSS_hists.txt
+#######################################################################################
+# cut DiMuon_NoFATSSLL_HighMass_SR3
+# samples HNDiLepton/hndimu_ss_config_allmc.txt
+# skim SKTree_HNDiLepSkim
+# stream DoubleMuon
+# analyzer HNDiLepton
+# periodtag periodBtoH
+# datetag  2017-10-09
+# plottag oct_dilep
+# caption Number of events with two same-sign muon and two jets...
+# DrawSig HNDiLepton/highMass.txt
+# blinded  false
+# hists: HNDiLepton/hndimuon_configSS_hists.txt
+#######################################################################################
+# cut DiMuon_NoFATSSLL_HighMass_SR4
+# samples HNDiLepton/hndimu_ss_config_allmc.txt
+# skim SKTree_HNDiLepSkim
+# stream DoubleMuon
+# analyzer HNDiLepton
+# periodtag periodBtoH
+# datetag  2017-10-09
+# plottag oct_dilep
+# caption Number of events with two same-sign muon and two jets...
+# DrawSig HNDiLepton/highMass.txt
+# blinded  false
+# hists: HNDiLepton/hndimuon_configSS_hists.txt
+#######################################################################################
+# cut DiMuon_NoFATSSLL_HighMass_SR5
+# samples HNDiLepton/hndimu_ss_config_allmc.txt
+# skim SKTree_HNDiLepSkim
+# stream DoubleMuon
+# analyzer HNDiLepton
+# periodtag periodBtoH
+# datetag  2017-10-09
+# plottag oct_dilep
+# caption Number of events with two same-sign muon and two jets...
+# DrawSig HNDiLepton/highMass.txt
+# blinded  false
+# hists: HNDiLepton/hndimuon_configSS_hists.txt
+#######################################################################################
+# cut DiMuon_NoFATSSLL_HighMass_CR
+# samples HNDiLepton/hndimu_ss_config_allmc.txt
+# skim SKTree_HNDiLepSkim
+# stream DoubleMuon
+# analyzer HNDiLepton
+# periodtag periodBtoH
+# datetag  2017-10-09
+# plottag oct_dilep
+# caption Number of events with two same-sign muon and two jets...
+# DrawSig HNDiLepton/highMass.txt
+# blinded  false
+# hists: HNDiLepton/hndimuon_configSS_hists.txt
+#######################################################################################
+# cut DiMuon_NoFATSSLL_DiJet_noB
+# samples HNDiLepton/hndimu_ss_config_allmc.txt
+# skim SKTree_HNDiLepSkim
+# stream DoubleMuon
+# analyzer HNDiLepton
+# periodtag periodBtoH
+# datetag  2017-10-09
+# plottag oct_dilep
+# caption Number of events with two same-sign muon and two jets...
+# DrawSig HNDiLepton/MixMass.txt
+# blinded  false
+# hists: HNDiLepton/hndimuon_configSS_hists.txt
+#######################################################################################
+END

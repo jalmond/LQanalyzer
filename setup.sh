@@ -13,6 +13,8 @@
 
 echo "Setting up environment for compiling/running CATAnalzer with SKTree"
 
+export SKFLATVERSION="v9-4-9v2"
+
 
 source bin/setup_timezone.sh
 
@@ -59,10 +61,31 @@ source bin/check_tag.sh
 export yeartag="80X/"
 
 ### setup alias for using analyzer
+
+if [[ $HOSTNAME == "ui"* ]];
+then
+    alias make_80x_fullclean="make distclean -f ${LQANALYZER_DIR}/bin/Make/Makefile80X"
+    alias make_80x_clean="make clean -f ${LQANALYZER_DIR}/bin/Make/Makefile80X"
+    alias make_80x="make -f ${LQANALYZER_DIR}/bin/Make/Makefile80X"
+    alias make_94x_fullclean="make distclean -f ${LQANALYZER_DIR}/bin/Make/Makefile94X"
+    alias make_94x_clean="make clean -f ${LQANALYZER_DIR}/bin/Make/Makefile94X"
+    alias make_94x="make -f ${LQANALYZER_DIR}/bin/Make/Makefile94X"
+else
+    alias make_80x_fullclean="make distclean -f ${LQANALYZER_DIR}/bin/Make/Makefile80X_root5"
+    alias make_80x_clean="make clean -f ${LQANALYZER_DIR}/bin/Make/Makefile80X_root5"
+    alias make_80x="make -f ${LQANALYZER_DIR}/bin/Make/Makefile80X_root5"
+    alias make_94x_fullclean="make distclean -f ${LQANALYZER_DIR}/bin/Make/Makefile94X_root5"
+    alias make_94x_clean="make clean -f ${LQANALYZER_DIR}/bin/Make/Makefile94X_root5"
+    alias make_94x="make -f ${LQANALYZER_DIR}/bin/Make/Makefile94X_root5"
+fi
+
+
 alias cathistcounter="source scripts/Counter.sh "
 alias catcutflowcounter="source scripts/CutFlow.sh "
-alias sktree="bash submitSKTree.sh"
-alias sktreemaker="bash submitSKTree.sh -M True "
+alias sktree_80X="bash submitSKTree80X.sh"
+alias sktree_94X="bash submitSKTree94X.sh"
+alias sktreemaker_80X="bash submitSKTree80X.sh -M True "
+alias sktreemaker_90X="bash submitSKTree94X.sh -M True "
 alias sktree_val="bash submitSKTree.sh -V True "
 alias sktree_bkg="nohup bash submitSKTree.sh -b True "
 alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
@@ -83,15 +106,6 @@ python ${LQANALYZER_DIR}/python/SetUpWorkSpace.py
 python ${LQANALYZER_DIR}/python/BackUpDirectory.py
 ### setup email list 
 python ${LQANALYZER_DIR}/python/SetupEmailList.py
-
-# CHeck onroot area and other paths
-if [[ $HOSTNAME == "ui"* ]];
-then
-    cp ${LQANALYZER_DIR}/bin/Make/Makefile Makefile
-else
-    cp ${LQANALYZER_DIR}/bin/Make/Makefile_root5 Makefile
-
-fi 
 
 
 if [ -z ${ROOTSYS} ] ; then

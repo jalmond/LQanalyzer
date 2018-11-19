@@ -1,0 +1,21 @@
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lr@{\hspace{0.5mm}}c@{\hspace{0.5mm}}c@{\hspace{0.5mm}}l}
+\hline
+\hline
+Source & \multicolumn{4}{c}{} \\
+\hline
+DY$\rightarrow$ ee&16691164.0& $\pm$& 8085.4&$^{+2503674.8}_{-2503674.8}$\\
+Top&133655.4& $\pm$& 234.7&$^{+26731.1}_{-26731.1}$\\
+\hline
+Total&16824820.0& $\pm$&8088.8&$^{+2503817.5}_{-2503817.5}$\\
+\hline
+Data&  \multicolumn{4}{c}{$17518600.0$}\\
+\hline
+Signficance&  \multicolumn{4}{c}{$+0.3\sigma$}\\
+\hline
+\hline
+\end{tabular}
+\caption{ Number of events with two same-sign muon and two jets.}
+\end{center}
+\end{table}

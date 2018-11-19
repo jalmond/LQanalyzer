@@ -211,7 +211,9 @@ inDS = ""
 inDS_pre = ""
 filechannel=""
 
-catversions = ["v8-0-8"]
+#catversion = "v9-4-9v2"
+
+catversions = [ "v8-0-8"]
 
 sample_catversion = ""
 output_catversion=os.getenv("CATVERSION")
@@ -1143,7 +1145,9 @@ while not JobSuccess:
         ncycle+=1
 
 if not JobOutput:
-
+    
+    sys.stdout.write('\r Enetering JobOutput L1143 localsubmit.py: Job failed')
+    sys.stdout.flush()
     if not running_batch:
         if isKisti:
             failed_macro = output+ "Job_0/runJob_0.C"
@@ -1178,9 +1182,13 @@ else:
         if DEBUG == "True":
             print line
 
-        
+    sys.stdout.write('\r JobCompleted L1179 localsubmit.py:')
+    sys.stdout.flush()
     
     if "SKTreeMaker" in cycle:
+        sys.stdout.write('\r JobCompleted L1183 localsubmit.py: SKTreeMaker[X]')
+        sys.stdout.flush()
+
         from sktree_submitfunction import *
         Finaloutputdir = SetupSKTree(isKisti,sktreeoutput, workoutput_mounted, sample_catversion, mc,original_channel, cycle,original_sample)
         doMerge=False
@@ -1224,7 +1232,8 @@ else:
 
     else:
 
-        print "not doing merge"
+        sys.stdout.write('\r Not Mering localsubmit.py L1229')
+        sys.stdout.flush()
         
         if not mc:
             outfile = cycle + "_" + outsamplename + ".root"
@@ -1242,6 +1251,11 @@ else:
             f.Close()
             
         else:
+
+            sys.stdout.write('\r deleting files in' + Finaloutputdir )
+            sys.stdout.flush()
+
+
             os.system("rm " + Finaloutputdir + "/*.root")
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
             os.system("chmod -R 777 " + Finaloutputdir )

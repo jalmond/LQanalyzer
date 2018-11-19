@@ -1,0 +1,63 @@
+ # $Id: Makefile
+ ###########################################################################
+ # @Project: LQAnalyzer - ROOT-based analysis framework for Korea CMS      #
+ #                                                                         #
+ # @author John Almond       jalmond@cern.ch>           - SNU              #
+ # Top level Makefile for compiling all the LQAnalyer code                #
+ #                                                                         #
+ ###########################################################################
+
+all: tagcheck btag roch fakes Ntuplecore plotting selection analysis 
+
+Ntuplecore::
+	(cd LQCore/94X/Ntuplecore; make)
+
+roch::
+	(bash bin/Make/make_rocher_lib.sh 94X; cd ${LQANALYZER_DIR} )
+
+plotting::
+	(cd LQCore/94X/Plotting; make)
+
+selection::
+	(cd LQCore/94X/Selection; make)
+analysis::
+	(cd LQAnalysis/94X/AnalyzerTools; make)
+	(cd LQAnalysis/94X/Analyzers; make)
+	(cd LQAnalysis/94X/SKTreeMaker; make)
+	(cd LQAnalysis/94X/Validation; make)
+
+fakes::
+	(cd ${LQANALYZER_DIR}/LQAnalysis/94X/AnalyzerTools/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB94X_PATH} ;rm libHNCommonLeptonFakes94X.so ; cp ${LQANALYZER_DIR}/LQAnalysis/94X/AnalyzerTools/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes94X.so .; cd ${LQANALYZER_DIR} )
+
+
+btag::  
+	(bash bin/Make/make_btag_lib.sh 94X; cd ${LQANALYZER_DIR} )	
+
+tagcheck::
+	(source bin/CheckNewTagCompiler.sh ${CHECKTAGFILE})
+
+clean::
+	(cd LQCore/94X/Ntuplecore; make clean)
+	(cd LQCore/94X/Plotting; make clean)
+	(cd LQCore/94X/Selection; make clean)
+	(cd LQAnalysis/94X/AnalyzerTools; make clean)
+	(cd LQAnalysis/94X/Analyzers; make clean)
+	(cd LQAnalysis/94X/SKTreeMaker; make clean)
+	(cd LQAnalysis/94X/Validation; make clean)
+	(bash bin/Clean/clean_fake.sh 94X)
+	(bash bin/Clean/clean_rochor.sh 94X)
+	(bash bin/Clean/clean_btag.sh 94X)
+
+distclean::
+	(cd LQCore/94X/Ntuplecore; make distclean)
+	(cd LQCore/94X/Plotting; make distclean)
+	(cd LQCore/94X/Selection; make distclean)
+	(cd LQAnalysis/94X/AnalyzerTools; make distclean)
+	(cd LQAnalysis/94X/Analyzers; make distclean)
+	(cd LQAnalysis/94X/SKTreeMaker; make distclean)
+	(cd LQAnalysis/94X/Validation; make distclean)
+
+	(bash bin/Clean/clean_fake.sh 94X)
+	(bash bin/Clean/clean_rochor.sh 94X)
+	(bash bin/Clean/clean_btag.sh 94X)
+
