@@ -84,7 +84,8 @@ alias cathistcounter="source scripts/Counter.sh "
 alias catcutflowcounter="source scripts/CutFlow.sh "
 alias sktree_80X="bash submitSKTree80X.sh"
 alias sktree_94X="bash submitSKTree94X.sh"
-alias sktreemaker="bash submitSKTree.sh -M True "
+alias sktreemaker_80X="bash submitSKTree80X.sh -M True "
+alias sktreemaker_90X="bash submitSKTree94X.sh -M True "
 alias sktree_val="bash submitSKTree.sh -V True "
 alias sktree_bkg="nohup bash submitSKTree.sh -b True "
 alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
@@ -105,6 +106,7 @@ python ${LQANALYZER_DIR}/python/SetUpWorkSpace.py
 python ${LQANALYZER_DIR}/python/BackUpDirectory.py
 ### setup email list 
 python ${LQANALYZER_DIR}/python/SetupEmailList.py
+
 
 if [ -z ${ROOTSYS} ] ; then
     echo "Warning: ROOT environment doesn't seem to be configured!"
