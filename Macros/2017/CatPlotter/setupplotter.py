@@ -2,10 +2,10 @@ import os,sys
 
 def  MakeCutFile(cutlist, jobname):
 
-    if not os.path.exists(str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobname +"/dat/"):
-        os.system("mkdir " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobname +"/dat/")
+    if not os.path.exists(str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobname +"/dat/"):
+        os.system("mkdir " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobname +"/dat/")
 
-    file_cuts=open(str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobname +"/dat/cutfile.txt","w")
+    file_cuts=open(str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobname +"/dat/cutfile.txt","w")
     file_cuts.write(cutlist+"\n")
     file_cuts.write("END")
     file_cuts.close()
@@ -16,9 +16,9 @@ def  MakeCutFile(cutlist, jobname):
 
 def  MakeConfFile(inputdir,jobname,datastream,analyzer,tag,tag2,catversion,periodtag,filedate,cut,leglist, plottag, isblind):
 
-    if not os.path.exists(str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobname +"/Config/"):
-        os.system("mkdir " +  str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobname +"/Config/")
-    file_conf = open(str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobname +"/Config/configfile.txt" ,"w"  )
+    if not os.path.exists(str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobname +"/Config/"):
+        os.system("mkdir " +  str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobname +"/Config/")
+    file_conf = open(str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobname +"/Config/configfile.txt" ,"w"  )
     file_conf.write("# Specify_location_of_data/mc\n")
     file_conf.write("mcpath          "+inputdir+"/\n")
     file_conf.write("datapath          "+inputdir+"/"+analyzer+"_data_"+datastream+"_cat_"+catversion+".root\n")
@@ -229,7 +229,7 @@ ns=-1
 drawsig=False
 print "siginputfile = " + siginputfile
 
-siginputfile="/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/Macros/CatPlotter/PlotConfig/"+siginputfile
+siginputfile="/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/Macros/2017/CatPlotter/PlotConfig/"+siginputfile
 siginput_configtmp = open(siginputfile,"r")
 
 if siginputfile!="":
@@ -262,25 +262,25 @@ if siginputfile!="":
         siglegsig.append(legsig)
 
 
-plot_comfig_dir = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/PlotConfig/"
+plot_comfig_dir = str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/PlotConfig/"
 
-path_macroC_file = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir+"/MakeDataMCCompPlots.cpp" ;
-path_macroH_file = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir+"/MakeDataMCCompPlots.h" ;
-path_setup = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir+"/setenv.sh"
-path_CMSconfig = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir+"/CMS_lumi.h"
+path_macroC_file = str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir+"/MakeDataMCCompPlots.cpp" ;
+path_macroH_file = str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir+"/MakeDataMCCompPlots.h" ;
+path_setup = str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir+"/setenv.sh"
+path_CMSconfig = str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir+"/CMS_lumi.h"
 
 
-if not os.path.exists(str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir):
-    os.system("mkdir " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir)
-    os.system("mkdir " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir +"/Tables/")
+if not os.path.exists(str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir):
+    os.system("mkdir " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir)
+    os.system("mkdir " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir +"/Tables/")
 
-os.system("cp " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/Code/setenv.sh " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir)
-os.system("cp "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/Code/MakeDataMCCompPlots.h "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir)
-os.system("cp "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/Code/CMS_lumi.h  "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir)
-os.system("cp "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/Code/Hist*  "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir)
-os.system("cp "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/Code/make*  "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir)
+os.system("cp " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/Code/setenv.sh " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir)
+os.system("cp "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/Code/MakeDataMCCompPlots.h "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir)
+os.system("cp "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/Code/CMS_lumi.h  "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir)
+os.system("cp "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/Code/Hist*  "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir)
+os.system("cp "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/Code/make*  "+ str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir)
 
-path_skeleton_macroC =  str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/Code//MakeDataMCCompPlots.cpp" ;
+path_skeleton_macroC =  str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/Code//MakeDataMCCompPlots.cpp" ;
 skeleton_macroC = open(path_skeleton_macroC,"r")
 new_macroC = open(path_macroC_file,"w")
 for line in skeleton_macroC:
@@ -406,7 +406,7 @@ skeleton_macroC.close()
 new_macroC.close()
 
 
-os.system("source  " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/Code/run.sh " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir)
+os.system("source  " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/Code/run.sh " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/"+jobdir)
 
 MakeCutFile(cutlist,jobdir)
 tag="_"
@@ -428,7 +428,7 @@ elif skim == "SKTree_HNDiLepSkim":
 
 MakeConfFile(inputdir,jobdir,stream,analyzer,tag,tag2,catversion,period,filedate,cutlist,list_of_legends_alias, plottag, isblind)
 
-os.system("source  " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/Code/runjob.sh " + jobdir)
+os.system("source  " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/Code/runjob.sh " + jobdir)
 
 
-#os.system("rm -r " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/" + jobdir)
+#os.system("rm -r " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/2017/CatPlotter/" + jobdir)

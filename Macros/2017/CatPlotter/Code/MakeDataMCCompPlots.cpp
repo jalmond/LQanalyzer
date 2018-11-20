@@ -328,7 +328,7 @@ void MakeCutFlow(string type){
 
     //// Make TEX file
     ofstream ofile_tex;
-    string lqdir =  string(getenv("LQANALYZER_DIR")) +"/Macros/CatPlotter/";
+    string lqdir =  string(getenv("LQANALYZER_DIR")) +"/Macros/2017/CatPlotter/";
 
     string latex_file =  lqdir+"/Tables/" + cut_label.at(i_cut) + ".tex";
     ofile_tex.open(latex_file.c_str());

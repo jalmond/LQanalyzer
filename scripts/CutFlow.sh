@@ -1,1 +1,1 @@
-root -l -q -b $LQANALYZER_DIR/Macros/GetCounts/CutFlow.C'("'$1'")'
+root -l -q -b $LQANALYZER_DIR/Macros/2016/GetCounts/CutFlow.C'("'$1'")'

@@ -21,7 +21,7 @@ MCDataCorrections::MCDataCorrections() {
   k_period=-1;
 
   string lqdir = getenv("LQANALYZER_DIR");
-  rc =  new RoccoR(lqdir + "/data/rochester/80X/rcdata.2016.v3");  
+  rc =  new RoccoR("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/rochester/rcdata.2016.v3/");
   
   deg_etaptmap_leg1.clear();
   deg_etaptmap_leg2.clear();

@@ -803,6 +803,8 @@ for i in range(0,number_of_batch_jobs):
             os.chdir(workdir)
             os.system(runcommand)
         else:
+            sys.stdout.write('running ' + str(runcommand) )
+
             os.system(runcommand)
         if running_batch and (not isKisti):
             for line in open(log, 'r'):
@@ -1047,6 +1049,7 @@ while not JobSuccess:
                     break
                 job_finished=True
                 running_status = CheckRunningBatch(isKisti, filename, array_batchjobs, i, output) 
+                sys.stdout.write('\r running_status == '+str( running_status) + ' ' + str(filename)+ ' \n')
                 job_id_c=array_batchjobs[i-1]
 
 
@@ -1212,7 +1215,7 @@ else:
         os.system("hadd " + mergeoutputdir +  outfile  + " "+ mergeoutputdir + "*.root")
         
         if mc:
-            hist_pre =  "/data2/CAT_SKTreeOutput/"
+            hist_pre =  "/data2/DATA/CAT_SKTreeOutput/"
             if isKisti:
                 hist_pre ="/cms/scratch/SNU/CATAnalyzer/CAT_SKTreeOutput/"
             if not os.path.exists( hist_pre+os.getenv("USER")+"/Histdir" + tagger ):

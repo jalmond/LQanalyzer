@@ -795,7 +795,7 @@ for nsample in range(0, len(sample)):
                         stdscr.addstr(2+list2+int(x), summary2_block1 ,"| MERGING OUTPUT ", curses.A_BLINK)
                         stdscr.refresh()
                         ismerging=False
-                    check_crash_stat=False
+                    check_crash_stat=True
                     if check_crash_stat:
                         check_crashfile=an_jobpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt"
                         if not os.path.exists(check_crashfile):
@@ -816,6 +816,7 @@ for nsample in range(0, len(sample)):
                                     file_crash.write(linex)
                                 file_crash.close()
                             else:
+                                os.system("mkdir " + an_jobpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/")
                                 file_crash=open(crash_log,"w")
                                 for linex in  crashlog:
                                     file_crash.write(linex)
@@ -1760,7 +1761,7 @@ if len(output_warning) > 0:
 
 if runningData and  not "SKTreeMaker" in cycle:
 
-    file_read_counter = open(an_jobpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/Hist.txt","r")
+    file_read_counter = open("/data2/DATA//CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/Hist.txt","r")
     nhists=0
     for rc_line in file_read_counter:
 
@@ -1786,7 +1787,7 @@ if runningData and  not "SKTreeMaker" in cycle:
         job_summary.append("#"*40+ "\n")
 
         
-    hist_pre =  "/data2/CAT_SKTreeOutput/"
+    hist_pre =  "/data2/DATA/CAT_SKTreeOutput/"
     if isKisti:
         hist_pre ="/cms/scratch/SNU/CATAnalyzer/"
 
@@ -1814,7 +1815,7 @@ elif  not "SKTreeMaker" in cycle:
     cuts =[]
     print " "
     print "%%%%%%%%%%%%%%"*4
-    file_read_counter = open(an_jobpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+sample[0]+"Hist.txt","r")
+    file_read_counter = open("/data2/DATA/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+sample[0]+"Hist.txt","r")
     for rc_line in file_read_counter:
         src_line = rc_line.split()
         if  "=" in rc_line :
@@ -1830,7 +1831,7 @@ elif  not "SKTreeMaker" in cycle:
         sample_sum=[]
         sample_err=[]
         for hs in sample:
-            hist_pre =  "/data2/CAT_SKTreeOutput/"
+            hist_pre =  "/data2/DATA/CAT_SKTreeOutput/"
             if isKisti:
                 hist_pre ="/cms/scratch/SNU/CATAnalyzer/"
             file_read_counter = open(hist_pre+os.getenv("USER")+"/Histdir" + tagger + "/"+hs+"Hist.txt","r")

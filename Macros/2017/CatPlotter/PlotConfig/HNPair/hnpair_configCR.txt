@@ -1,15 +1,74 @@
 ###      MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
 #######################################################################################
 #**************************************************************************************
-# cut NontruthmatchedOSMM_Preselection
-# samples HNPair/hndimu_os_config_allmc.txt
-# skim SKTree_LeptonSkim
-# stream SinglePhoton
+# cut TTCR_mm_HNPair
+# samples HNPair/hnpair_os_config_allmc.txt
+# skim SKTree_DiLepSkim
+# datetag  2018-11-19
+# stream SingleMuon
 # analyzer HN_pair_all
-# periodtag periodBtoH/2018-11-12
+# periodtag periodBtoH
 # plottag HN_Z_NPair
 # blinded  false
 # hists: HNPair/hnpair_config_hists.txt
 # caption Number of events with two opposite sign muons...
-# DrawSig HNDiLepton/Sig.txt
+# DrawSig HNPair/Sig.txt
+##################################################################################################
+END
+#**************************************************************************************
+# cut ZCR_ee_HNPair
+# samples HNPair/hnpair_os_config_allmc.txt
+# skim SKTree_DiLepSkim
+# datetag  2018-11-19
+# stream DoubleEG
+# analyzer HN_pair_all
+# periodtag periodBtoH
+# plottag HN_Z_NPair
+# blinded  false
+# hists: HNPair/hnpair_config_hists.txt
+# caption Number of events with two opposite sign muons...
+# DrawSig HNPair/Sig.txt
+##################################################################################################
+#**************************************************************************************
+# cut TTCR_ee_HNPair
+# samples HNPair/hnpair_os_config_allmc.txt
+# skim SKTree_DiLepSkim
+# datetag  2018-11-19
+# stream DoubleEG
+# analyzer HN_pair_all
+# periodtag periodBtoH
+# plottag HN_Z_NPair
+# blinded  false
+# hists: HNPair/hnpair_config_hists.txt
+# caption Number of events with two opposite sign muons...
+# DrawSig HNPair/Sig.txt
+##################################################################################################
+#**************************************************************************************
+# cut ZCR_mm_HNPair
+# samples HNPair/hnpair_os_config_allmc.txt
+# skim SKTree_DiLepSkim
+# datetag  2018-11-19
+# stream SingleMuon
+# analyzer HN_pair_all
+# periodtag periodBtoH
+# plottag HN_Z_NPair
+# blinded  false
+# hists: HNPair/hnpair_config_hists.txt
+# caption Number of events with two opposite sign muons...
+# DrawSig HNPair/Sig.txt
+##################################################################################################
+#**************************************************************************************
+# cut TTCR_mm_HNPair
+# samples HNPair/hnpair_os_config_allmc.txt
+# skim SKTree_DiLepSkim
+# datetag  2018-11-19
+# stream SingleMuon
+# analyzer HN_pair_all
+# periodtag periodBtoH
+# plottag HN_Z_NPair
+# blinded  false
+# hists: HNPair/hnpair_config_hists.txt
+# caption Number of events with two opposite sign muons...
+# DrawSig HNPair/Sig.txt
+##################################################################################################
 END

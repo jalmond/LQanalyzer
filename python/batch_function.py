@@ -157,7 +157,7 @@ def CheckRunningSNUBatch(filename, array_batchjobs, output):
                         running = 2
 
 
-    os.system("rm  " + filename)
+    #os.system("rm  " + filename)
     return running
 
 

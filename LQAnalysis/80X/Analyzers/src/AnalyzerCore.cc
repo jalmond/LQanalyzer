@@ -3236,11 +3236,16 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
   else if(type==sighist_ee){
 
     map<TString, SignalPlotsEE*>::iterator sigpit_ee = mapCLhistSigEE.find(hist);
-    if(sigpit_ee !=mapCLhistSigEE.end()) sigpit_ee->second->Fill(ev, muons, electrons, jets,  alljets,fatjets,w);
+    if(sigpit_ee !=mapCLhistSigEE.end()){
+      if(w!= -999.) sigpit_ee->second->Fill(ev, muons, electrons, jets,  alljets,fatjets,w);
+    }
     else {
-      mapCLhistSigEE[hist] = new SignalPlotsEE(hist,2);
-      sigpit_ee = mapCLhistSigEE.find(hist);
-      sigpit_ee->second->Fill(ev, muons, electrons, jets, alljets, fatjets,w);
+      if(w != -999.){
+	mapCLhistSigEE[hist] = new SignalPlotsEE(hist,2);
+	sigpit_ee = mapCLhistSigEE.find(hist);
+	sigpit_ee->second->Fill(ev, muons, electrons, jets, alljets, fatjets,w);
+      }
+      else         mapCLhistSigEE[hist] = new SignalPlotsEE(hist,2);
     }
   }
   else if(type==sighist_eee){
@@ -3278,23 +3283,31 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
   else if(type==sighist_m){
 
     map<TString, SignalPlotsMM*>::iterator sigpit_mm = mapCLhistSigMM.find(hist);
-    if(sigpit_mm !=mapCLhistSigMM.end())  sigpit_mm->second->Fill(ev, muons, electrons, jets, alljets, fatjets,w);
+    if(sigpit_mm !=mapCLhistSigMM.end()){
+      if (w != -999.)  sigpit_mm->second->Fill(ev, muons, electrons, jets, alljets, fatjets,w);
+    }
     else {
-      mapCLhistSigMM[hist] = new SignalPlotsMM(hist,1);
-      sigpit_mm = mapCLhistSigMM.find(hist);
-      sigpit_mm->second->Fill(ev, muons, electrons, jets, alljets, fatjets,w);
-
+      if( w != -999.){
+	mapCLhistSigMM[hist] = new SignalPlotsMM(hist,1);
+	sigpit_mm = mapCLhistSigMM.find(hist);
+	sigpit_mm->second->Fill(ev, muons, electrons, jets, alljets, fatjets,w);
+      }	
+      else         mapCLhistSigMM[hist] = new SignalPlotsMM(hist,1);
     }
   }
   else if(type==sighist_mm){
 
     map<TString, SignalPlotsMM*>::iterator sigpit_mm = mapCLhistSigMM.find(hist);
-    if(sigpit_mm !=mapCLhistSigMM.end())  sigpit_mm->second->Fill(ev, muons, electrons, jets, alljets, fatjets,w);
+    if(sigpit_mm !=mapCLhistSigMM.end()){
+      if(w != -999.)  sigpit_mm->second->Fill(ev, muons, electrons, jets, alljets, fatjets,w);
+    }
     else {
-      mapCLhistSigMM[hist] = new SignalPlotsMM(hist,2);
-      sigpit_mm = mapCLhistSigMM.find(hist);
-      sigpit_mm->second->Fill(ev, muons, electrons, jets, alljets, fatjets,w);
-      
+      if( w != -999.){
+	mapCLhistSigMM[hist] = new SignalPlotsMM(hist,2);
+	sigpit_mm = mapCLhistSigMM.find(hist);
+	sigpit_mm->second->Fill(ev, muons, electrons, jets, alljets, fatjets,w);
+      }	
+      else mapCLhistSigMM[hist] = new SignalPlotsMM(hist,2);
     }
   }
   else if(type==sighist_mmm){
