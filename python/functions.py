@@ -205,8 +205,8 @@ def make_batch_script(workdir, jname, lqdir, macroname, cluster):
     config+='#$ -e ' + workdir + ' \n'
 
     config+='echo "Job started at " `date` \n'
-    if cluster:
-        config+='cd /share/apps/root_v5_34_32/root/ \n'
+    if os.getenv("sktreemaker_version") == "False":
+        config+='cd /share/apps/root_v6-12-06/root/  \n'      
     else:
         config+='cd /share/apps/root_v5-34-32/root/ \n'
 
@@ -315,7 +315,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     if not os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir):
         os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir)
         os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.so  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
-        #os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.pcm  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
+        os.system("cp " + os.getenv("LQANALYZER_LIB_PATH") + "/*.pcm  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
 
     yeartag="80X"
 
@@ -328,7 +328,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libSelection'+yeartag+'.so);\n'
     config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libPlotting'+yeartag+'.so);\n'
     config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libHNCommonLeptonFakes'+yeartag+'.so);\n'
-    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor'+yeartag+'.so);\n'
+    config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/librochcor_'+yeartag+'.so);\n'
     config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/libBTag'+yeartag+'SFUtil.so);\n'
     for lib in libraries:
         config+='   R__LOAD_LIBRARY('+os.getenv("LQANALYZER_BATCHLIB_PATH")+tmplibdir+'/' + lib + ' + .so);\n'

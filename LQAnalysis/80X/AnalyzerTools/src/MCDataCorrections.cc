@@ -211,6 +211,8 @@ void MCDataCorrections::FillCorrectionHist(string label, string dirname, string 
   }
 
   if(!TString(histtype).Contains("TH2")) return;
+
+  //  if(TString(histtype).Contains("TH2D"))
   TFile *infile_sf = TFile::Open((string(getenv(dirname.c_str()))+ "/" + filename).c_str());
   CheckFile(infile_sf);
   TDirectory* tempDir = getTemporaryDirectory();
@@ -468,6 +470,7 @@ double MCDataCorrections::MuonScaleFactorPeriodDependant(TString muid, vector<sn
       sferr = double(sys)*GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinError( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
       
       sf*=  (1. + sferr)* GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinContent( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
+      cout << " MuonScaleFactorPeriodDependant " << sf  << endl;
     }
   }
 
@@ -557,6 +560,63 @@ double MCDataCorrections::TriggerScaleFactorPeriodDependant( vector<snu::KElectr
     
 
   }
+  if(trigname.Contains("HLT_Mu") || trigname.Contains("HLT_TkMu")){
+    if(mu.size()==1){
+      if (trigname.Contains("50")){
+	s_ptthreshold= "50_OR_TRK50";
+	f1_ptthreshold= 50.;
+	f2_ptthreshold= 1200.;
+      }
+      float mupt=mu.at(0).MiniAODPt();
+      if(mupt >  f2_ptthreshold) mupt = (f2_ptthreshold-1.);
+      if(mupt < f1_ptthreshold) return 1.;
+      if(mupt < f1_ptthreshold) return 1.;
+      
+      /// .... Fill code for single muon case                                                                                                                                                               
+    } 
+    
+    else if(mu.size()>=2){
+      if(trigname.Contains("50")){
+        s_ptthreshold  ="50_OR_TRKMU50";
+        f1_ptthreshold = 50.;
+        f2_ptthreshold = 500.;
+      }
+      DataEffSrcName = "MUON_MU"+s_ptthreshold+"_TRIGGER_EFF"+tag+"_Data";
+      MCEffSrcName   = "MUON_MU"+s_ptthreshold+"_TRIGGER_EFF"+tag+"_MC";
+
+      //cout << DataEffSrcName << " " << MCEffSrcName << endl;
+      if( !( CheckCorrectionHist(DataEffSrcName) && CheckCorrectionHist(MCEffSrcName) ) ) return 0.;
+
+      std::vector<float> muptColl;
+      for(unsigned int i=0; i<mu.size(); i++){
+	float mupt=mu.at(i).MiniAODPt();
+	if     (mupt>f2_ptthreshold){ muptColl.push_back(f2_ptthreshold - 1.); }
+	else if(mupt<f1_ptthreshold){ muptColl.push_back(f1_ptthreshold - 1.); }
+	else                          muptColl.push_back(mupt);
+      }
+      std::vector<float> muetaColl;
+      for(unsigned int i=0; i<mu.size(); i++){ muetaColl.push_back(mu.at(i).Eta()); };
+
+      std::vector<float> dataeffColl;
+      for(unsigned int i=0; i<mu.size(); i++){ dataeffColl.push_back( GetCorrectionHist(DataEffSrcName)->GetBinContent( GetCorrectionHist(DataEffSrcName)->FindBin(muptColl.at(i), fabs(muetaColl.at(i)))));
+      }
+								      
+
+      std::vector<float> mceffColl;
+      for(unsigned int i=0; i<mu.size(); i++){ mceffColl.push_back( GetCorrectionHist(MCEffSrcName)->GetBinContent( GetCorrectionHist(MCEffSrcName)->FindBin(muptColl.at(i), fabs(muetaColl.at(i))) ) ); };
+      
+      float DataFailProb =1.; for(int i=0; i<mu.size(); i++){ DataFailProb *= (1.-dataeffColl.at(i)); };
+      float MCFailProb   =1.; for(int i=0; i<mu.size(); i++){ MCFailProb   *= (1.-mceffColl.at(i));   };
+
+      if((1.-MCFailProb)==0.) return 0.;
+      float SF = (1.-DataFailProb)/(1.-MCFailProb);
+
+      return SF;
+
+
+    }//2 Muon case to SinglMuTrig ends.    
+  }
+
   if(trigname.Contains("HLT_IsoMu") || trigname.Contains("HLT_IsoTkMu")){
     if(mu.size()==1){
       if (trigname.Contains("24")){
@@ -569,6 +629,8 @@ double MCDataCorrections::TriggerScaleFactorPeriodDependant( vector<snu::KElectr
 	f1_ptthreshold= 50.;
 	f2_ptthreshold= 800.;
       }
+    
+  
 
       // G+H    https://twiki.cern.ch/twiki/pub/CMS/MuonWorkInProgressAndPagResults/2016.12.14_MuonPOGTriggerSF_KPLee_v1.pdf 
       // BtoF https://indico.cern.ch/event/608200/contributions/2452382/attachments/1401679/2156728/2017.02.05_MuonPOGTriggerSF_KPLee_v1.pdf 
@@ -1478,8 +1540,23 @@ double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectr
   //http://fcouderc.web.cern.ch/fcouderc/EGamma/scaleFactors/Moriond17/approval/EleID/passingVeto80X/egammaEffi.txt_egammaPlots.pdf
   std::string sid= "";
   
-  if(elid.Contains("HN")) elid = "ELECTRON_MVA_80";
   if(elid == "ELECTRON_HN_TIGHTv4") elid = "ELECTRON_HN_TIGHTv4";
+
+  if (elid == "EL_HN_NN_Tight"){
+    for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
+      float elpt=itel->Pt();
+      if(elpt>=500.) elpt= 499.;
+      if(elpt <25.) elpt= 25;
+      
+      TString label = "ID_ELECTRON_EL_HN_NN_Tight_Endcap";
+      if(itel->IsEBFiducial() ) label = "ID_ELECTRON_EL_HN_NN_Tight_Barrel";
+      
+      if(CheckCorrectionGraph(label)){
+	sf*= GetCorrectionGraph(label)->Eval(elpt);
+      }
+    } 
+    return sf;
+  }
 
   for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
     float elpt=itel->Pt();
@@ -1488,14 +1565,15 @@ double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectr
     if(eleta>=2.5) eleta = 2.4;
     if(elpt>=500.) elpt= 499.;
     if(elpt <10.) elpt= 11;
-    
+  
+ 
     if(CheckCorrectionHist("ID_" + elid)){
       TH2F *this_hist = GetCorrectionHist("ID_" + elid);
       int this_bin = this_hist->FindBin(eleta, elpt);
       double this_sf = this_hist->GetBinContent(this_bin);
       double this_sf_err = this_hist->GetBinError(this_bin);
 
-     	sf *= ( this_sf + double(sys)*this_sf_err );
+      sf *= ( this_sf + double(sys)*this_sf_err );
     }
   }
 
@@ -1573,7 +1651,15 @@ bool MCDataCorrections::CheckCorrectionHist(TString label){
   else if (mapit1D!= CorrectionMap1D.end()){
     return true;
   }
-  else return false;
+  else {
+    //for( map<TString, TH2F*>::iterator mapit2 = CorrectionMap.begin(); mapit2 != CorrectionMap.end(); mapit2++){
+      //cout <<" CorrectionMap " << mapit2->first << endl;
+    //}
+    //for( map<TString, TH1D*>::iterator mapit2 = CorrectionMap1D.begin(); mapit2 != CorrectionMap1D.end(); mapit2++){
+    //cout <<" CorrectionMap " << mapit2->first<< endl;
+    //}
+    return false;
+  }
 }
 bool MCDataCorrections::CheckCorrectionGraph(TString label){
   map<TString, TGraphAsymmErrors*>::iterator  mapit = CorrectionMapGraph.find(label);
@@ -1689,7 +1775,7 @@ float MCDataCorrections::GetCorrectedMuonMomentum(snu::KMuon muon, std::vector<s
     int mu_index = muon.MCTruthIndex();
     float genpt(-999.);
 
-    if(mu_index > 0&& mu_index < truth.size()) {
+    if(mu_index > 0 && mu_index < truth.size()) {
       if(fabs(truth.at(mu_index).PdgId() ) == 13) genpt = truth.at(mu_index).Pt();
     }
     

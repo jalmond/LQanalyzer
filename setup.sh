@@ -28,7 +28,12 @@ fi
 source bin/setup_user.sh
 
 ##### setup root enviroment
-source bin/setup_root.sh
+export sktreemaker_version="False"
+if [[ $1 == "sktreemaker" ]];
+then
+    export sktreemaker_version="True"
+fi
+source bin/setup_root.sh $sktreemaker_version
 
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
@@ -62,7 +67,7 @@ export yeartag="80X/"
 
 ### setup alias for using analyzer
 
-if [[ $HOSTNAME == "ui"* ]];
+if [[ $sktreemaker_version  == "False" ]];
 then
     alias make_80x_fullclean="make distclean -f ${LQANALYZER_DIR}/bin/Make/Makefile80X"
     alias make_80x_clean="make clean -f ${LQANALYZER_DIR}/bin/Make/Makefile80X"
@@ -71,6 +76,7 @@ then
     alias make_94x_clean="make clean -f ${LQANALYZER_DIR}/bin/Make/Makefile94X"
     alias make_94x="make -f ${LQANALYZER_DIR}/bin/Make/Makefile94X"
 else
+    
     alias make_80x_fullclean="make distclean -f ${LQANALYZER_DIR}/bin/Make/Makefile80X_root5"
     alias make_80x_clean="make clean -f ${LQANALYZER_DIR}/bin/Make/Makefile80X_root5"
     alias make_80x="make -f ${LQANALYZER_DIR}/bin/Make/Makefile80X_root5"

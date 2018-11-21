@@ -1,6 +1,6 @@
 # Specify_location_of_data/mc
 mcpath          /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HN_pair_all/periodBtoH/2018-11-19/
-datapath          /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HN_pair_all/periodBtoH/2018-11-19/HN_pair_all_data_SingleMuon_cat_v8-0-8.root
+datapath          /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HN_pair_all/periodBtoH/2018-11-19/HN_pair_all_data_DoubleEG_cat_v8-0-8.root
 datadrivenpath          /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HN_pair_all/periodBtoH/2018-11-19/
 # Specify_the_list_of_hists_to_plot 
 plottingpath    dat/histfile.txt 
@@ -9,7 +9,7 @@ cutpath         dat/cutfile.txt
 prefix          HN_pair_all_SK
 postfix           _dilep_cat_v8-0-8.root
 # NAME_THE_OUTPUT_DIR
-outputdir  HN13TeV_HN_pair_all_v8-0-8_periodBtoH_2018-11-19_TTCR_mm_HNPair
+outputdir  HN13TeV_HN_pair_all_v8-0-8_periodBtoH_2018-11-19_CR_Zmass_DiMu
 histdir    CAT2016_v8-0-8HN_Z_NPair
 # CONFIGURE_HISTOGRAMS
 showdata   true 

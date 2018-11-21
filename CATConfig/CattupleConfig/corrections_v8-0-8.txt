@@ -1,6 +1,10 @@
 # --------------  --------------  --------------  --------------  --------------  --------------  --------------  -------------- #
 # LABEL    DIRLABEL   rootfilename            hist name    histtype
 # --------------  --------------  --------------  --------------  --------------  --------------  --------------  -------------- #
+### MUON_MU50_OR_TRKMU50_TRIGGER_EFF_BCDEF TRIGGERFILEDIR MuonTriggerEfficiency_ZprimeToNN_Mu50orTkMu50_Run2016BCDEF_Central.root  TriggerEff_HNDilepton_BCDEF TH2F
+### MUON_MU50_OR_TRKMU50_TRIGGER_EFF_GH TRIGGERFILEDIR  MuonTriggerEfficiency_ZprimeToNN_Mu50orTkMu50_Run2016GH_Central.root  TriggerEff_HNDilepton_GH TH2F
+### ID_ELECTRON_EL_HN_NN_Tight_Barrel IDFILEDIR HEEP_SF.root SF_Et_Barrel TGraphAsymmErrors
+### ID_ELECTRON_EL_HN_NN_Tight_Endcap IDFILEDIR HEEP_SF.root SF_Et_Endcap TGraphAsymmErrors
 ### EL_RECO IDFILEDIR egammaEffi.txt_EGM2D_reco.root EGamma_SF2D  TH2F 
 ### ID_ELECTRON_POG_TIGHT IDFILEDIR egammaEffi.txt_EGM2D_tight.root EGamma_SF2D TH2F
 ### ID_ELECTRON_POG_MEDIUM IDFILEDIR egammaEffi.txt_EGM2D_medium.root EGamma_SF2D TH2F

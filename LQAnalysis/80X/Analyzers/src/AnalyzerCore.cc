@@ -1656,6 +1656,17 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 
 
 
+snu::KParticle AnalyzerCore::AddFatJetAndLepton(snu::KFatJet fatjet, KLepton lep){
+
+  if(fatjet.DeltaR( lep )<0.8){
+    return fatjet;
+  }
+  else{
+    return fatjet+lep;
+  }
+
+}
+
 
 bool AnalyzerCore::HasCloseBJet(snu::KElectron el, KJet::Tagger tag, KJet::WORKING_POINT wp, int period){
 

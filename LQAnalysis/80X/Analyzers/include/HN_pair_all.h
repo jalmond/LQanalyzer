@@ -31,9 +31,10 @@ class HN_pair_all : public AnalyzerCore {
   float EEWeight( std::vector<snu::KElectron> electrons, TString id);
   float EMWeight( std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons,TString elid, TString muid);
 
+  std::vector<snu::KParticle> RecoPairN(std::vector<KLepton> lepptrs, vector<snu::KFatJet> fatjets, vector<snu::KJet> jets);
   bool RemoveFlavourMixing();
   void ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString ak4_syst,  TString ak8syst);
-					 
+
   
   void MakeHistograms();
   void counter(TString cut, float w);

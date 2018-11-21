@@ -7,10 +7,10 @@
 BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithmBF, string BTagAlgorithmGH, TString OperatingPoint, int SystematicIndex, TString FastSimDataset, int Seed) {
 
   rand_ = new TRandom3(Seed);
-  string lqdir = getenv("LQANALYZER_DIR");
+  string lqdir = "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/";//getenv("LQANALYZER_DIR");
   
-  string CSVFileNameBF = (lqdir + "/data/BTag/"+getenv("yeartag") + "/"+ BTagAlgorithmBF + ".csv").c_str();
-  string CSVFileNameGH = (lqdir + "/data/BTag/"+getenv("yeartag") + "/"+ BTagAlgorithmGH + ".csv").c_str();
+  string CSVFileNameBF = (lqdir + "BTag/"+ BTagAlgorithmBF + ".csv").c_str();
+  string CSVFileNameGH = (lqdir + "BTag/"+ BTagAlgorithmGH + ".csv").c_str();
   BTagCalibration calibBF(BTagAlgorithmBF, CSVFileNameBF);
   BTagCalibration calibGH(BTagAlgorithmGH, CSVFileNameGH);
 

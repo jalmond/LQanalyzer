@@ -554,7 +554,7 @@ for line in fr:
 
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            if isKisti:
+            if not "sktreemaker " in cycle:
                 configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,runtau, skflag,tagger,useskim, countstr)) #job, input, sample, ver, output
             else:
                 configfile.write(makeConfigFileSNU(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,runtau, skflag,tagger,useskim, countstr)) #job, input, sample, ver, output
@@ -599,7 +599,7 @@ for line in fr:
 
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                if isKisti:
+                if not "sktreemaker " in cycle:
                     configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf,runtau, skflag,tagger,useskim,countstr))
                 else:
                     configfile.write(makeConfigFileSNU(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,runtau, skflag,tagger,useskim, countstr)) #job, input, sample, ver, output                              

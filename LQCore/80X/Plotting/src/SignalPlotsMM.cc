@@ -68,7 +68,7 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_deltaRjj"]                 = SetupHist("h_deltaRjj_" + name, "DeltaR between jets", 100, 0., 10., "#Delta R (jj)");
   map_sig["h_fjmass"]                 = SetupHist("h_fatjetsmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
   map_sig["h_fjprunedmass"]                 = SetupHist("h_fatjetprunedmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
-  map_sig["h_fjsdmass"]                 = SetupHist("h_fatjetprunedmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
+  map_sig["h_fjsdmass"]                 = SetupHist("h_fatjetsoftdropmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
   map_sig["h_leadjetmass"]            = SetupHist("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",150,0.,750.,"M_{j1j2} GeV");
   map_sig["h_osllmass"]               = SetupHist("h_osllmass_"          + name,"Invariant mass of the two leading os muectrons",100,0,500,"M_{ll} GeV");
   map_sig["h_osll_closestZ_mass"]       =SetupHist("h_osll_closestZ_mass_"          + name,"Invariant mass of the two leading os muectrons",100,0,500,"M_{ll} GeV");

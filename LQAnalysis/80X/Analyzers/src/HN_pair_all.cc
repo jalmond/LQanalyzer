@@ -177,90 +177,166 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
   /// change weight to scale to trigger lumiOB                                                                                                                                                  
 
   /// Make all hist without filling -999 means only hist are made, not filled (useful for plotting code)
-  FillCLHist(sighist_ee, "ZCR_ee_HNPair", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
-  FillCLHist(sighist_ee, "TTCR_ee_HNPair", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999);
-  FillCLHist(sighist_mm, "ZCR_mm_HNPair", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
-  FillCLHist(sighist_mm, "TTCR_mm_HNPair", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999);
 
   float ee_weight = ev_weight;
   float mm_weight = ev_weight;
+  TString channel = "";
   if(_ee_channel){
+    channel = "DiEle";
     if(diele_pass){
       ee_weight = ee_weight*WeightByTrigger(diele_trig1,TargetLumi);
       counter("HLT_DoublePhoton60_v", ee_weight);
 
   
+      std::vector<KLepton> Leptons_veto;
+      std::vector<KLepton> Leptons;
+      Leptons_veto.clear();
+      Leptons.clear();
+      for(unsigned int i = 0; i < electrons_veto.size(); i++)    Leptons_veto.push_back(electrons_veto.at(i));
+      for(unsigned int i = 0; i < muons_veto.size(); i++)    Leptons_veto.push_back(muons_veto.at(i));
+      for(unsigned int i = 0; i < electrons.size(); i++)    Leptons.push_back(electrons.at(i));
+      for(unsigned int i = 0; i < muons.size(); i++)    Leptons.push_back(muons.at(i));
+
       // CR Z  ee
       if(N_veto_muon == 0 && N_veto_el == 2 && N_el == 2){
 	ee_weight *= EEWeight(electrons, "EL_HN_NN_Tight");	
 
+	// -- Dielectron 
 	counter("DiEl", ee_weight);
-	if(!SameCharge(electrons)){
-	  if(electrons[1].Pt() > 65){
-	    snu::KParticle ll = electrons[0] + electrons[1];
-	    double M_ll = ll.M();
-	    if(fabs(ll.M() - 90.1) < 10.){
-	      counter("ZCR_ee_HNPair", ee_weight);
-	      
-	      FillCLHist(sighist_ee, "ZCR_ee_HNPair", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
-	      
-	    }
 
+	// --Pt cut
+	if(electrons[1].Pt() > 65){
+	  snu::KParticle ll = electrons[0] + electrons[1];
+
+	  // -- OS for CR                                                                                                                                                                                  	
+	  if(!SameCharge(electrons)){
+	    if(fabs(ll.M() - 90.1) < 10.){
+	      TString Region_str = "CR_Zmass_";
+	      
+	      counter(Region_str + channel, ee_weight);
+	      FillCLHist(sighist_ee, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
+	      FillCLHist(sighist_ee, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
+	    }
+	    if(fabs(ll.M()) > 55.){
+	      int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
+	      float MET = eventbase->GetEvent().PFMET();
+	      
+	      TString Region_str = "CR_ttbar_";
+
+	      if(nbjet > 0 && MET > 40){ 
+		counter(Region_str + channel, ee_weight);
+		FillCLHist(sighist_ee, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
+		FillCLHist(sighist_ee, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
+	      }
+	    }
+	  } // // -- OS for CR        
+	  
+	  /// == SR
+	  if(ll.M() > 150) {
+	    vector<snu::KParticle> Ns = RecoPairN(Leptons, fatjets, jets);
+	    if(Ns.size() ==  2){
+	      snu::KParticle Zp = Ns.at(0) + Ns.at(1);
+	      if(Ns.at(0).M() > 80 && Ns.at(1).M() > 80){
+		if(Zp.M() > 300) {
+		  TString Region_str = "SR_";
+		  FillHist( "mZp_" + Region_str + channel, Zp.M(), ee_weight, 6000, 0., 6000., "Z' Mass GeV");
+		  FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), ee_weight, 5000, 0., 5000., "mN GeV");
+		  FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), ee_weight, 5000, 0., 5000.,  "mN GeV");
+		  
+		  FillCLHist(sighist_ee,Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
+		  FillCLHist(sighist_ee,Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
+
+		}
+	      }
+	    }
+	  }
+
+	} // // --Pt cut 
+      } // // -- Diel
+    } // // -- trigger
+  }
+  
+  if(_mm_channel){
+    if(mu50_pass){
+      channel = "DiMu";
+      
+      //ev_weight = ev_weight * max(WeightByTrigger(mu50_trig1,TargetLumi), WeightByTrigger(mu50_trig2,TargetLumi));
+      mm_weight *= WeightByTrigger(mu50_trig1,TargetLumi);
+      counter("HLT_Mu50_v", mm_weight);
+      
+      std::vector<KLepton> Leptons_veto;
+      std::vector<KLepton> Leptons;
+      Leptons_veto.clear();
+      Leptons.clear();
+      for(unsigned int i = 0; i < electrons_veto.size(); i++)    Leptons_veto.push_back(electrons_veto.at(i));
+      for(unsigned int i = 0; i < muons_veto.size(); i++)    Leptons_veto.push_back(muons_veto.at(i));
+      for(unsigned int i = 0; i < electrons.size(); i++)    Leptons.push_back(electrons.at(i));
+      for(unsigned int i = 0; i < muons.size(); i++)    Leptons.push_back(muons.at(i));
+      
+      // CR Z  mm                                                                                                                                                                           
+      if(N_veto_el == 0 && N_veto_muon == 2 && N_muon == 2){
+	
+	mm_weight *=  MMWeight(muons, "MUON_HN_NN_HighPt_TrkIso", true);
+	
+	// -- DiMuon
+	
+	counter("DiMu", mm_weight);
+	
+	// --Pt cut                                                                                                                                                                                   
+	if(muons[1].Pt() > 65){
+	  snu::KParticle ll = muons[0] + muons[1];
+	  
+          // -- OS for CR	
+          if(!SameCharge(muons)){
+	    
+	    if(fabs(ll.M() - 90.1) < 10.){
+	      TString Region_str = "CR_Zmass_";
+	      
+	      counter(Region_str + channel, mm_weight);
+	      FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
+	      FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mm_weight);
+	      
+	    }// Z CR
+	    
+	    
 	    if(fabs(ll.M()) > 55.){
 	      
 	      int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
 	      float MET = eventbase->GetEvent().PFMET();
+	      TString Region_str = "CR_ttbar_";
 	      
-	      if(nbjet > 0 && MET > 40){ 
-		counter("TTCR_ee_HNPair", ev_weight);
-		FillCLHist(sighist_ee, "TTCR_ee_HNPair", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
+	      if(nbjet > 0 && MET > 40){
+		counter(Region_str + channel, mm_weight);
+                FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
+                FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mm_weight);
+		
 	      }
 	    }
-	  }
-	}
-      }
-      
-    }
-  }
-  
-  if(_mm_channel){
-    if(mu50_pass);
-
-    //ev_weight = ev_weight * max(WeightByTrigger(mu50_trig1,TargetLumi), WeightByTrigger(mu50_trig2,TargetLumi));
-    mm_weight *= WeightByTrigger(mu50_trig1,TargetLumi);
-    counter("HLT_Mu50_v", mm_weight);
-    
-    
-    // CR Z  mm                                                                                                                                                                           
-    if(N_veto_el == 0 && N_veto_muon == 2 && N_muon == 2){
-      mm_weight *=  MMWeight(muons, "MUON_HN_NN_HighPt_TrkIso", true);
-      counter("DiMu", mm_weight);
-      if(!SameCharge(muons)){
-	if(muons[1].Pt() > 65){
-	  snu::KParticle ll = muons[0] + muons[1];
-	  double M_ll = ll.M();
-	  if(fabs(ll.M() - 90.1) < 10.){
-	    
-	    counter("ZCR_HNPair", mm_weight);
-	    
-	    FillCLHist(sighist_mm, "ZCR_mm_HNPair", eventbase->GetEvent(), muons, electrons,jets, alljets, fatjets, mm_weight);
-	    
-	  }// Z CR
+	  } // // -- OS for CR  
 	  
-
-	  if(fabs(ll.M()) > 55.){
-	    
-	    int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
-	    float MET = eventbase->GetEvent().PFMET();
-	    
-	    if(nbjet > 0 && MET > 40){
-	      counter("TTCR_mm_HNPair", mm_weight);
-	      FillCLHist(sighist_mm, "TTCR_mm_HNPair", eventbase->GetEvent(), muons, electrons,jets, alljets, fatjets, mm_weight);
-	    }
-	  }
-	}
-      }
-    }
+	    /// == SR                                                                                                                                                                                   
+          if(ll.M() > 150) {
+            vector<snu::KParticle> Ns = RecoPairN(Leptons, fatjets, jets);
+            if(Ns.size() == 2){
+	      snu::KParticle Zp = Ns.at(0) + Ns.at(1);
+              if(Ns.at(0).M() > 80 && Ns.at(1).M() > 80){
+                if(Zp.M() > 300) {
+                  TString Region_str = "SR_";
+                  FillHist( "mZp_" + Region_str + channel, Zp.M(), mm_weight, 6000, 0., 6000., "Z' Mass GeV");
+                  FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), mm_weight, 5000, 0., 5000., "mN GeV");
+                  FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), mm_weight, 5000, 0., 5000.,  "mN GeV");
+		  
+                  FillCLHist(sighist_mm,Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
+                  FillCLHist(sighist_mm,Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mm_weight);
+		  
+                }
+              }
+            }
+          } // // --mass ll
+	  
+	}// // --Pt cut                                                                                                                                                                              
+      } // // -- Diel                                                                                                                                                                                 
+    } // // -- trigger       
   }
   
   return;
@@ -298,9 +374,7 @@ float HN_pair_all::EEWeight(std::vector<snu::KElectron> electrons,TString id){
   
   if(isData) return 1.;
   
-  double mc_weight = 1.;//;;mcdata_correction->ElectronScaleFactor(id, electrons, 0);
-  // For test
-  // if(mc_weight< 0.8) mc_weight=0.8;
+  double mc_weight = mcdata_correction->ElectronScaleFactor(id, electrons, 0);
   double electron_RecoSF =  mcdata_correction->ElectronRecoScaleFactor(electrons);
   mc_weight*= electron_RecoSF;
 
@@ -345,23 +419,152 @@ float HN_pair_all::MMWeight(std::vector<snu::KMuon> muons, TString id, bool pass
   mc_weight*= puweight;
 
   /// ID issue                                                                                                                                                                                                                                                                  
-  return mc_weight;
-
   double muon_id_iso_sf = mcdata_correction->MuonScaleFactor(id, muons, 0);
   mc_weight*= muon_id_iso_sf;
 
   std::vector<snu::KElectron> el;
 
-  double trigger_eff_Data = mcdata_correction->TriggerEfficiencyLegByLeg(el, "elid", muons, id, 0, 0, 0);
-  double trigger_eff_MC = mcdata_correction->TriggerEfficiencyLegByLeg(el, "elid", muons, id, 0, 1, 0);
-
-  float trigger_sf = trigger_eff_Data/trigger_eff_MC;
-  if(passtrig) mc_weight*= trigger_sf;
-
+  if(passtrig) mc_weight*= mcdata_correction->TriggerScaleFactor( el, muons, "HLT_Mu50_v", 0);
 
   return mc_weight;
 
 }
+
+vector<snu::KParticle> HN_pair_all::RecoPairN(std::vector<KLepton> lepptrs, vector<snu::KFatJet> fatjets, vector<snu::KJet> jets){
+
+  vector<snu::KParticle> out;
+  out.clear();
+
+  
+  if(fatjets.size()==0 && jets.size()>3 && lepptrs.size() == 2){
+
+    snu::KParticle Dummy_AllJets = jets.at(0)+jets.at(1)+jets.at(2)+jets.at(3);
+
+    double mindM = 999999999;
+    snu::KParticle temp_N[2];
+
+    for(int i=1; i<=3; i++){
+
+      snu::KParticle TwoJet[2];
+      TwoJet[0] = jets.at(0)+jets.at(i);
+      TwoJet[1] = Dummy_AllJets-TwoJet[0];
+
+      snu::KParticle N_00 = lepptrs.at(0)+TwoJet[0];
+      snu::KParticle N_11 = lepptrs.at(1)+TwoJet[1];
+      if( fabs(N_00.M()-N_11.M()) < mindM ){
+        mindM = fabs(N_00.M()-N_11.M());
+	temp_N[0] = N_00;
+        temp_N[1] = N_11;
+      }
+
+      snu::KParticle N_01 = lepptrs.at(0)+TwoJet[1];
+      snu::KParticle N_10 = lepptrs.at(1)+TwoJet[0];
+      if( fabs(N_01.M()-N_10.M()) < mindM ){
+	mindM = fabs(N_01.M()-N_10.M());
+        temp_N[0] = N_01;
+	temp_N[1] = N_10;
+      }
+
+    }
+
+    out.push_back(temp_N[0]);
+    out.push_back(temp_N[1]);
+
+  }
+  else if(fatjets.size()==1 && jets.size() > 1){
+
+    if(lepptrs.size() == 1){
+
+      snu::KParticle temp_N[2];
+
+      snu::KFatJet fatjet = fatjets.at(0);
+      temp_N[0] = fatjet;
+      temp_N[1] = lepptrs.at(0) + jets.at(0) + jets.at(1);
+
+      if(fatjet.DeltaR( lepptrs.at(0)) > 1.1) {
+        out.push_back(temp_N[0]);
+        out.push_back(temp_N[1]);
+      }
+
+    }
+
+    if(lepptrs.size() == 2){
+      snu::KParticle temp_N[2];
+
+      snu::KFatJet fatjet = fatjets.at(0);
+      if(fatjet.DeltaR( lepptrs.at(0) ) < fatjet.DeltaR( lepptrs.at(1) )){
+        temp_N[0] = AddFatJetAndLepton(fatjet, lepptrs.at(0));
+        temp_N[1] = lepptrs.at(1) + jets.at(0) + jets.at(1);
+      }
+      else{
+        temp_N[0] = AddFatJetAndLepton(fatjet, lepptrs.at(1));
+        temp_N[1] = lepptrs.at(0) + jets.at(0) + jets.at(1);
+      }
+
+      out.push_back(temp_N[0]);
+      out.push_back(temp_N[1]);
+
+    }
+
+
+  }
+  else if(fatjets.size()>1){
+
+    if(lepptrs.size() == 0){
+      snu::KParticle temp_N[2];
+
+      temp_N[0] = fatjets.at(0);
+      temp_N[1] = fatjets.at(1);
+
+      out.push_back(temp_N[0]);
+      out.push_back(temp_N[1]);
+    }
+    if(lepptrs.size() == 1){
+
+      snu::KFatJet fatjet = fatjets.at(0);
+      snu::KParticle temp_N[2];
+      if(fatjet.DeltaR( lepptrs.at(0) ) < fatjet.DeltaR( lepptrs.at(0) )){
+	temp_N[0] = AddFatJetAndLepton(fatjet, lepptrs.at(0));
+        temp_N[1] = fatjets.at(1);
+      }
+      else{
+        temp_N[0] = fatjet;
+        temp_N[1] = AddFatJetAndLepton(fatjets.at(1), lepptrs.at(0));
+      }
+    }
+    if(lepptrs.size() == 2){
+
+      snu::KParticle temp_N[2];
+
+      snu::KFatJet fatjet = fatjets.at(0); // Leading FatJet this time                                                                                                                                                                                                                                                                                                            
+
+      if(fatjet.DeltaR( lepptrs.at(0) ) < fatjet.DeltaR( lepptrs.at(1) )){
+        temp_N[0] = AddFatJetAndLepton(fatjet,        lepptrs.at(0));
+        temp_N[1] = AddFatJetAndLepton(fatjets.at(1), lepptrs.at(1));
+      }
+      else{
+        temp_N[0] = AddFatJetAndLepton(fatjets.at(1), lepptrs.at(0));
+        temp_N[1] = AddFatJetAndLepton(fatjet,        lepptrs.at(1));
+      }
+
+      out.push_back(temp_N[0]);
+      out.push_back(temp_N[1]);
+
+    }
+
+
+  }
+  else{
+
+  }
+  
+  return out;
+  
+  
+  
+}
+ 
+ 
 
 void HN_pair_all::counter(TString cut, float w){
 
