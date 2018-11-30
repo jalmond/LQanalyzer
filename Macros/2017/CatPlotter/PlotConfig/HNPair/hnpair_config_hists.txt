@@ -1,9 +1,12 @@
 #  histname          rebin minx maxx xtitle
 #____________________________________________________________________
-## h_llmass          10 0. 400. "ll invariant mass (GeV)"
-## h_leadingLeptonPt  1 10. 1000. "Leading lepton p_{T} (GeV)"
-## h_secondLeptonPt   1 5. 1000. "Second lepton p_{T} (GeV)"
-## h_LeptonEta        4 -2.5 2.5 "Lepton  #eta"
+## h_llmass          10 0. 1000. "ll invariant mass (GeV)"
+## h_leadingLeptonPt  2 10. 1000. "Leading lepton p_{T} (GeV)"
+## h_secondLeptonPt   2 5. 1000. "Second lepton p_{T} (GeV)"
+## h_LeptonEta        2 -2.5 2.5 "Lepton  #eta"
 ## h_Njets            1 0 6      "Number of jets"
-## h_PFMET            1 0. 300.  "E^{miss}_{T} (GeV)"
+## h_Nbjets_m            1 0 6      "Number of jets"
+## h_PFMET            1 0. 500.  "MET (GeV)"
+## h_MTlepton            1 0. 500.  "MT"
+## h_nVertices   1 0. 100. "Nvertex"
 END

@@ -61,6 +61,19 @@ void HN_pair_all::InitialiseAnalysis() throw( LQError ) {
   if(  functionality == HN_pair_all::ANALYSIS){
     /// Initialise histograms
     MakeHistograms();  
+    MakeCleverHistograms(sighist_ee,"CR_Zmass_DiEle_central");
+    MakeCleverHistograms(sighist_ee,"CR_ttbar1_DiEle_central");
+    MakeCleverHistograms(sighist_ee,"CR_ttbar2_DiEle_central");
+    MakeCleverHistograms(sighist_ee,"SR_DiEle_central");
+    MakeCleverHistograms(sighist_mm,"CR_Zmass_DiMu_central");
+    MakeCleverHistograms(sighist_mm,"CR_Zmass_hnss_DiMu_central");
+    MakeCleverHistograms(sighist_mm,"CR_Zmass_pog_DiMu_central");
+    MakeCleverHistograms(sighist_mm,"CR_Zmass_pog_DiMu_central_0jet");
+    MakeCleverHistograms(sighist_mm,"CR_Zmass_pog_DiMu_central_1jet");
+    MakeCleverHistograms(sighist_mm,"CR_Zmass_pog_DiMu_central_2jet");
+    MakeCleverHistograms(sighist_mm,"CR_ttbar1_DiMu_central");
+    MakeCleverHistograms(sighist_mm,"CR_ttbar2_DiMu_central");
+    MakeCleverHistograms(sighist_mm,"SR_DiMu_central");
 
     //
     // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
@@ -102,19 +115,43 @@ void HN_pair_all::ExecuteEvents()throw( LQError ){
   //remove flavour mixing for signal samples
   if(RemoveFlavourMixing()) return;
   
+
+  FillHist( "mZp_denom", 0., weight*WeightByTrigger("HLT_Mu50_v",TargetLumi),  0., 6000.,6000, "Z' Mass GeV");
+
   
   
   // ==== Define Systematic flag strings and order  
-  const int N_systs = 9;
+  const int N_systs = 13;
   
-  ExecuteEventFromSyst( "", "", "", "");
+  TString syst_flags[N_systs] = {"ElEnUp", "ElEnDown","MuEnUp", "MuEnDown", "JESUp", "JESDown", "JERUp", "JERDown", "JMSUp", "JMSDown", "JMRUp","JMRDown"}; 
+
+  //// Default analysis cycle
+  ExecuteEventFromSyst( "central", "" , "", "","");
+  
+  //// Default analysis cycle
+  for(int i_syst = 0; i_syst < N_systs; i_syst++){
+    if (syst_flags[i_syst].Contains("El")){
+      ExecuteEventFromSyst( "Syst"+syst_flags[i_syst] , "Syst"+syst_flags[i_syst] , "", "","");
+    }
+    if (syst_flags[i_syst].Contains("Mu")){
+      ExecuteEventFromSyst( "Syst"+syst_flags[i_syst] ,"", "Syst"+syst_flags[i_syst] , "", "");
+    }
+    if (syst_flags[i_syst].Contains("JE")){
+      ExecuteEventFromSyst( "Syst"+ syst_flags[i_syst] ,"", "", "Syst"+ syst_flags[i_syst],syst_flags[i_syst] );
+    }
+  }
+  
+  //// Now add systematics that use central vectors
+  ExecuteEventFromSyst( "PU_up", "" , "", "","");
+  ExecuteEventFromSyst( "PU_down", "" , "", "","");
 
 }
 
-void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString ak4_syst,  TString ak8syst){ 
-
+void HN_pair_all::ExecuteEventFromSyst(TString syst_label,TString el_syst, TString mu_syst, TString ak4_syst,  TString ak8syst){ 
+  
+  syst_label = "_"+syst_label;
   float ev_weight = weight;
-  counter("NoCut", ev_weight);
+  counter("NoCut_"+syst_label, ev_weight);
 
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return;
   if(!PassMETFilter()) return;     /// Initial event cuts : 
@@ -139,16 +176,43 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
   // -- Get Veto Electrons, and store number of them
 
   std::vector<snu::KElectron> electrons_veto   = GetElectrons(TString("EL_HN_NN_Loose"),el_syst,35., 2.5);
-  std::vector<snu::KElectron> electrons        = GetElectrons(TString("EL_HN_NN_Tight"),el_syst,65., 2.5);
-  std::vector<snu::KElectron> electrons_all    = GetElectrons(TString(""),el_syst,10., 2.5);
+  std::vector<snu::KElectron> electrons        = GetElectrons(false,false,TString("EL_HN_NN_Tight"),el_syst,65., 2.5);
+  std::vector<snu::KElectron> electrons_all    = GetElectrons(false,false,TString(""),el_syst,10., 2.5);
 
   int N_veto_el = electrons_veto.size();
   int N_el = electrons.size();
   
   // -- Get Veto Muons, return if there are not exactly two veto muons
 
-  std::vector<snu::KMuon> muons_veto = GetMuons("MUON_HN_NN_HighPt", true, mu_syst,10., 2.5);
-  std::vector<snu::KMuon> muons = GetMuons("MUON_HN_NN_HighPt_TrkIso", true, mu_syst,10., 2.5);
+  std::vector<snu::KMuon> muons_veto = GetMuons("MUON_HN_NN_HighPt", true, mu_syst+"roch",10., 2.5);
+  std::vector<snu::KMuon> muons = GetMuons("MUON_HN_NN_HighPt_TrkIso", false, mu_syst+"roch",10., 2.5);
+  
+
+  if(k_flags[0] == "FakeMC"){
+
+    std::vector<snu::KMuon> muons_fake = GetMuons("MUON_HN_NN_HighPt_TrkIso", true, mu_syst+"roch",10., 2.5);
+    std::vector<snu::KMuon> muons_null;
+    if(muons.size() < 2) {
+      muons = muons_fake;
+    }
+    else muons = muons_null;
+
+    std::vector<snu::KElectron> electrons_fake = GetElectrons(true,true,TString("EL_HN_NN_Tight"),el_syst,65., 2.5);
+    std::vector<snu::KElectron> electrons_null;
+    if(electrons.size() < 2) {
+      electrons = electrons_fake;
+    }
+    else electrons = electrons_null;
+
+  }
+
+  
+
+  std::vector<snu::KMuon> muons_pog = GetMuons("MUON_POG_TIGHT", false, mu_syst+"roch",10., 2.5);
+  std::vector<snu::KMuon> muons_pog2 = GetMuons("MUON_POG_TIGHT", false, mu_syst,10., 2.5);
+  
+  std::vector<snu::KMuon> muons_hn = GetMuons("MUON_HN_TIGHT", false, mu_syst+"roch",10., 2.5);
+
   CorrectedMETRochester(muons_veto);
 
   int N_veto_muon = muons_veto.size();
@@ -158,22 +222,61 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
   /// GetJets
 
   // -- Get AK8 jets away from leptons bt dR 1.                                                                                                                                 
-  std::vector<snu::KFatJet> fatjets     = GetFatJets("HN_NN_JET", muons_veto,electrons_veto,"",300., 2.7);
+  std::vector<snu::KFatJet> fatjets     = GetFatJets("HN_NN_JET", muons_veto,electrons_veto,syst_label,300., 2.7);
   
 
   // -- Get AK4 jets away from leptons and fatjets dR 0.4
-  std::vector<snu::KJet> jets           = GetJetsAwayFromFatJet("HN_NN_JET", fatjets, muons_veto, electrons_veto,"",40., 5.);
+  std::vector<snu::KJet> jets           = GetJetsAwayFromFatJet("HN_NN_JET", fatjets, muons_veto, electrons_veto,syst_label,40., 5.);
+  //  std::vector<snu::KJet> jets_unshifted           = GetJetsAwayFromFatJet("HN_NN_JET", fatjets, muons_veto, electrons_veto,"",40., 5.);
 
-  std::vector<snu::KJet> alljets        = GetJets("JET_PTETA","",20., 5.);
+  std::vector<snu::KJet> alljets        = GetJets("JET_PTETA",syst_label,20., 5.);
 
 
   
   // -- Call MET after correcting JMR
   CorrectedMETJMR(fatjets, jets);
-  float MET = eventbase->GetEvent().PFMET();
-    
 
 
+  /// Set MET wit systematics accounted for
+  double MET = eventbase->GetEvent().PFMET();
+  double  METphi = eventbase->GetEvent().METPhi();
+  
+  if (syst_label=="central") MET = eventbase->GetEvent().PFMET();
+  if (syst_label=="JESUp")     MET = eventbase->GetEvent().PFMETShifted(snu::KEvent::JetEn, snu::KEvent::up);
+  if (syst_label=="JESDown")     MET = eventbase->GetEvent().PFMETShifted(snu::KEvent::JetEn, snu::KEvent::down);
+  if (syst_label=="JERUp")     MET = eventbase->GetEvent().PFMETShifted(snu::KEvent::JetRes, snu::KEvent::up);
+  if (syst_label=="JERDown")     MET = eventbase->GetEvent().PFMETShifted(snu::KEvent::JetRes, snu::KEvent::down);
+  if (syst_label=="UnclusteredUp") MET = eventbase->GetEvent().PFMETShifted(snu::KEvent::Unclustered, snu::KEvent::up);
+  if (syst_label=="UnclusteredDown") MET = eventbase->GetEvent().PFMETShifted(snu::KEvent::Unclustered, snu::KEvent::down);
+
+  if (syst_label.Contains("ElEnUp")){
+    std::vector<snu::KElectron> electrons_noshift        = GetElectrons(false,false,TString("EL_HN_NN_Tight"),TString(""),65., 2.5);
+    CorrectedMETElectron(1, electrons_noshift, MET, METphi);
+  }
+  if (syst_label.Contains("ElEnDown")){
+    std::vector<snu::KElectron> electrons_noshift        = GetElectrons(false,false,TString("EL_HN_NN_Tight"),TString(""),65., 2.5);
+    CorrectedMETElectron(-1,  electrons_noshift , MET, METphi);
+  }
+  if (syst_label.Contains("ElResUp")){
+    std::vector<snu::KElectron> electrons_noshift        = GetElectrons(false,false,TString("EL_HN_NN_Tight"),TString(""),65., 2.5);
+    CorrectedMETElectron(1, electrons_noshift, MET, METphi);
+  }
+  if (syst_label.Contains("EnResDown")){
+    std::vector<snu::KElectron> electrons_noshift        = GetElectrons(false,false,TString("EL_HN_NN_Tight"),TString(""),65., 2.5);
+    CorrectedMETElectron(-1,  electrons_noshift , MET, METphi);
+  }
+
+
+  if (syst_label.Contains("MuEnUp")) {
+    std::vector<snu::KMuon> muons_noshift = GetMuons("MUON_HN_NN_HighPt_TrkIso", false, TString(""),10., 2.5);
+    CorrectedMETMuon(1, muons_noshift, MET, METphi);
+
+  }
+  if (syst_label.Contains("MuEnDown")){
+    std::vector<snu::KMuon> muons_noshift = GetMuons("MUON_HN_NN_HighPt_TrkIso", false, TString(""),10., 2.5);
+    CorrectedMETMuon(-1, muons_noshift, MET, METphi);
+  }
+  
   /// change weight to scale to trigger lumiOB                                                                                                                                                  
 
   /// Make all hist without filling -999 means only hist are made, not filled (useful for plotting code)
@@ -182,12 +285,12 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
   float mm_weight = ev_weight;
   TString channel = "";
   if(_ee_channel){
-    channel = "DiEle";
+    channel = "DiEle"+syst_label;
     if(diele_pass){
       ee_weight = ee_weight*WeightByTrigger(diele_trig1,TargetLumi);
       counter("HLT_DoublePhoton60_v", ee_weight);
-
-  
+      
+      
       std::vector<KLepton> Leptons_veto;
       std::vector<KLepton> Leptons;
       Leptons_veto.clear();
@@ -196,40 +299,75 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
       for(unsigned int i = 0; i < muons_veto.size(); i++)    Leptons_veto.push_back(muons_veto.at(i));
       for(unsigned int i = 0; i < electrons.size(); i++)    Leptons.push_back(electrons.at(i));
       for(unsigned int i = 0; i < muons.size(); i++)    Leptons.push_back(muons.at(i));
-
+      
+      
       // CR Z  ee
       if(N_veto_muon == 0 && N_veto_el == 2 && N_el == 2){
-	ee_weight *= EEWeight(electrons, "EL_HN_NN_Tight");	
-
+	ee_weight *= EEWeight(syst_label, electrons, "EL_HN_NN_Tight");	
+	
 	// -- Dielectron 
-	counter("DiEl", ee_weight);
-
+	counter("DiEl"+syst_label, ee_weight);
+	
 	// --Pt cut
 	if(electrons[1].Pt() > 65){
 	  snu::KParticle ll = electrons[0] + electrons[1];
-
+	  vector<snu::KParticle> Ns = RecoPairN(Leptons, fatjets, jets);
+	  
 	  // -- OS for CR                                                                                                                                                                                  	
 	  if(!SameCharge(electrons)){
+	    
+	    // -- CR Z peak
 	    if(fabs(ll.M() - 90.1) < 10.){
 	      TString Region_str = "CR_Zmass_";
-	      
+              if(Ns.size() ==2){
+		snu::KParticle Zp = Ns.at(0) + Ns.at(1);
+		FillHist( "mZp_" + Region_str + channel, Zp.M(), ee_weight,  0., 6000.,6000, "Z' Mass GeV");
+		FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), ee_weight,  0., 5000,5000., "mN GeV");
+		FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), ee_weight,  0., 5000,5000.,  "mN GeV");
+	      }
 	      counter(Region_str + channel, ee_weight);
-	      FillCLHist(sighist_ee, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
 	      FillCLHist(sighist_ee, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
-	    }
+	    } // end Z CR
+	    
+	    // -- CR TT one
 	    if(fabs(ll.M()) > 55.){
 	      int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
 	      float MET = eventbase->GetEvent().PFMET();
 	      
-	      TString Region_str = "CR_ttbar_";
-
+	      TString Region_str = "CR_ttbar1_";
+	      
 	      if(nbjet > 0 && MET > 40){ 
 		counter(Region_str + channel, ee_weight);
-		FillCLHist(sighist_ee, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
+		if(Ns.size() ==2){
+		  snu::KParticle Zp = Ns.at(0) + Ns.at(1);
+		  FillHist( "mZp_" + Region_str + channel, Zp.M(), ee_weight,  0., 6000.,6000, "Z' Mass GeV");
+		  FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), ee_weight,  0., 5000,5000., "mN GeV");
+		  FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), ee_weight,  0., 5000,5000.,  "mN GeV");
+		}
 		FillCLHist(sighist_ee, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
 	      }
-	    }
-	  } // // -- OS for CR        
+	    } // end tt CR 1
+
+	    // -- CR TT two                                                                                                                                                                                 
+            if(fabs(ll.M()) > 150.){
+              int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
+              float MET = eventbase->GetEvent().PFMET();
+	      
+              TString Region_str = "CR_ttbar2_";
+	      
+              if(nbjet > 1){
+                counter(Region_str + channel, ee_weight);
+                if(Ns.size() ==2){
+		  snu::KParticle Zp = Ns.at(0) + Ns.at(1);
+                  FillHist( "mZp_" + Region_str + channel, Zp.M(), ee_weight,  0., 6000.,6000, "Z' Mass GeV");
+                  FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), ee_weight,  0., 5000,5000., "mN GeV");
+                  FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), ee_weight,  0., 5000,5000.,  "mN GeV");
+                }
+		FillCLHist(sighist_ee, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
+              }
+            }
+	    
+	  }// end -- OS for CR        
 	  
 	  /// == SR
 	  if(ll.M() > 150) {
@@ -239,26 +377,58 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
 	      if(Ns.at(0).M() > 80 && Ns.at(1).M() > 80){
 		if(Zp.M() > 300) {
 		  TString Region_str = "SR_";
-		  FillHist( "mZp_" + Region_str + channel, Zp.M(), ee_weight, 6000, 0., 6000., "Z' Mass GeV");
-		  FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), ee_weight, 5000, 0., 5000., "mN GeV");
-		  FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), ee_weight, 5000, 0., 5000.,  "mN GeV");
-		  
-		  FillCLHist(sighist_ee,Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
+		  FillHist( "mZp_" + Region_str + channel, Zp.M(), ee_weight,  0., 6000.,6000, "Z' Mass GeV");
+		  FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), ee_weight,  0., 5000,5000., "mN GeV");
+		  FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), ee_weight,  0., 5000,5000.,  "mN GeV");
+		  counter(Region_str + channel, ee_weight);
 		  FillCLHist(sighist_ee,Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, ee_weight);
-
 		}
 	      }
 	    }
 	  }
-
 	} // // --Pt cut 
       } // // -- Diel
     } // // -- trigger
-  }
+  } // end ee channel
   
   if(_mm_channel){
+    
+    std::vector<TString> triggerlist_DiMuon;
+    triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
+    triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
+    triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v");
+    triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v");
+    if(PassTriggerOR(triggerlist_DiMuon)){
+
+      channel = "DiMu"+syst_label;
+      if(muons_hn.size() == 2 && N_veto_muon == 2 && N_veto_el == 0){
+        if(muons_hn[1].Pt() > 25){
+	  snu::KParticle ll = muons_hn[0] + muons_hn[1];
+	  
+          // -- OS for CR POG                                                                                                                                                                               
+          float mmweight_hn = mm_weight;
+          mmweight_hn*=  MMWeight(syst_label,muons, "MUON_HN_TIGHT",true);
+	  mmweight_hn*=  WeightByTrigger(mu50_trig1,TargetLumi);
+
+          if(!SameCharge(muons_hn)){
+	    
+            if(fabs(ll.M() - 90.1) < 10.){
+              TString Region_str = "CR_Zmass_hnss_";
+              if(syst_label.Contains("central")){
+                FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mmweight_hn);
+
+              }
+            }
+          }
+        }
+      }
+    }
+    
+      
+    
+
     if(mu50_pass){
-      channel = "DiMu";
+      channel = "DiMu"+syst_label;
       
       //ev_weight = ev_weight * max(WeightByTrigger(mu50_trig1,TargetLumi), WeightByTrigger(mu50_trig2,TargetLumi));
       mm_weight *= WeightByTrigger(mu50_trig1,TargetLumi);
@@ -273,10 +443,37 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
       for(unsigned int i = 0; i < electrons.size(); i++)    Leptons.push_back(electrons.at(i));
       for(unsigned int i = 0; i < muons.size(); i++)    Leptons.push_back(muons.at(i));
       
+
+
+      if(muons_pog.size() == 2 && N_veto_muon == 2 && N_veto_el == 0){
+
+	if(muons_pog[1].Pt() > 65){
+	  snu::KParticle ll = muons_pog[0] + muons_pog[1];
+
+          // -- OS for CR POG
+	  float mmweight_pog = mm_weight;
+	  mmweight_pog*=  MMWeight(syst_label,muons, "MUON_POG_TIGHT",true); 
+          if(!SameCharge(muons_pog)){
+
+            if(fabs(ll.M() - 90.1) < 10.){
+              TString Region_str = "CR_Zmass_pog_";
+              if(syst_label.Contains("central")){
+                FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mmweight_pog);
+		if(jets.size() ==0 ) FillCLHist(sighist_mm, Region_str + channel+"_0jet", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mmweight_pog);
+		else if(jets.size() ==1 ) FillCLHist(sighist_mm, Region_str + channel+"_1jet", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mmweight_pog);
+		else FillCLHist(sighist_mm, Region_str + channel+"_2jet", eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mmweight_pog);
+
+	      }
+	    }
+	  }
+	}
+      }
+
       // CR Z  mm                                                                                                                                                                           
       if(N_veto_el == 0 && N_veto_muon == 2 && N_muon == 2){
 	
-	mm_weight *=  MMWeight(muons, "MUON_HN_NN_HighPt_TrkIso", true);
+
+	mm_weight *=  MMWeight(syst_label,muons, "MUON_HN_NN_HighPt_TrkIso",true);
 	
 	// -- DiMuon
 	
@@ -289,29 +486,68 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
           // -- OS for CR	
           if(!SameCharge(muons)){
 	    
+	    vector<snu::KParticle> Ns = RecoPairN(Leptons, fatjets, jets);
+
+	    
 	    if(fabs(ll.M() - 90.1) < 10.){
 	      TString Region_str = "CR_Zmass_";
 	      
 	      counter(Region_str + channel, mm_weight);
-	      FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
 	      FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mm_weight);
-	      
-	    }// Z CR
+
+	      if(Ns.size() ==2){
+		snu::KParticle Zp = Ns.at(0) + Ns.at(1);	
+		FillHist( "mZp_" + Region_str + channel, Zp.M(), mm_weight,  0., 6000.,6000, "Z' Mass GeV");
+		FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), mm_weight,  0., 5000.,5000, "mN GeV");
+		FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), mm_weight,  0., 5000.,5000,  "mN GeV");
+	      }
+	    }
+	    // Z CR
 	    
-	    
+	    // -- CR ttbar 1
 	    if(fabs(ll.M()) > 55.){
 	      
 	      int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
 	      float MET = eventbase->GetEvent().PFMET();
-	      TString Region_str = "CR_ttbar_";
+	      TString Region_str = "CR_ttbar1_";
 	      
 	      if(nbjet > 0 && MET > 40){
 		counter(Region_str + channel, mm_weight);
-                FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
-                FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mm_weight);
 		
+		if(Ns.size() ==2){
+		  snu::KParticle Zp = Ns.at(0) + Ns.at(1);
+		  
+		  FillHist( "mZp_" + Region_str + channel, Zp.M(), mm_weight,  0., 6000.,6000, "Z' Mass GeV");
+		  FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), mm_weight,  0., 5000.,5000, "mN GeV");
+		  FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), mm_weight,  0., 5000.,5000,  "mN GeV");
+		}
+		if(syst_label.Contains("central")){
+		  FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mm_weight);
+		}
 	      }
 	    }
+
+	    // -- CR ttbar 2                                                                                                                                                                                
+            if(fabs(ll.M()) > 150.){
+
+              int nbjet=NBJet(GetJets("JET_PTETA","",20., 5.));
+              float MET = eventbase->GetEvent().PFMET();
+              TString Region_str = "CR_ttbar2_";
+
+              if(nbjet > 1){
+                counter(Region_str + channel, mm_weight);
+
+                if(Ns.size() ==2){
+		  snu::KParticle Zp = Ns.at(0) + Ns.at(1);
+
+                  FillHist( "mZp_" + Region_str + channel, Zp.M(), mm_weight,  0., 6000.,6000, "Z' Mass GeV");
+                  FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), mm_weight,  0., 5000.,5000, "mN GeV");
+                  FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), mm_weight,  0., 5000.,5000,  "mN GeV");
+                }
+		FillCLHist(sighist_mm, Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mm_weight);
+              }
+            }
+
 	  } // // -- OS for CR  
 	  
 	    /// == SR                                                                                                                                                                                   
@@ -322,13 +558,12 @@ void HN_pair_all::ExecuteEventFromSyst(TString el_syst, TString mu_syst, TString
               if(Ns.at(0).M() > 80 && Ns.at(1).M() > 80){
                 if(Zp.M() > 300) {
                   TString Region_str = "SR_";
-                  FillHist( "mZp_" + Region_str + channel, Zp.M(), mm_weight, 6000, 0., 6000., "Z' Mass GeV");
-                  FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), mm_weight, 5000, 0., 5000., "mN GeV");
-                  FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), mm_weight, 5000, 0., 5000.,  "mN GeV");
+                  FillHist( "mZp_" + Region_str + channel, Zp.M(), mm_weight,  0., 6000.,6000, "Z' Mass GeV");
+                  FillHist( "mN_" + Region_str + channel, Ns.at(0).M(), mm_weight,  0., 5000.,5000, "mN GeV");
+		  FillHist( "mN_" + Region_str + channel, Ns.at(1).M(), mm_weight,  0., 5000.,5000,  "mN GeV");
+		  counter(Region_str + channel, mm_weight);
 		  
-                  FillCLHist(sighist_mm,Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, -999.);
-                  FillCLHist(sighist_mm,Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mm_weight);
-		  
+		  FillCLHist(sighist_mm,Region_str + channel, eventbase->GetEvent(), muons_veto, electrons,jets, alljets, fatjets, mm_weight);
                 }
               }
             }
@@ -370,7 +605,7 @@ bool HN_pair_all::RemoveFlavourMixing(){
 }
 
 
-float HN_pair_all::EEWeight(std::vector<snu::KElectron> electrons,TString id){
+float HN_pair_all::EEWeight(TString syst_label, std::vector<snu::KElectron> electrons,TString id){
   
   if(isData) return 1.;
   
@@ -378,8 +613,18 @@ float HN_pair_all::EEWeight(std::vector<snu::KElectron> electrons,TString id){
   double electron_RecoSF =  mcdata_correction->ElectronRecoScaleFactor(electrons);
   mc_weight*= electron_RecoSF;
 
-  float puweight=1.;
-  puweight=eventbase->GetEvent().PileUpWeight(snu::KEvent::down);
+
+  float  puweight =1.;
+  if(syst_label=="_PU_up"){
+    puweight = mcdata_correction->CatPileupWeight(eventbase->GetEvent(),+1);
+  }
+  else if(syst_label=="_PU_down"){
+    puweight = mcdata_correction->CatPileupWeight(eventbase->GetEvent(),-1);
+  }
+  else puweight = mcdata_correction->CatPileupWeight(eventbase->GetEvent(),-1);
+
+
+  //puweight=eventbase->GetEvent().PileUpWeight(snu::KEvent::down);                                                                                                                                         
   mc_weight*= puweight;
   
   //std::vector<snu::KMuon> muons;
@@ -393,7 +638,7 @@ float HN_pair_all::EEWeight(std::vector<snu::KElectron> electrons,TString id){
   return mc_weight;
 }
 
-float HN_pair_all::EMWeight(std::vector<snu::KElectron> electrons,std::vector<snu::KMuon> muons,TString idel, TString idmu){
+float HN_pair_all::EMWeight(TString syst_label, std::vector<snu::KElectron> electrons,std::vector<snu::KMuon> muons,TString idel, TString idmu){
   
   if(isData) return 1.;
   double mc_weight = mcdata_correction->ElectronScaleFactor(idel, electrons, 0);
@@ -409,18 +654,59 @@ float HN_pair_all::EMWeight(std::vector<snu::KElectron> electrons,std::vector<sn
 }
 
 
-float HN_pair_all::MMWeight(std::vector<snu::KMuon> muons, TString id, bool passtrig){
+float HN_pair_all::MMWeight(TString syst_label, std::vector<snu::KMuon> muons, TString id, bool passtrig){
 
   if(isData) return 1.;
   float mc_weight=mcdata_correction->MuonTrackingEffScaleFactor(muons);
 
   float puweight=1.;
-  puweight=eventbase->GetEvent().PileUpWeight(snu::KEvent::down);
+  
+  if(syst_label=="_PU_up"){
+    puweight = mcdata_correction->CatPileupWeight(eventbase->GetEvent(),+1);
+    }
+  else if(syst_label=="_PU_down"){
+    puweight = mcdata_correction->CatPileupWeight(eventbase->GetEvent(),-1);
+  }
+  else puweight = mcdata_correction->CatPileupWeight(eventbase->GetEvent(),-1);
+  
+
   mc_weight*= puweight;
 
-  /// ID issue                                                                                                                                                                                                                                                                  
-  double muon_id_iso_sf = mcdata_correction->MuonScaleFactor(id, muons, 0);
-  mc_weight*= muon_id_iso_sf;
+  /// ID issue                                                                                                                                                                                               
+  if(id == "MUON_HN_TIGHT"){
+
+    double muon_id_iso_sf = mcdata_correction->MuonScaleFactor(id, muons, 0);
+    mc_weight*= muon_id_iso_sf;
+  
+    std::vector<snu::KElectron> el;
+ 
+    double trigger_eff_Data = mcdata_correction->TriggerEfficiencyLegByLeg(el, "elid", muons, id, 0, 0, 0);
+    double trigger_eff_MC = mcdata_correction->TriggerEfficiencyLegByLeg(el, "elid", muons, id, 0, 1, 0);
+    double trigger_eff_MC_OR = mcdata_correction->TriggerEfficiencyLegByLeg(el, "elid", muons, id, 3, 1, 0);
+    float trigger_sf = trigger_eff_Data/trigger_eff_MC;
+    if(passtrig) mc_weight*= trigger_sf;
+    return mc_weight;
+  }
+  else  if(id== "MUON_POG_TIGHT"){
+
+    double muon_id_sf = mcdata_correction->MuonScaleFactor(id, muons, 0);
+    double muon_iso_sf = mcdata_correction->MuonISOScaleFactor(id, muons, 0);
+    mc_weight*= muon_id_sf;
+    mc_weight*= muon_iso_sf;
+    
+    std::vector<snu::KElectron> el;
+
+    if(passtrig) mc_weight*= mcdata_correction->TriggerScaleFactor( el, muons, "HLT_Mu50_v", 0);
+
+    return mc_weight;
+
+    
+  }
+  
+  double muon_id_sf = mcdata_correction->MuonScaleFactor(id, muons, 0);
+  double muon_iso_sf = mcdata_correction->MuonISOScaleFactor(id, muons, 0);
+  mc_weight*= muon_id_sf;
+  mc_weight*= muon_iso_sf;
 
   std::vector<snu::KElectron> el;
 

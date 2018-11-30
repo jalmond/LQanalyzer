@@ -3,6 +3,10 @@
 # --------------  --------------  --------------  --------------  --------------  --------------  --------------  -------------- #
 ### MUON_MU50_OR_TRKMU50_TRIGGER_EFF_BCDEF TRIGGERFILEDIR MuonTriggerEfficiency_ZprimeToNN_Mu50orTkMu50_Run2016BCDEF_Central.root  TriggerEff_HNDilepton_BCDEF TH2F
 ### MUON_MU50_OR_TRKMU50_TRIGGER_EFF_GH TRIGGERFILEDIR  MuonTriggerEfficiency_ZprimeToNN_Mu50orTkMu50_Run2016GH_Central.root  TriggerEff_HNDilepton_GH TH2F
+### ID_BCEEF_MUON_HN_NN_HighPt_TrkIso IDFILEDIR RunBCDEF_SF_ID.root  NUM_HighPtID_DEN_genTracks_eta_pair_newTuneP_probe_pt TH2D
+### ISO_BCEEF_MUON_HN_NN_HighPt_TrkIso IDFILEDIR RunBCDEF_SF_ISO.root NUM_LooseRelTkIso_DEN_HighPtIDandIPCut_eta_pair_newTuneP_probe_pt TH2D
+### ID_GH_MUON_HN_NN_HighPt_TrkIso IDFILEDIR RunBCDEF_SF_ID.root NUM_HighPtID_DEN_genTracks_eta_pair_newTuneP_probe_pt   TH2D
+### ISO_GH_MUON_HN_NN_HighPt_TrkIso IDFILEDIR RunGH_SF_ISO.root NUM_LooseRelTkIso_DEN_HighPtIDandIPCut_eta_pair_newTuneP_probe_pt TH2D
 ### ID_ELECTRON_EL_HN_NN_Tight_Barrel IDFILEDIR HEEP_SF.root SF_Et_Barrel TGraphAsymmErrors
 ### ID_ELECTRON_EL_HN_NN_Tight_Endcap IDFILEDIR HEEP_SF.root SF_Et_Endcap TGraphAsymmErrors
 ### EL_RECO IDFILEDIR egammaEffi.txt_EGM2D_reco.root EGamma_SF2D  TH2F 

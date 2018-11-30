@@ -28,6 +28,7 @@ MCDataCorrections::MCDataCorrections() {
 
 
   CorrectionMap.clear();
+  CorrectionMap2D.clear();
   CorrectionMap1D.clear();
   CorrectionMapGraph.clear();
   
@@ -58,6 +59,7 @@ MCDataCorrections::~MCDataCorrections(){
     delete mit->second;
   }
   CorrectionMap.clear();
+  CorrectionMap2D.clear();
   CorrectionMapGraph.clear();
   deg_etaptmap_leg1.clear();
   deg_etaptmap_leg2.clear();
@@ -252,10 +254,19 @@ void MCDataCorrections::FillCorrectionHist(string label, string dirname, string 
     cout << histsname+"_MC" << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
   }
   else{
-    TH2F* tmp =  dynamic_cast<TH2F*> (( infile_sf->Get(histsname.c_str()))->Clone());
-    CorrectionMap[label] = tmp;
-    cout << "CorrectionMap["<<label <<"] = " << endl;
-    cout << histsname << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
+    if(TString(histtype).Contains("TH2D")) {
+
+      TH2D* tmp =  dynamic_cast<TH2D*> (( infile_sf->Get(histsname.c_str()))->Clone());
+      CorrectionMap2D[label] = tmp;
+
+    }
+    else{
+      
+      TH2F* tmp =  dynamic_cast<TH2F*> (( infile_sf->Get(histsname.c_str()))->Clone());
+      CorrectionMap[label] = tmp;
+      cout << "CorrectionMap["<<label <<"] = " << endl;
+      cout << histsname << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
+    }
   }
   infile_sf->Close();
   delete infile_sf;
@@ -411,6 +422,14 @@ double MCDataCorrections::MuonISOScaleFactorPeriodDependant(TString muid, vector
       
       sf*= (1. + sferr)*GetCorrectionHist("ISO"+tag +"_"+ muid)->GetBinContent( GetCorrectionHist("ISO"+tag +"_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
     }
+    else{
+      if(CheckCorrectionHist2D("ISO"+tag +"_"+ muid)){
+	sferr = double(sys)*GetCorrectionHist2D("ISO"+tag +"_"+ muid)->GetBinError( GetCorrectionHist2D("ISO"+tag +"_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
+
+	sf*= (1. + sferr)*GetCorrectionHist2D("ISO"+tag +"_"+ muid)->GetBinContent( GetCorrectionHist2D("ISO"+tag +"_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
+
+      }
+    }
   }
 
   return sf;
@@ -470,7 +489,11 @@ double MCDataCorrections::MuonScaleFactorPeriodDependant(TString muid, vector<sn
       sferr = double(sys)*GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinError( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
       
       sf*=  (1. + sferr)* GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinContent( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
-      cout << " MuonScaleFactorPeriodDependant " << sf  << endl;
+    }
+    else   if(CheckCorrectionHist2D("ID" +tag+ "_"+ muid)){
+      sferr = double(sys)*GetCorrectionHist2D("ID" +tag+ "_"+ muid)->GetBinError( GetCorrectionHist2D("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
+
+      sf*=  (1. + sferr)* GetCorrectionHist2D("ID" +tag+ "_"+ muid)->GetBinContent( GetCorrectionHist2D("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
     }
   }
 
@@ -1641,7 +1664,6 @@ void MCDataCorrections::CheckFile(TFile* file){
   return;
 }
 
-
 bool MCDataCorrections::CheckCorrectionHist(TString label){
   map<TString, TH2F*>::iterator  mapit = CorrectionMap.find(label);
   map<TString, TH1D*>::iterator  mapit1D = CorrectionMap1D.find(label);
@@ -1652,12 +1674,18 @@ bool MCDataCorrections::CheckCorrectionHist(TString label){
     return true;
   }
   else {
-    //for( map<TString, TH2F*>::iterator mapit2 = CorrectionMap.begin(); mapit2 != CorrectionMap.end(); mapit2++){
-      //cout <<" CorrectionMap " << mapit2->first << endl;
-    //}
-    //for( map<TString, TH1D*>::iterator mapit2 = CorrectionMap1D.begin(); mapit2 != CorrectionMap1D.end(); mapit2++){
-    //cout <<" CorrectionMap " << mapit2->first<< endl;
-    //}
+    return false;
+  }
+}
+
+bool MCDataCorrections::CheckCorrectionHist2D(TString label){
+  map<TString, TH2D*>::iterator  mapit2D = CorrectionMap2D.find(label);
+
+  if (mapit2D!= CorrectionMap2D.end()){
+    return true;
+  }
+
+  else {
     return false;
   }
 }
@@ -1690,6 +1718,15 @@ TH2F* MCDataCorrections::GetCorrectionHist(TString label){
 }
 
 
+TH2D* MCDataCorrections::GetCorrectionHist2D(TString label){
+  map<TString, TH2D*>::iterator mapit2D = CorrectionMap2D.find(label);
+  if (mapit2D!= CorrectionMap2D.end()){
+    return mapit2D->second;
+  }
+  else{
+    exit(0);
+  }
+}
 TH1D* MCDataCorrections::GetCorrectionHist1D(TString label){
   map<TString, TH1D*>::iterator mapit = CorrectionMap1D.find(label);
   if (mapit!= CorrectionMap1D.end()){

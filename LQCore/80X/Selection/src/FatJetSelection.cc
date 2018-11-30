@@ -165,14 +165,14 @@ void FatJetSelection::SelectFatJets(std::vector<KFatJet>& jetColl, TString jetid
 
     if(!Syst_JER){
       *jit *= jit->SmearedRes();
-      jit->SetPrunedMass(jit->PrunedMass()* jit->SmearedRes());
+      jit->SetSoftDropMass(jit->SoftDropMass()* jit->SmearedMassRes() * jit->ScaledMass());
     }
-    if     (Syst_JES && SystDir>0) {*jit *= jit->ScaledUpEnergy(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledUpEnergy());}
-    else if(Syst_JES && SystDir<0) {*jit *= jit->ScaledDownEnergy(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledDownEnergy());}
-    else if(Syst_JER && SystDir>0) {*jit *= jit->SmearedResUp();  jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedResUp());}
-    else if(Syst_JER && SystDir<0) {*jit *= jit->SmearedResDown();   jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedResDown());}
+    if     (Syst_JES && SystDir>0) {*jit *= jit->ScaledUpEnergy();}
+    else if(Syst_JES && SystDir<0) {*jit *= jit->ScaledDownEnergy();}
+    else if(Syst_JER && SystDir>0) {*jit *= jit->SmearedResUp();  }
+    else if(Syst_JER && SystDir<0) {*jit *= jit->SmearedResDown(); }
     else if(Syst_JMR && SystDir>0) {*jit *= jit->SmearedMassResUp();  jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedMassResUp());}
-    else if(Syst_JMR && SystDir<0) {*jit *= jit->SmearedMassResDown(); jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedMassResUp());}
+    else if(Syst_JMR && SystDir<0) {*jit *= jit->SmearedMassResDown(); jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedMassResDown());}
     else if(Syst_JMS && SystDir>0) {*jit *= jit->ScaledMassUp(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledMassUp());}
     else if(Syst_JMS && SystDir<0) {*jit *= jit->ScaledMassDown(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledMassDown());}
 

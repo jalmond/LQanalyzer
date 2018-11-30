@@ -52,7 +52,9 @@ class MCDataCorrections{
 
   TH1D* GetCorrectionHist1D(TString label);
   TH2F* GetCorrectionHist(TString label);
+  TH2D* GetCorrectionHist2D(TString label);
   bool CheckCorrectionHist(TString label);
+  bool CheckCorrectionHist2D(TString label);
   TGraphAsymmErrors* GetCorrectionGraph(TString label);
   bool CheckCorrectionGraph(TString label);
   void FillCorrectionHist(std::string label, std::string dirname, std::string filename, std::string histsname, std::string histtype);
@@ -112,6 +114,7 @@ class MCDataCorrections{
   double k_period;
 
   std::map<TString, TH2F*>  CorrectionMap;
+  std::map<TString, TH2D*>  CorrectionMap2D;
   std::map<TString, TH1D*>  CorrectionMap1D;
 
   std::map<TString, TGraphAsymmErrors*>  CorrectionMapGraph;

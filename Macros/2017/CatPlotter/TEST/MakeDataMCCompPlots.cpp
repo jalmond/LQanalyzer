@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus022.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus021.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl;
   cout << "Local directory = ~/CATAnalyzerPlots/" + path +  "/histograms/" + histdir  << endl;
@@ -173,39 +173,6 @@ int MakePlots(string hist) {
 
 vector<TH1*> hsig ;
 float int_bkg = hup->Integral()/2.; 
-TFile* file_sig0 =  TFile::Open(("/data2//CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HN_pair_all/periodBtoH/2018-11-19/HN_pair_all_SKZprimetoNN_WR_EE_Z2000_N900_cat_v8-0-8.root")); 
-TH1* hsig0 = dynamic_cast<TH1*> ((file_sig0->Get(name.c_str()))->Clone()); 
-hsig0->Rebin(rebin); 
-hsig0->Scale(0.05); 
-FixOverUnderFlows(hsig0, xmax); 
-ymax = GetMaximum(hsig0, hsig0, ylog, name, xmax, xmin); 
-hsig0->SetLineColor(2); 
-hsig0->SetLineWidth(3.); 
-hsig0->GetXaxis()->SetRangeUser(xmin,xmax); 
-hsig0->GetYaxis()->SetRangeUser(0.01,ymax); 
-hsig.push_back(hsig0);
-TFile* file_sig1 =  TFile::Open(("/data2//CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HN_pair_all/periodBtoH/2018-11-19/HN_pair_all_SKZprimetoNN_WR_EE_Z2000_N700_cat_v8-0-8.root")); 
-TH1* hsig1 = dynamic_cast<TH1*> ((file_sig1->Get(name.c_str()))->Clone()); 
-hsig1->Rebin(rebin); 
-hsig1->Scale(0.05); 
-FixOverUnderFlows(hsig1, xmax); 
-ymax = GetMaximum(hsig1, hsig1, ylog, name, xmax, xmin); 
-hsig1->SetLineColor(3); 
-hsig1->SetLineWidth(3.); 
-hsig1->GetXaxis()->SetRangeUser(xmin,xmax); 
-hsig1->GetYaxis()->SetRangeUser(0.01,ymax); 
-hsig.push_back(hsig1);
-TFile* file_sig2 =  TFile::Open(("/data2//CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HN_pair_all/periodBtoH/2018-11-19/HN_pair_all_SKZprimetoNN_WR_EE_Z2000_N800_cat_v8-0-8.root")); 
-TH1* hsig2 = dynamic_cast<TH1*> ((file_sig2->Get(name.c_str()))->Clone()); 
-hsig2->Rebin(rebin); 
-hsig2->Scale(0.05); 
-FixOverUnderFlows(hsig2, xmax); 
-ymax = GetMaximum(hsig2, hsig2, ylog, name, xmax, xmin); 
-hsig2->SetLineColor(4); 
-hsig2->SetLineWidth(3.); 
-hsig2->GetXaxis()->SetRangeUser(xmin,xmax); 
-hsig2->GetYaxis()->SetRangeUser(0.01,ymax); 
-hsig.push_back(hsig2);
 
 	unsigned int outputWidth = 1200;
 	unsigned int outputHeight = 1200;
@@ -585,10 +552,8 @@ TLegend* MakeLegend( map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata 
   vector<TString> legorder;
 
 legorder.push_back("Top");
-legorder.push_back("Triboson");
-legorder.push_back("Wjets");
-legorder.push_back("Diboson");
-legorder.push_back("DY #rightarrow ll");
+legorder.push_back("Others");
+legorder.push_back("DY");
   map<double, TString> order_hists;
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
     order_hists[it->second->Integral()] = it->first;
@@ -658,22 +623,40 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
 
-if(sample.Contains("top")){    list.push_back(make_pair("SingleTbar_tW",0.2));
+if(sample.Contains("top")){    list.push_back(make_pair("SingleTbar_t",0.2));
+    list.push_back(make_pair("SingleTop_t",0.2));
+    list.push_back(make_pair("SingleTbar_tW",0.2));
     list.push_back(make_pair("SingleTop_tW",0.2));
     list.push_back(make_pair("TT_powheg",0.2));
     list.push_back(make_pair("ttH_nonbb",0.2));
     list.push_back(make_pair("ttH_bb",0.2));
     list.push_back(make_pair("ttW",0.2));
     list.push_back(make_pair("ttZ",0.2));
-}if(sample.Contains("triv")){    list.push_back(make_pair("WWW",0.2));
+}if(sample.Contains("other")){    list.push_back(make_pair("WWTo2L2Nu_powheg",0.2));
+    list.push_back(make_pair("WZTo2L2Q_mcatnlo",0.2));
+    list.push_back(make_pair("ZGto2LG",0.2));
+    list.push_back(make_pair("ZZTo2L2Nu_powheg",0.2));
+    list.push_back(make_pair("ZZTo2L2Q_powheg",0.2));
+    list.push_back(make_pair("ttH_nonbb",0.2));
+    list.push_back(make_pair("ttH_bb",0.2));
+    list.push_back(make_pair("ttZ",0.2));
+    list.push_back(make_pair("ttW",0.2));
+    list.push_back(make_pair("GG_HToMuMu",0.2));
+    list.push_back(make_pair("VBF_HToMuMu",0.2));
+    list.push_back(make_pair("WWW",0.2));
     list.push_back(make_pair("ZZZ",0.2));
     list.push_back(make_pair("WWZ",0.2));
-}if(sample.Contains("wjets")){    list.push_back(make_pair("WJets",0.2));
-}if(sample.Contains("diboson")){    list.push_back(make_pair("ZZTo4L_powheg",0.20));
+    list.push_back(make_pair("WZZ",0.2));
+    list.push_back(make_pair("ZZTo4L_powheg",0.20));
     list.push_back(make_pair("WZTo3LNu_powheg",0.20));
-    list.push_back(make_pair("WZTo2L2Q_mcatnlo",0.2));
-    list.push_back(make_pair("WWTo2L2Nu_powheg",0.2));
-}if(sample.Contains("DY")){    list.push_back(make_pair("DY50plus",0.15));
+    list.push_back(make_pair("WpWpQCD",0.2));
+    list.push_back(make_pair("WpWpEWK",0.2));
+}if(sample.Contains("DY")){    list.push_back(make_pair("DY_pt_100to250",0.1));
+    list.push_back(make_pair("DY_pt_250to400",0.1));
+    list.push_back(make_pair("DY_pt_400to650",0.1));
+    list.push_back(make_pair("DY_pt_50to100",0.1));
+    list.push_back(make_pair("DY_pt_650toinf",0.1));
+    list.push_back(make_pair("DY_pt_0to50",0.1));
 }  
 
 
@@ -1315,18 +1298,14 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   
   /// Setup list of samples: grouped into different processes 
 vector<pair<TString,float> >  top = InitSample(" top"); 
-vector<pair<TString,float> >  triv = InitSample(" triv"); 
-vector<pair<TString,float> >  wjets = InitSample(" wjets"); 
-vector<pair<TString,float> >  diboson = InitSample(" diboson"); 
+vector<pair<TString,float> >  other = InitSample(" other"); 
 vector<pair<TString,float> >  DY = InitSample(" DY"); 
 
 
   for( unsigned int i = 0; i < listofsamples.size(); i++){
    if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,kRed),"Top"));
-   if(listofsamples.at(i) =="triv")samples.push_back(make_pair(make_pair(triv,kSpring+10),"Triboson"));
-   if(listofsamples.at(i) =="wjets")samples.push_back(make_pair(make_pair(wjets,810),"Wjets"));
-   if(listofsamples.at(i) =="diboson")samples.push_back(make_pair(make_pair(diboson,kSpring-1),"Diboson"));
-   if(listofsamples.at(i) =="DY")samples.push_back(make_pair(make_pair(DY,kYellow),"DY #rightarrow ll"));
+   if(listofsamples.at(i) =="other")samples.push_back(make_pair(make_pair(other,kSpring-1),"Others"));
+   if(listofsamples.at(i) =="DY")samples.push_back(make_pair(make_pair(DY,+4),"DY"));
 
   }
 
@@ -1443,12 +1422,6 @@ bool drawsig=true;
   if(drawsig){
     /// Draw sig                                                                                                                                                                     
 
-hsigs[0]->Draw("hist9same"); 
-legend->AddEntry(hsigs[0], "m_{Z} = 2000 m_{N} = 900 GeV ","l");
-hsigs[1]->Draw("hist9same"); 
-legend->AddEntry(hsigs[1], "m_{Z} = 2000 m_{N} = 700 GeV ","l");
-hsigs[2]->Draw("hist9same"); 
-legend->AddEntry(hsigs[2], "m_{Z} = 2000 m_{N} = 800 GeV ","l");
 
   }
   
@@ -1551,9 +1524,6 @@ legend->AddEntry(hsigs[2], "m_{Z} = 2000 m_{N} = 800 GeV ","l");
   if(drawsig){
     /// Draw(2) sig                                                                                                                                                                     
 
-hsigs[0]->Draw("hist9same"); 
-hsigs[1]->Draw("hist9same"); 
-hsigs[2]->Draw("hist9same"); 
     //for(int i =0; i < hsigs.size();i++){
     //hsig[i]->Draw("hist9same");
     //}

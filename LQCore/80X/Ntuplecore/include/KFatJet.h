@@ -151,8 +151,9 @@ namespace snu {
     inline Double_t SmearedResUp() const {return k_jet_smeared_up_energy;}
     inline Double_t SmearedRes() const {return k_jet_smeared_energy;}
 
-    inline Double_t ScaledMassDown() const {return 1.- 0.023;}
-    inline Double_t ScaledMassUp() const {return  1. + 0.023;}
+    inline Double_t ScaledMassDown() const {return 1.- 0.0094;}
+    inline Double_t ScaledMassUp() const {return  1. + 0.0094;}
+    inline Double_t ScaledMass() const {return  1.;}
     inline Double_t SmearedMassResDown() const {return  GetSmearedMassRes(-1);}
     inline Double_t SmearedMassResUp() const {return  GetSmearedMassRes(+1);}
     inline Double_t SmearedMassRes() const {return GetSmearedMassRes(0);}

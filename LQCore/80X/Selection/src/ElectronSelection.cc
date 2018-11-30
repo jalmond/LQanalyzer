@@ -105,6 +105,8 @@ void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TStr
     if     (Syst_ElEn && SystDir>0) *el *= el->PtShiftedUp();
     else if(Syst_ElEn && SystDir<0) *el *= el->PtShiftedDown();
 
+
+
     if(ElectronPass(*el, elid, ptcut,etacut) ) leptonColl.push_back(*el);
     
   }// end of el loop

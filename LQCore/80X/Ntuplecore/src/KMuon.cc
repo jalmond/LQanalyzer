@@ -519,7 +519,7 @@ bool KMuon::PassCustomID(TString IDlabel){
   // -- only basic cuts on pt/eta                                                                                                                                                                                                                                  
   if(CheckIDList(IDlabel, "MUON_PTETA",IDlist)){
     if(this->Pt() < 10)pass=false;
-    if(this->AbsEta() > 2.5) pass=false;
+    if(this->AbsEta() > 2.4) pass=false;
     return pass;
   }
 
@@ -535,14 +535,66 @@ bool KMuon::PassCustomID(TString IDlabel){
   else if (CheckIDList(IDlabel , "MUON_HN_NN_HighPt_TrkIso", IDlist)){
     
     if(!this->PassCustomID("MUON_HN_NN_HighPt"))  pass=false;
-    if(IsoValue("reltrkiso") > GetIDIso(IDlabel,"reltrkiso") )pass=false;                                                                                                                                                                                         
-
+    if(IsoValue("reltrkiso") > GetIDIso(IDlabel,"reltrkiso") )pass=false; 
     return pass;
   }
 
-  
-  //if(IsoValue("reliso_03") > GetIDIso(IDlabel,"reliso_03") )pass=false;                                                                                                                                                                                          
+  else if (CheckIDList(IDlabel , "MUON_POG_TIGHT", IDlist)){
+    
+    if(!this->PassCustomID("MUON_PTETA"))  pass=false;
+    if(!this->IsTight ()) pass=false;
+    if(IsoValue("relpfiso04") > GetIDIso(IDlabel,"relpfiso04") )pass=false;                                                                                                                                    if(abs(this->dXY()) > 0.2) pass=false;
+    if(abs(this->dZ()) > 0.5) pass=false;
+    return pass;
+  }
+  else if (CheckIDList(IDlabel , "MUON_POG_MEDIUM", IDlist)){
 
+    if(!this->PassCustomID("MUON_PTETA"))  pass=false;
+    if(!this->IsMedium ()) pass=false;
+    if(IsoValue("relpfiso04") > GetIDIso(IDlabel,"relpfiso04") )pass=false;                                                                                                                               
+    if(abs(this->dXY()) > 0.2) pass=false;
+    if(abs(this->dZ()) > 0.5) pass=false;
+    return pass;
+  }
+  else if (CheckIDList(IDlabel , "MUON_POG_LOOSE", IDlist)){
+
+    if(!this->PassCustomID("MUON_PTETA"))  pass=false;
+    if(!this->IsLoose ()) pass=false;
+    if(IsoValue("relpfiso04") > GetIDIso(IDlabel,"relpfiso04") )pass=false;                                                                                                                               
+    return pass;
+  }
+  else if (CheckIDList(IDlabel , "MUON_HN_TIGHT", IDlist)){
+
+    if(!this->PassCustomID("MUON_PTETA"))  pass=false;
+    if(!this->IsTight ()) pass=false;
+    if(IsoValue("relpfiso04") > GetIDIso(IDlabel,"relpfiso04") )pass=false;                                                                                                                                
+    if(abs(this->dXY()) > 0.005) pass=false;
+    if(abs(this->dZ()) > 0.04) pass=false;
+    if(abs(this->GlobalChi2()) > 10.) pass=false;
+    if(abs(this->dXYSig2D()) > 3.)  pass=false;
+    return pass;
+  }  
+  else if (CheckIDList(IDlabel , "MUON_HN_LOOSEv7_SIP3p5", IDlist)){
+
+    if(!this->PassCustomID("MUON_PTETA"))  pass=false;
+    if(!this->IsTight ()) pass=false;
+    if(IsoValue("relpfiso04") > GetIDIso(IDlabel,"relpfiso04") )pass=false;
+    if(abs(this->dXY()) > 0.20) pass=false;
+    if(abs(this->dZ()) > 0.1) pass=false;
+    if(abs(this->GlobalChi2()) > 50.) pass=false;
+    if(abs(this->dXYSig2D()) > 3.5)  pass=false;
+    return pass;
+  }
+  else if (CheckIDList(IDlabel , "MUON_HN_VETO", IDlist)){
+
+    if(!this->PassCustomID("MUON_PTETA"))  pass=false;
+    if(!this->IsLoose ()) pass=false;
+    if(IsoValue("relpfiso04") > GetIDIso(IDlabel,"relpfiso04") )pass=false;
+    if(abs(this->dXY()) > 0.2) pass=false;
+    if(abs(this->dZ()) > 0.5) pass=false;
+    if(abs(this->GlobalChi2()) > 50.) pass=false;
+    return pass;
+  }
   if(IDlabel == "") return true;
   else   {
     std::cout  << "KMuon::PassCustomID(ID) " << IDlabel << "  wrong IDlabel."   <<  std::endl;
@@ -571,10 +623,46 @@ Double_t KMuon::GetIDIso(TString IDlabel, TString isotype){
     return 0.1;
 
   }
+  else if (IDlabel == "MUON_POG_TIGHT"){
+    cutstring = "relpfiso04";
+    if (cutstring != isotype) return 10000000000.;
+    return 0.15;
+  }
+  else if (IDlabel == "MUON_POG_FAKETIGHT"){
+    cutstring= "relpfiso04";
+    if (cutstring != isotype) return 10000000000.;
+    return 0.6;
+  }
+  else if (IDlabel == "MUON_POG_MEDIUM"){
+    cutstring= "relpfiso04";
+    if (cutstring != isotype) return 10000000000.;
+    return 0.25;
+  }
+  else if (IDlabel == "MUON_POG_LOOSE"){
+    cutstring= "relpfiso04";
+    if (cutstring != isotype) return 10000000000.;
+    return 0.25;
+  }
+  else if (IDlabel == "MUON_HN_TIGHT"){
+    cutstring= "relpfiso04";
+    if (cutstring != isotype) return 10000000000.;
+    return 0.07;
+  }
+  else if (IDlabel == "MUON_HN_VETO"){
+    cutstring= "relpfiso04";
+    if (cutstring != isotype) return 10000000000.;
+    return 0.6;
+  }
+  else if (IDlabel == "MUON_HN_LOOSEv7_SIP3p5"){
+    cutstring= "relpfiso04";
+    if (cutstring != isotype) return 10000000000.;
+    return 0.4;
+  }
+
   else   {
     std::cout<< "KMuon::GetIDIso(ID) wrong IDlabel"   << std::endl      ;
     exit(0);
-
+    
   }
   return 10000000000.;
 

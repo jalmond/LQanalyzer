@@ -381,18 +381,18 @@ void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
   string lqdir = getenv("LQANALYZER_DIR");
   
   if(singleperiod.Contains("None")){
-    lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt";
+    lumitriggerpath="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016//Luminosity/triggers_catversion_" + TString(getenv("CATVERSION"))+".txt";
   }
   else{
-    if(singleperiod== "B")   lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_272007_275376.txt";
-    else if(singleperiod=="C")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_275657_276283.txt";
-    else if(singleperiod=="D")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276315_276811.txt";
-    else if(singleperiod=="E")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276831_277420.txt";
-    else if(singleperiod=="F")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_277772_278808.txt";
-    else if(singleperiod=="G")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_284044.txt";
-    else if(singleperiod.Contains("H"))lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_278820_280385.txt";
-    else if(singleperiod=="GH")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_280385.txt";
-    else     lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt";
+    if(singleperiod== "B")   lumitriggerpath="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/triggers_catversion_" + TString(getenv("CATVERSION"))+"_272007_275376.txt";
+    else if(singleperiod=="C")lumitriggerpath="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/triggers_catversion_" + TString(getenv("CATVERSION"))+"_275657_276283.txt";
+    else if(singleperiod=="D")lumitriggerpath="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/triggers_catversion_" + TString(getenv("CATVERSION"))+"_276315_276811.txt";
+    else if(singleperiod=="E")lumitriggerpath="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/triggers_catversion_" + TString(getenv("CATVERSION"))+"_276831_277420.txt";
+    else if(singleperiod=="F")lumitriggerpath="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/triggers_catversion_" + TString(getenv("CATVERSION"))+"_277772_278808.txt";
+    else if(singleperiod=="G")lumitriggerpath="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/triggers_catversion_" + TString(getenv("CATVERSION"))+"_280919_284044.txt";
+    else if(singleperiod.Contains("H"))lumitriggerpath="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/triggers_catversion_" + TString(getenv("CATVERSION"))+"_278820_280385.txt";
+    else if(singleperiod=="GH")lumitriggerpath="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/triggers_catversion_" + TString(getenv("CATVERSION"))+"_280919_280385.txt";
+    else     lumitriggerpath="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/triggers_catversion_" + TString(getenv("CATVERSION"))+".txt";
 
     //else {  cerr << "Wrong period setting in SetupLuminosityMap"<< endl;  exit(EXIT_FAILURE);}
   }
@@ -864,7 +864,7 @@ vector<snu::KFatJet>  AnalyzerCore::GetCorrectedFatJet(vector<snu::KFatJet>   fj
     TLorentzVector v;
     v.SetPtEtaPhiM(fjet.Pt(), fjet.Eta(), fjet.Phi(), fjet.M());
     
-    if(L1corr==0.) L1corr = 0.95;
+    if(L1corr==0.) L1corr =1.;
     /// remove L1 correction (only L2L3 used)
     v=v* (1./L1corr);
     
@@ -1636,7 +1636,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(TString elid, TString Opt
   
   
   //// by default keep all electrons
-  return GetElectrons(true,  true ,elid, ptcut, etacut);
+  return GetElectrons(true,  true ,elid,Option,  ptcut, etacut);
 
 }
 
@@ -2009,9 +2009,9 @@ void AnalyzerCore::SetupDDBkg(){
     MapBTagSF = SetupBTagger(vtaggers,v_wps);
     
     if(1){
-      ifstream runlumi((lqdir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt").c_str());
+      ifstream runlumi(("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/lumi_catversion_" + TString(getenv("CATVERSION"))+".txt").Data());
       if(!runlumi) {
-	cerr << "Did not find "+lqdir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt'), exiting ..." << endl;
+	cerr << "Did not find /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Luminosity/lumi_catversion_" + TString(getenv("CATVERSION"))+".txt'), exiting ..." << endl;
 	exit(EXIT_FAILURE);
       }
       string lline;

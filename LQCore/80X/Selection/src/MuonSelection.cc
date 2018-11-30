@@ -106,7 +106,7 @@ void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, TString muid, TS
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
     
     /// Check if roch corr is applied, and of not apply it to pt and iso
-    if(applyrochester&&! muit->IsRochesterCorrected()) {
+    if(applyrochester&&! muit->IsRochesterCorrected() && muit->Pt() < 200.) {
       float origpt = muit->Pt();
       float origreliso03=muit->RelIso03();
       float origreliso04=muit->RelIso04();

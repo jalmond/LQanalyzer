@@ -260,12 +260,12 @@ double KFatJet::BJetTaggerValue(Tagger tag) const{
 
 float KFatJet::GetSmearedMassRes(int sys) const {
   //const double smear = CLHEP::RandGaussQ::shoot(rng_);
-  float jet_resolution = 8.01;
+  float jet_resolution = 10.1; // updated for PUPPI
   float fsys = 1.;
   if(sys==0) fsys=0.;
   if(sys < 0) fsys=-1;
 
-  float jer_sf = 1.23 + fsys*0.18;
+  float jer_sf = 1.00 + fsys*0.20;
   double sigma = jet_resolution * std::sqrt(jer_sf * jer_sf - 1);
 
   double twopi = 8.0 * atan(1.0); // preferable to using M_PI

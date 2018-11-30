@@ -7,8 +7,7 @@ using namespace snu;
 
 
 ////////////////////////////////////////////////                                                                         
-////// FUNCTIONS FOR SKTREEMAKER                                                                                                                                                                           ////////////////////////////////////////////////                                                                                  
-
+////// FUNCTIONS FOR SKTREEMAKER                                                                                                                                                                           //////////////////////////////////////////////// 
 
 JetSelection::JetSelection(LQEvent ev) :BaseSelection() {
   k_lqevent = ev;
@@ -83,7 +82,7 @@ void JetSelection::Selection(std::vector<KJet>& jetColl, bool LepVeto, std::vect
   }
 
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
-
+    
     if     (Syst_JES && SystDir>0) *jit *= jit->ScaledUpEnergy();
     else if(Syst_JES && SystDir<0) *jit *= jit->ScaledDownEnergy();
     if(jit->IsMCSmeared()){

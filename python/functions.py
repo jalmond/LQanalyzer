@@ -206,7 +206,7 @@ def make_batch_script(workdir, jname, lqdir, macroname, cluster):
 
     config+='echo "Job started at " `date` \n'
     if os.getenv("sktreemaker_version") == "False":
-        config+='cd /share/apps/root_v6-12-06/root/  \n'      
+        config+='cd /share/apps/root_v6-12-06/  \n'      
     else:
         config+='cd /share/apps/root_v5-34-32/root/ \n'
 
