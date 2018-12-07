@@ -1,7 +1,7 @@
 ###      MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
 #######################################################################################
 #**************************************************************************************
-# cut CR_ttbar_DiMu_central
+# cut CR_ttbar2_DiMu_central
 # samples HNPair/hnpair_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # datetag  2018-11-26
@@ -30,7 +30,7 @@ END
 # DrawSig HNPair/Sig.txt
 ##################################################################################################
 #**************************************************************************************
-# cut CR_ttbar_DiEle_central
+# cut CR_ttbar2_DiEle_central
 # samples HNPair/hnpair_os_config_allmcEE.txt
 # skim SKTree_DiLepSkim
 # datetag  2018-11-26

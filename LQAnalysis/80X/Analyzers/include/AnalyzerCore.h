@@ -105,6 +105,11 @@ class AnalyzerCore : public LQCycleBase {
   void  SetupID();
   void  SetupDDBkg();
 
+
+  std::vector<snu::KMuon> SmearTunePMuons(std::vector<snu::KMuon> muons, int sys);
+  std::vector<snu::KMuon> ScaleTunePMuons(std::vector<snu::KMuon> muons, int sys);
+
+
   bool ConfigureFakeHists(TString path, std::map<TString, std::pair<std::pair<TString,TString>  ,std::pair<float,TString> > > fake_hists);
   void ConfigureFake();
 
@@ -122,6 +127,7 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KMuon> GetMuons(TString muid,  bool keepfakes, TString Option="", float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake,   TString elid,  TString Option="",float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons( TString elid , TString Option="",float ptcut=-999., float etacut = -999.);
+
 
   bool Is2015Analysis();
   void SetupSelectionMuon(std::string path_sel);

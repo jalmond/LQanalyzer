@@ -1263,6 +1263,134 @@ int AnalyzerCore::GetMCPeriodRandom(){
 }
 
 
+std::vector<KMuon> AnalyzerCore::ScaleTunePMuons(std::vector<KMuon> muons, int sys){
+  // -- Follwed
+  // -- https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceSelectionAndCalibrationsRun2
+  // -- https://github.com/cms-analysis/SUSYBSMAnalysis-Zprime2muAnalysis/blob/mini-AOD/src/GeneralizedEndpoint.cc
+  
+  // Values for scale correction q/pt -> q/pt + k, while k is coming from random choise of Gauss(_Correction, _CorrectionError)
+  // For systemtacis, the randomly chosen k values are shifted by +- _CorrectionError as up/down systematics
+  double _Correction[6][3];
+  double _CorrectionError[6][3];
+  _Correction[0][0] = -0.388122; _CorrectionError[0][0] = 0.045881; //-180,-60
+  _Correction[0][1] =  0.376061; _CorrectionError[0][1] = 0.090062; //-60,60
+  _Correction[0][2] =  -0.153950; _CorrectionError[0][2] = 0.063053; //60,180
+  //[-2.1, -1.2]                                                                                           
+  _Correction[1][0] =  -0.039346; _CorrectionError[1][0] = 0.031655;
+  _Correction[1][1] =  0.041069;  _CorrectionError[1][1] = 0.030070;
+  _Correction[1][2] =  -0.113320; _CorrectionError[1][2] = 0.028683;
+  //[-1.2, 0.]
+  _Correction[2][0] =  0.0;      _CorrectionError[2][0] = 0.025;
+  _Correction[2][1] =  0.0;      _CorrectionError[2][1] = 0.025;
+  _Correction[2][2] =  0.0;      _CorrectionError[2][2] = 0.025;
+  //[-0., 1.2]
+  _Correction[3][0] =  0.0;      _CorrectionError[3][0] = 0.025;
+  _Correction[3][1] =  0.0;      _CorrectionError[3][1] = 0.025;
+  _Correction[3][2] =  0.0;      _CorrectionError[3][2] = 0.025;
+  //[1.2, 2.1]
+  _Correction[4][0] =  0.005114; _CorrectionError[4][0] = 0.033115;
+  _Correction[4][1] =  0.035573; _CorrectionError[4][1] = 0.038574;
+  _Correction[4][2] =  0.070002; _CorrectionError[4][2] = 0.035002;
+  //[2.1, 2.4]
+  _Correction[5][0] =  -0.235470; _CorrectionError[5][0] = 0.077534;
+  _Correction[5][1] =  -0.122719; _CorrectionError[5][1] = 0.061283;
+  _Correction[5][2] =  0.091502;  _CorrectionError[5][2] = 0.074502;
+  
+  // Eta Binning
+  unsigned int etaBINS = 6;
+  unsigned int kEtaBin = etaBINS;
+  double EtaBin[etaBINS+1];
+  EtaBin[0]=-2.4; EtaBin[1]=-2.1; EtaBin[2]=-1.2; EtaBin[3]=0.;
+  EtaBin[4]=1.2; EtaBin[5]=2.1; EtaBin[6]=2.4;  
+  
+  // Phi Binning.
+  unsigned int phiBINS =3;
+  unsigned int kPhiBin = phiBINS;
+  double PhiBin[phiBINS+1];
+  PhiBin[0]=-180.; PhiBin[1]=-60.; PhiBin[2]=60.; PhiBin[3]=180.;
+  
+  // -- Loop over muon vector
+  std::vector<KMuon> out;
+  for(unsigned int i=0; i<muons.size(); i++){
+    KMuon this_muon = muons.at(i);
+    double MuonEta = this_muon.Eta();
+    double MuonPhi = this_muon.Phi();
+    double MuonPt = this_muon.Pt();
+    int MuonCharge = this_muon.Charge();
+    // -- Get Eta Bin Number
+    
+    for (unsigned int kbin=0; kbin<=etaBINS; ++kbin) {
+      if (MuonEta<EtaBin[kbin+1]) {
+	kEtaBin = kbin;
+	break;
+      }
+    }
+    // -- Get Phi Bin Number
+    for (unsigned int kbin=0; kbin<=phiBINS; ++kbin) {
+      if (MuonPhi<PhiBin[kbin+1]) {
+	kPhiBin = kbin;
+	break;
+      }
+    }
+    float KappaBias=_Correction[kEtaBin][kPhiBin];
+    float KappaBiasError=_CorrectionError[kEtaBin][kPhiBin];
+    
+    float rnd = KappaBias+99*KappaBiasError;
+    while (abs(KappaBias-rnd) > KappaBiasError)
+      rnd = gRandom->Gaus(KappaBias,KappaBiasError);
+    
+    KappaBias = rnd;
+    
+    if (sys==-1) KappaBias = KappaBias+KappaBiasError; //Take bias + UpSystematic.
+    if (sys== 1) KappaBias = KappaBias-KappaBiasError; //Takes bias - DownSystematic.
+    
+    MuonPt = MuonPt/1000.; //GeV to TeV.
+    MuonPt = fabs(MuonPt) * double(MuonCharge); //Signed Pt.
+    MuonPt = 1/MuonPt; //Convert to Curvature.
+    MuonPt = MuonPt + KappaBias; //Apply the bias.
+    if (fabs(MuonPt) < 0.14) MuonPt = KappaBiasError; //To avoid a division by set the curvature to its error if after the correction the pt is larger than 7 TeV.
+    MuonPt = 1/MuonPt;//Return to Pt.
+    MuonPt = fabs(MuonPt);//returns unsigned Pt, any possible sign flip due to the curvature is absorbed here.
+    MuonPt = MuonPt*1000.;//Return to Pt in GeV.
+    
+    this_muon.SetPtEtaPhiM( MuonPt, this_muon.Eta(), this_muon.Phi(), this_muon.M() );
+    out.push_back(this_muon);
+    
+  }// -- Muon vector loop ends
+
+  return out;
+
+}
+
+std::vector<KMuon> AnalyzerCore::SmearTunePMuons(std::vector<KMuon> muons, int sys){
+  
+  std::vector<KMuon> out;
+  // -- Loop over muon vector
+  for(unsigned int i=0; i<muons.size(); i++){
+    KMuon this_muon = muons.at(i);
+    double eta = fabs(this_muon.Eta());
+    double smear = 1.;
+    if(eta < 1.6){
+      if(this_muon.Pt() < 200) smear = 1. + double(sys) *  0.003;
+      else if(this_muon.Pt() < 500) smear =  1. + double(sys) * 0.005; 
+      else smear = 1. + double(sys) * 0.01;
+    }
+    else if(eta < 2.4){
+      if(this_muon.Pt() < 200) smear = 1. + double(sys) *  0.006;
+      else if(this_muon.Pt() < 500) smear =  1. + double(sys) * 0.01;
+      else smear = 1. + double(sys) * 0.02;
+    }
+    else smear = 1.;
+    
+    this_muon *= smear;
+    out.push_back(this_muon);
+  }// -- Muon vector loop ends
+  
+  return out;
+}
+
+
+
 
 std::map<TString,BTagSFUtil*> AnalyzerCore::SetupBTagger(std::vector<TString> taggers, std::vector<TString> wps){
 

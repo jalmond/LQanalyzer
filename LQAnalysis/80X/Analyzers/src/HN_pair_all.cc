@@ -121,9 +121,9 @@ void HN_pair_all::ExecuteEvents()throw( LQError ){
   
   
   // ==== Define Systematic flag strings and order  
-  const int N_systs = 13;
+  const int N_systs = 16;
   
-  TString syst_flags[N_systs] = {"ElEnUp", "ElEnDown","MuEnUp", "MuEnDown", "JESUp", "JESDown", "JERUp", "JERDown", "JMSUp", "JMSDown", "JMRUp","JMRDown"}; 
+  TString syst_flags[N_systs] = {"ElEnUp", "ElEnDown","MuEnUp", "MuEnDown", "JESUp", "JESDown", "JERUp", "JERDown", "JMSUp", "JMSDown", "JMRUp","JMRDown", "ElResUp","ElResDown",  "MuResUp","MuResDown"}; 
 
   //// Default analysis cycle
   ExecuteEventFromSyst( "central", "" , "", "","");
@@ -447,7 +447,7 @@ void HN_pair_all::ExecuteEventFromSyst(TString syst_label,TString el_syst, TStri
 
       if(muons_pog.size() == 2 && N_veto_muon == 2 && N_veto_el == 0){
 
-	if(muons_pog[1].Pt() > 65){
+	if(muons_pog[1].Pt() > 25){
 	  snu::KParticle ll = muons_pog[0] + muons_pog[1];
 
           // -- OS for CR POG

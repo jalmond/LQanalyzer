@@ -26,10 +26,11 @@ WZTo3LNu_powheg           |  Diboson                                            
 WpWpQCD                   |   Diboson                                           |  diboson               |  kSpring-1     | 0.2     |
 WpWpEWK                   |   Diboson                                           |  diboson               |  kSpring-1     | 0.2     |
 #Fake | nonprompt | nonprompt | kYellow | 0.3 |
-DY_pt_100to250   | DY | DY  | kYellow +4 | 0.1 |
-DY_pt_250to400 	  | DY |    DY  | kYellow +4 | 0.1 |
-DY_pt_400to650 	   | DY |   DY  | kYellow +4 | 0.1 |
-DY_pt_50to100 	    | DY |  DY  | kYellow +4 | 0.1 |
-DY_pt_650toinf	 | DY |	DY  | kYellow +4 | 0.1 |
-DY_pt_0to50	  | DY |    DY  | kYellow +4 | 0.1 |
+DY50plus  | DY | DY  | kYellow +4 | 0.1 |
+#DY_pt_100to250   | DY | DY  | kYellow +4 | 0.1 |
+#DY_pt_250to400 	  | DY |    DY  | kYellow +4 | 0.1 |
+#DY_pt_400to650 	   | DY |   DY  | kYellow +4 | 0.1 |
+#DY_pt_50to100 	    | DY |  DY  | kYellow +4 | 0.1 |
+#DY_pt_650toinf	 | DY |	DY  | kYellow +4 | 0.1 |
+#DY_pt_0to50	  | DY |    DY  | kYellow +4 | 0.1 |
 END
